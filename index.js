@@ -10,8 +10,7 @@ const app = express();
 
 // connect to database
 mongoose.connect(
-  // 'mongodb+srv://root:S88isTT5SNUSBtdw@cluster0.ps58u.mongodb.net/BONDEV?retryWrites=true&w=majority',
-  'mongodb+srv://root:S88isTT5SNUSBtdw@cluster0.ps58u.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  process.env.MONGO_DATABASE_CONNECTION_STRING,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
