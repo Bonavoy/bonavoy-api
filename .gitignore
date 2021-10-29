@@ -27,3 +27,6 @@ coverage
 benchmarks/graphs
 
 .env
+
+*.key
+*.key.pub

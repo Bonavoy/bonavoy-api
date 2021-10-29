@@ -1,39 +1,33 @@
+import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-export const refreshTokens = async (token, refreshToken, models) => {
-  let userId = -1;
-  try {
-    const {
-      user: { id },
-    } = jwt.decode(refreshToken);
-    userId = id;
-  } catch (err) {
-    return {};
+dotenv.config();
+
+const secret = fs.readFileSync('secret.key');
+
+export const validateToken = (req, res, next) => {
+  const accessToken = req.headers['x-access-token'];
+  if (!accessToken) {
+    return res.status(403).send({
+      error: true,
+      message: 'No token provided.',
+    });
   }
-};
 
-export const addUser = async (req, res, next) => {
-  const token = req.headers['x-token'];
-  if (token) {
-    try {
-      const { user } = jwt.verify(token, SECRET);
-      req.user = user;
-    } catch (err) {
-      const refreshToken = req.headers['x-refresh-token'];
-      const newTokens = await refreshTokens(
-        token,
-        refreshToken,
-        models,
-        SECRET,
-        SECRET_2
-      );
-      if (newTokens.token && newTokens.refreshToken) {
-        res.set('Access-Control-Expose-Headers', 'x-token, x-refresh-token');
-        res.set('x-token', newTokens.token);
-        res.set('x-refresh-token', newTokens.refreshToken);
+  jwt.verify(
+    accessToken,
+    secret,
+    { algorithms: process.env.ALGORITHM },
+    function (err, decoded) {
+      console.log(err);
+      if (err) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Unauthorized access.' });
       }
-      req.user = newTokens.user;
+      req.decoded = decoded;
+      next();
     }
-  }
-  next();
+  );
 };
