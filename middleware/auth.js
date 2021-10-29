@@ -1,5 +1,8 @@
 import fs from 'fs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const secret = fs.readFileSync('secret.key');
 
@@ -15,7 +18,7 @@ export const validateToken = (req, res, next) => {
   jwt.verify(
     accessToken,
     secret,
-    { algorithms: 'RS256' },
+    { algorithms: process.env.ALGORITHM },
     function (err, decoded) {
       console.log(err);
       if (err) {
