@@ -1,10 +1,12 @@
 import fs from 'fs';
 import express from 'express';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
 import { signAccessToken, signRefreshToken } from '../utils/auth';
 import * as crud from '../database/crud/user';
 
+dotenv.config();
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
 const router = express.Router();
@@ -75,11 +77,24 @@ router.post('/refresh-token', (req, res, next) => {
   const user = {
     email: postData.email,
   };
+  jwt.verify(
+    postData.refreshToken,
+    refreshTokenSecret,
+    { algorithms: process.env.ALGORITHM },
+    (err, decoded) => {
+      if (err) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Unauthorized access.' });
+      }
+    }
+  );
+
+  // generate new token
   const token = signAccessToken(user, secret);
-  const refreshToken = signRefreshToken(user, refreshTokenSecret);
   const response = {
     token,
-    refreshToken,
+    refreshToken: postData.refreshToken,
   };
   res.status(200).json(response);
 });
