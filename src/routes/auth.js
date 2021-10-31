@@ -1,10 +1,13 @@
 import fs from 'fs';
 import express from 'express';
 import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
 import { signAccessToken, signRefreshToken } from '../utils/auth';
 import * as crud from '../database/crud/user';
 
+dotenv.config();
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
 const router = express.Router();
@@ -50,9 +53,10 @@ router.post('/signup', async (req, res, next) => {
             createdAt: newUser.createdAt,
             updatedAt: newUser.updatedAt,
           };
-          const token = signAccessToken(user, secret);
-          const refreshToken = signRefreshToken(user, refreshTokenSecret);
-          return res.status(200).json({
+          const payload = { email: newUserDetails.email };
+          const token = signAccessToken(payload, secret);
+          const refreshToken = signRefreshToken(payload, refreshTokenSecret);
+          return res.status(201).json({
             token,
             refreshToken,
             ...newUserDetails,
@@ -67,35 +71,60 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-router.post('/refresh-token', (req, res, next) => {
-  const postData = req.body;
-  if (!postData.refreshToken) {
-    res.send(422).send('Missing refresh token');
+router.post('/refresh-token', async (req, res, next) => {
+  try {
+    const postData = req.body;
+    if (!postData.refreshToken) {
+      return res.send(422).send('Missing refresh token');
+    }
+    const user = {
+      email: postData.email,
+    };
+    jwt.verify(
+      postData.refreshToken,
+      refreshTokenSecret,
+      { algorithms: process.env.ALGORITHM },
+      (err, decoded) => {
+        if (err) {
+          return res
+            .status(401)
+            .json({ error: true, message: 'Unauthorized access.' });
+        }
+      }
+    );
+
+    // generate new token
+    const token = signAccessToken(user, secret);
+    const response = {
+      token,
+      refreshToken: postData.refreshToken,
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    next(err);
   }
-  const user = {
-    email: postData.email,
-  };
-  const token = signAccessToken(user, secret);
-  const refreshToken = signRefreshToken(user, refreshTokenSecret);
-  const response = {
-    token,
-    refreshToken,
-  };
-  res.status(200).json(response);
 });
 
-router.post('/token', (req, res, next) => {
-  const postData = req.body;
-  const user = {
-    email: postData.email,
-    password: postData.password,
-  };
-  const token = signAccessToken(user, secret);
-  const refreshToken = signRefreshToken(user, refreshTokenSecret);
-  res.status(200).json({
-    token,
-    refreshToken,
-  });
+router.post('/token', async (req, res, next) => {
+  try {
+    const postData = req.body;
+    const dbUser = crud.getUser({ emaiL: postData.email });
+    if (!dbUser) {
+      return res.send(404).json({ error: true, message: 'User not found' });
+    }
+
+    const user = {
+      email: postData.email,
+    };
+    const token = signAccessToken(user, secret);
+    const refreshToken = signRefreshToken(user, refreshTokenSecret);
+    return res.status(200).json({
+      token,
+      refreshToken,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;

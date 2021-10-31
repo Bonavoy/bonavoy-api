@@ -19,8 +19,7 @@ export const validateToken = (req, res, next) => {
     accessToken,
     secret,
     { algorithms: process.env.ALGORITHM },
-    function (err, decoded) {
-      console.log(err);
+    (err, decoded) => {
       if (err) {
         return res
           .status(401)
