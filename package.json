@@ -19,7 +19,12 @@
     "nodemon": "^2.0.12"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node index.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "dev": "nodemon --exec babel-node server.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "jest": "^27.3.1",
+    "supertest": "^6.1.6"
+  }
 }
