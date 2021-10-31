@@ -40,9 +40,59 @@ describe('Test the auth endpoints', () => {
     );
   });
 
+  it('Should not sign up a user with invalid email', async () => {
+    const res = await request(app).post('/api/auth/signup').send({
+      email: 'invalidemail.com',
+      username: 'testUsername',
+      firstname: 'testFirstname',
+      lastname: 'testLastname',
+      password: 'password123',
+      confirmPassword: 'password123',
+    });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        status: expect.any(Number),
+        message: expect.any(String),
+      })
+    );
+  });
+
+  it('Should not sign up a user with mismatching password and confirm password', async () => {
+    const res = await request(app).post('/api/auth/signup').send({
+      email: 'invalidemail.com',
+      username: 'testUsername',
+      firstname: 'testFirstname',
+      lastname: 'testLastname',
+      password: 'password123',
+      confirmPassword: 'passwrod66',
+    });
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        status: expect.any(Number),
+        message: expect.any(String),
+      })
+    );
+  });
+
   it('Should return a refresh and access token', async () => {
     const res = await request(app).post('/api/auth/token').send({
       username: 'testUsername',
+      password: 'password123',
+    });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        token: expect.any(String),
+        refreshToken: expect.any(String),
+      })
+    );
+  });
+
+  it('Should not return a refresh and access token with incorrect credentials', async () => {
+    const res = await request(app).post('/api/auth/token').send({
+      username: 'nonexistentUsername',
       password: 'password123',
     });
     expect(res.statusCode).toEqual(200);
