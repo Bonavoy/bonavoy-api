@@ -16,7 +16,9 @@ router.post('/signup', async (req, res, next) => {
   try {
     const user = req.body;
     if (user.password !== user.confirmPassword) {
-      return res.status(400).json({ error: 'Passwords do not match' });
+      return res
+        .status(400)
+        .json({ status: 1, message: 'Passwords do not match' });
     }
     const existingEmails = await crud.getUser({ email: user.email });
     const existingUsernames = await crud.getUser({
@@ -24,10 +26,10 @@ router.post('/signup', async (req, res, next) => {
     });
 
     if (existingEmails.length >= 1) {
-      return res.status(400).json({ error: 'Email exists' });
+      return res.status(400).json({ status: 1, message: 'Email exists' });
     }
     if (existingUsernames.length >= 1) {
-      return res.status(400).json({ error: 'Username exists' });
+      return res.status(400).json({ status: 1, message: 'Username exists' });
     }
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -75,7 +77,9 @@ router.post('/refresh-token', async (req, res, next) => {
   try {
     const postData = req.body;
     if (!postData.refreshToken) {
-      return res.send(422).send('Missing refresh token');
+      return res
+        .send(422)
+        .json({ status: 1, message: 'Missing refresh token' });
     }
     const user = {
       email: postData.email,
@@ -88,7 +92,7 @@ router.post('/refresh-token', async (req, res, next) => {
         if (err) {
           return res
             .status(401)
-            .json({ error: true, message: 'Unauthorized access.' });
+            .json({ error: 1, message: 'Unauthorized access.' });
         }
       }
     );

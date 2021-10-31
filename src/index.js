@@ -24,7 +24,7 @@ app.use('/api/trips', routes.tripRoutes);
 // general error handler
 // NOTE: Must be last middleware
 app.use((error, req, res, next) => {
-  return res.status(500).json({ error: error.toString() });
+  return res.status(500).json({ status: 1, message: error.toString() });
 });
 
 export default app;
