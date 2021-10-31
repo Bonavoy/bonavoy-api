@@ -1,11 +1,17 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 import * as routes from './routes';
 import { validateToken } from './middleware/auth';
+import { swaggerOptions } from './config/docs';
+
 dotenv.config();
 
 const app = express();
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // middleware
 app.use(express.json());

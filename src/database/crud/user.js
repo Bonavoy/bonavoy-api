@@ -15,6 +15,10 @@ export const getUser = async (query) => {
   return await User.find(query);
 };
 
+export const getOneUser = async (query) => {
+  return await User.findOne(query);
+};
+
 export const updateUser = () => {};
 
 export const deleteUser = () => {};
