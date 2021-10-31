@@ -90,21 +90,35 @@ describe('Test the auth endpoints', () => {
     );
   });
 
-  it('Should not return a refresh and access token with incorrect credentials', async () => {
+  it('Should not return a refresh and access token with non existent username', async () => {
     const res = await request(app).post('/api/auth/token').send({
       username: 'nonexistentUsername',
       password: 'password123',
     });
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(404);
     expect(res.body).toEqual(
       expect.objectContaining({
-        token: expect.any(String),
-        refreshToken: expect.any(String),
+        error: expect.any(Number),
+        message: expect.any(String),
       })
     );
   });
 
-  describe('Test refreshing token', () => {
+  it('Should not return a refresh and access token with incorrect password', async () => {
+    const res = await request(app).post('/api/auth/token').send({
+      username: 'testUsername',
+      password: 'notcorrectpassword',
+    });
+    expect(res.statusCode).toEqual(401);
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        error: expect.any(Number),
+        message: expect.any(String),
+      })
+    );
+  });
+
+  describe('Test refreshing access token', () => {
     let refreshToken;
     beforeEach(async () => {
       const res = await request(app).post('/api/auth/token').send({
