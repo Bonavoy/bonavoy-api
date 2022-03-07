@@ -1,31 +1,41 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
-import * as routes from './routes';
-import { validateToken } from './middleware/auth';
-import { swaggerOptions } from './config/docs';
+import * as routes from "./routes";
+import { validateToken } from "./middleware/auth";
+import { swaggerOptions } from "./config/docs";
 
 dotenv.config();
 
 const app = express();
 const specs = swaggerJsdoc(swaggerOptions);
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
+//cors
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);
+
+//docs
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // routes
-app.use('/api/auth', routes.authRoutes);
+app.use("/api/auth", routes.authRoutes);
+app.use("/api/newsletter", routes.newsletterRoutes);
 
 // auth middleware
 app.use(validateToken);
 
 // authenticated routes
-app.use('/api/users', routes.userRoutes);
-app.use('/api/trips', routes.tripRoutes);
+app.use("/api/users", routes.userRoutes);
+app.use("/api/trips", routes.tripRoutes);
 
 // general error handler
 // NOTE: Must be last middleware

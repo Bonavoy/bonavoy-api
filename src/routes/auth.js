@@ -1,21 +1,23 @@
-import fs from 'fs';
-import express from 'express';
-import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
+import fs from "fs";
+import express from "express";
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
-import { signAccessToken, signRefreshToken } from '../utils/auth';
-import * as crud from '../database/crud/user';
+import { signAccessToken, signRefreshToken } from "../utils/auth";
+import * as crud from "../database/crud/user";
 
 dotenv.config();
-const secret = fs.readFileSync('secret.key', 'utf-8');
-const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
+const secret = fs.readFileSync("secret.key", "utf-8");
+const refreshTokenSecret = fs.readFileSync("refreshTokenSecret.key", "utf-8");
 const router = express.Router();
 
 /**
  * @swagger
  * /auth/signup:
  *   post:
+ *      tags:
+ *         - Authentication
  *      summary: Sign up a new user
  *      description: Send new user details to create an account and receive the new user data, refresh and access token
  *      requestBody:
@@ -49,13 +51,13 @@ const router = express.Router();
  *                    description: access token
  *                    example: <JWT_TOKEN>
  */
-router.post('/signup', async (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   try {
     const user = req.body;
     if (user.password !== user.confirmPassword) {
       return res
         .status(400)
-        .json({ status: 1, message: 'Passwords do not match' });
+        .json({ status: 1, message: "Passwords do not match" });
     }
     const existingEmails = await crud.getOneUser({ email: user.email });
     const existingUsernames = await crud.getOneUser({
@@ -63,10 +65,10 @@ router.post('/signup', async (req, res, next) => {
     });
 
     if (existingEmails) {
-      return res.status(400).json({ status: 1, message: 'Email exists' });
+      return res.status(400).json({ status: 1, message: "Email exists" });
     }
     if (existingUsernames) {
-      return res.status(400).json({ status: 1, message: 'Username exists' });
+      return res.status(400).json({ status: 1, message: "Username exists" });
     }
 
     bcrypt.genSalt(10, (err, salt) => {
@@ -114,6 +116,8 @@ router.post('/signup', async (req, res, next) => {
  * @swagger
  * /auth/refresh-token:
  *   post:
+ *      tags:
+ *         - Authentication
  *      summary: Get new access token with refresh token
  *      description: Get new access token with refresh token
  *      requestBody:
@@ -131,13 +135,13 @@ router.post('/signup', async (req, res, next) => {
  *                    description: refresh token
  *                    example: <JWT_TOKEN>
  */
-router.post('/refresh-token', async (req, res, next) => {
+router.post("/refresh-token", async (req, res, next) => {
   try {
     const postData = req.body;
     if (!postData.refreshToken) {
       return res
         .send(422)
-        .json({ status: 1, message: 'Missing refresh token' });
+        .json({ status: 1, message: "Missing refresh token" });
     }
     const user = {
       email: postData.email,
@@ -150,7 +154,7 @@ router.post('/refresh-token', async (req, res, next) => {
         if (err) {
           return res
             .status(401)
-            .json({ error: 1, message: 'Unauthorized access.' });
+            .json({ error: 1, message: "Unauthorized access." });
         }
       }
     );
@@ -171,6 +175,8 @@ router.post('/refresh-token', async (req, res, next) => {
  * @swagger
  * /auth/token:
  *   post:
+ *      tags:
+ *         - Authentication
  *      summary: Request new access and refresh tokens with user credentials
  *      description: Request new access and refresh tokens with user credentials
  *      requestBody:
@@ -188,12 +194,12 @@ router.post('/refresh-token', async (req, res, next) => {
  *                    description: users password
  *                    example: verycool123
  */
-router.post('/token', async (req, res, next) => {
+router.post("/token", async (req, res, next) => {
   try {
     const postData = req.body;
     const dbUser = await crud.getOneUser({ username: postData.username });
     if (!dbUser) {
-      return res.status(404).json({ error: 1, message: 'User not found' });
+      return res.status(404).json({ error: 1, message: "User not found" });
     }
 
     bcrypt.compare(postData.password, dbUser.password, (err, results) => {
@@ -213,7 +219,7 @@ router.post('/token', async (req, res, next) => {
       } else {
         return res
           .status(401)
-          .json({ error: 1, message: 'Invalid credentials' });
+          .json({ error: 1, message: "Invalid credentials" });
       }
     });
   } catch (err) {
