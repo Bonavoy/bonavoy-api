@@ -37,59 +37,6 @@ router.post("/add", async (req, res, next) => {
     return res.status(201).json({
       email,
     });
-    if (user.password !== user.confirmPassword) {
-      return res
-        .status(400)
-        .json({ status: 1, message: "Passwords do not match" });
-    }
-    const existingEmails = await crud.getOneUser({ email: user.email });
-    const existingUsernames = await crud.getOneUser({
-      username: user.username,
-    });
-
-    if (existingEmails) {
-      return res.status(400).json({ status: 1, message: "Email exists" });
-    }
-    if (existingUsernames) {
-      return res.status(400).json({ status: 1, message: "Username exists" });
-    }
-
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, async (err, hash) => {
-        if (err) return next(err);
-        // Store hash in DB
-        const userDetails = {
-          email: user.email,
-          username: user.username,
-          firstname: user.firstname,
-          lastname: user.lastname,
-          password: hash,
-        };
-        try {
-          const newUser = await crud.createUser(userDetails);
-          // return user details without password
-          const newUserDetails = {
-            email: newUser.email,
-            username: newUser.username,
-            firstname: newUser.firstname,
-            lastname: newUser.lastname,
-            userImage: null,
-            createdAt: newUser.createdAt,
-            updatedAt: newUser.updatedAt,
-          };
-          const payload = { email: newUserDetails.email };
-          const token = signAccessToken(payload, secret);
-          const refreshToken = signRefreshToken(payload, refreshTokenSecret);
-          return res.status(201).json({
-            token,
-            refreshToken,
-            ...newUserDetails,
-          });
-        } catch (err) {
-          next(err);
-        }
-      });
-    });
   } catch (err) {
     next(err);
   }
