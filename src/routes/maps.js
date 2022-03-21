@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 const router = express.Router();
@@ -39,11 +40,25 @@ const router = express.Router();
  */
 router.post("/suggestions", async(req, res, next) => {
     try {
+
+        // set query params
+        const config = {
+            params: {
+                access_token: process.env.MAPBOX_ACCESS_TOKEN,
+                types: req.body.types.join(','),
+                country: req.body.country.join(','),
+                proximity: req.body.proximity.join(','),
+            }
+        }
+
         const geocodingRequest = `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.query}.json`;
+        console.log((await axios.get(geocodingRequest, config)).data.features)
+
         return res.status(201).json({
             query: geocodingRequest,
         });
     } catch (err) {
+        console.log(err)
         next(err);
     }
 });
