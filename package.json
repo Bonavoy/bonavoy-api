@@ -2,7 +2,7 @@
   "name": "bonavoyapi",
   "version": "1.0.0",
   "description": "api for bonavoy client",
-  "main": "index.js",
+  "main": "server.js",
   "repository": "git@github.com:Bonavoy/bonavoy-API.git",
   "license": "MIT",
   "private": true,

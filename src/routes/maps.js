@@ -33,34 +33,33 @@ const router = express.Router();
  *                    description: bias around location
  *                    enum: [ip, coordinate, none]
  *                    example: ['ip', 'coordinate']
- *                  countries:  
+ *                  countries:
  *                    type: array
  *                    description: country in short name
  *                    example: ['ca']
  */
-router.post("/suggestions", async(req, res, next) => {
-    try {
+router.post("/suggestions", async (req, res, next) => {
+  try {
+    // set query params
+    const config = {
+      params: {
+        access_token: process.env.MAPBOX_ACCESS_TOKEN,
+        types: req.body.types.join(","),
+        country: req.body.country.join(","),
+        proximity: req.body.proximity.join(","),
+      },
+    };
 
-        // set query params
-        const config = {
-            params: {
-                access_token: process.env.MAPBOX_ACCESS_TOKEN,
-                types: req.body.types.join(','),
-                country: req.body.country.join(','),
-                proximity: req.body.proximity.join(','),
-            }
-        }
+    const geocodingRequest = `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.query}.json`;
+    console.log((await axios.get(geocodingRequest, config)).data.features);
 
-        const geocodingRequest = `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.query}.json`;
-        console.log((await axios.get(geocodingRequest, config)).data.features)
-
-        return res.status(201).json({
-            query: geocodingRequest,
-        });
-    } catch (err) {
-        console.log(err)
-        next(err);
-    }
+    return res.status(201).json({
+      query: geocodingRequest,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 });
 
 export default router;
