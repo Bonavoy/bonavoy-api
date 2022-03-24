@@ -51,11 +51,10 @@ router.post("/suggestions", async (req, res, next) => {
     };
 
     const geocodingRequest = `https://api.mapbox.com/geocoding/v5/mapbox.places/${req.body.query}.json`;
-    console.log((await axios.get(geocodingRequest, config)).data.features);
 
-    return res.status(201).json({
-      query: geocodingRequest,
-    });
+    return res
+      .status(201)
+      .send((await axios.get(geocodingRequest, config)).data.features);
   } catch (err) {
     console.log(err);
     next(err);
