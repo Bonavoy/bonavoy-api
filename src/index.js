@@ -15,7 +15,7 @@ const specs = swaggerJsdoc(swaggerOptions);
 //cors
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "http://bonavoy.com"],
   })
 );
 
@@ -33,7 +33,7 @@ app.use("/maps", routes.mapRoutes);
 app.use("/flights", routes.flightRoutes);
 
 // auth middleware
-app.use(validateToken);
+// app.use(validateToken);
 
 // authenticated routes
 app.use("/users", routes.userRoutes);

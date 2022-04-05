@@ -1,6 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 
+import { addNewsletter } from "../database/crud/newsletter";
+
 dotenv.config();
 const router = express.Router();
 
@@ -23,15 +25,15 @@ const router = express.Router();
  *                    description: Users email
  *                    example: test@bonavoy.com
  */
-router.post("/add", async(req, res, next) => {
-    try {
-        const email = req.body.email;
-        return res.status(201).json({
-            email,
-        });
-    } catch (err) {
-        next(err);
-    }
+router.post("/add", async (req, res, next) => {
+  try {
+    console.log('haaha')
+    addNewsletter(req.body.email);
+    return res.status(201).send("Email added to newsletter");
+  } catch (err) {
+    console.log(err)
+    next(err);
+  }
 });
 
 export default router;
