@@ -14,9 +14,9 @@ const app = express();
 const specs = swaggerJsdoc(swaggerOptions);
 //cors
 app.use(
-    cors({
-        origin: "http://localhost:3000",
-    })
+  cors({
+    origin: "http://localhost:3000",
+  })
 );
 
 //docs
@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/auth", routes.authRoutes);
 app.use("/newsletter", routes.newsletterRoutes);
 app.use("/maps", routes.mapRoutes);
+app.use("/flights", routes.flightRoutes);
 
 // auth middleware
 app.use(validateToken);
@@ -41,7 +42,7 @@ app.use("/trips", routes.tripRoutes);
 // general error handler
 // NOTE: Must be last middleware
 app.use((error, req, res, next) => {
-    return res.status(500).json({ status: 1, message: error.toString() });
+  return res.status(500).json({ status: 1, message: error.toString() });
 });
 
 export default app;
