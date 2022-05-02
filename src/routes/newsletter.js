@@ -27,7 +27,6 @@ const router = express.Router();
  */
 router.post("/add", async (req, res, next) => {
   try {
-    console.log('haaha')
     addNewsletter(req.body.email);
     return res.status(201).send("Email added to newsletter");
   } catch (err) {
