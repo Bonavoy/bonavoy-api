@@ -24,7 +24,7 @@ export const swaggerOptions = {
   apis: [
     "./src/routes/auth.js",
     "./src/routes/newsletter.js",
-    "./src/routes/location.js",
+    "./src/routes/locations.js",
     "./src/routes/flights.js",
   ],
 };

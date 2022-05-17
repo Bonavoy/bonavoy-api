@@ -9,10 +9,10 @@ const router = express.Router();
 
 /**
  * @swagger
- * /maps/suggestions:
+ * /locations/suggestions:
  *   post:
  *      tags:
- *         - Maps
+ *         - Locations
  *      summary: Provides a list of suggested locations
  *      description: Using certain options, a list of locations will be provided
  *      requestBody:
