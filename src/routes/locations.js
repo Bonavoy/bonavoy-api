@@ -1,6 +1,8 @@
-import express from "express";
-import dotenv from "dotenv";
-import axios from "axios";
+import express from 'express';
+import dotenv from 'dotenv';
+import axios from 'axios';
+
+import { getAccessToken } from '../utils/amadeus';
 
 dotenv.config();
 const router = express.Router();
@@ -38,15 +40,15 @@ const router = express.Router();
  *                    description: country in short name
  *                    example: ['ca']
  */
-router.post("/suggestions", async (req, res, next) => {
+router.post('/suggestions', async (req, res, next) => {
   try {
     // set query params
     const config = {
       params: {
         access_token: process.env.MAPBOX_ACCESS_TOKEN,
-        types: req.body.types.join(","),
-        country: req.body.country.join(","),
-        proximity: req.body.proximity.join(","),
+        types: req.body.types.join(','),
+        country: req.body.country.join(','),
+        proximity: req.body.proximity.join(','),
       },
     };
 
@@ -57,6 +59,19 @@ router.post("/suggestions", async (req, res, next) => {
       .send((await axios.get(geocodingRequest, config)).data.features);
   } catch (err) {
     console.log(err);
+    next(err);
+  }
+});
+
+router.post('/suggestionss', async (req, res, next) => {
+  try {
+    const { data: suggestions } = await axios.get(
+      `${process.env.AIRLABS_BASE_URL}/suggest?q=${req.query.query}&api_key=${process.env.AIRLABS_API_KEY}`
+    );
+    console.log(suggestions.response);
+    return res.send();
+  } catch (err) {
+    // console.log(err);
     next(err);
   }
 });

@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: false }));
 // routes
 app.use('/auth', routes.authRoutes);
 app.use('/newsletter', routes.newsletterRoutes);
-app.use('/maps', routes.mapRoutes);
+app.use('/locations', routes.locationRoutes);
 app.use('/flights', routes.flightRoutes);
 app.use('/lodging', routes.lodgingRoutes);
 
