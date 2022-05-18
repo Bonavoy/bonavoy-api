@@ -1,29 +1,18 @@
 import express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+
+import { ApolloServer } from 'apollo-server-express';
+import { typeDefs, resolvers } from './graphql';
+
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { swaggerOptions } from './config/docs';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 import * as routes from './routes';
 // import { validateToken } from './middleware/auth';
-import { swaggerOptions } from './config/docs';
-
-dotenv.config();
-
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => {
-      return 'Hello World';
-    },
-  },
-};
 
 const startServer = async () => {
   //express app start
@@ -39,7 +28,11 @@ const startServer = async () => {
   //want to apply middleware to all routes that whay not called cors in appluMiddlware function for apollo server
   app.use(
     cors({
-      origin: ['http://localhost:3000', 'http://bonavoy.com'],
+      origin: [
+        'http://localhost:3000',
+        'http://bonavoy.com',
+        'https://studio.apollographql.com',
+      ],
     })
   );
 
