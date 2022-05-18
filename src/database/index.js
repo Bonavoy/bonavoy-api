@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -11,10 +11,10 @@ const connectDb = () => {
       useUnifiedTopology: true,
     },
     () => {
-      console.log("Main DB Connected.");
+      console.log('Main DB Connected.');
     }
   );
-  mongoose.connection.on("error", (error) => console.error(error));
+  mongoose.connection.on('error', (error) => console.error(error));
 };
 
 export default connectDb;

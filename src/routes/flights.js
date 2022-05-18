@@ -1,6 +1,6 @@
-import express from "express";
-import dotenv from "dotenv";
-import axios from "axios";
+import express from 'express';
+import dotenv from 'dotenv';
+import axios from 'axios';
 
 dotenv.config();
 const router = express.Router();
@@ -62,14 +62,15 @@ const router = express.Router();
  *                    type: number
  *                    description: number of results to return
  */
-router.post("/search", async (req, res, next) => {
+router.post('/search', async (req, res, next) => {
   try {
     const flightsRequest = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${req.body.originLocationCode}&destinationLocationCode=${req.body.destinationLocationCode}&departureDate=${req.body.departureDate}&returnDate=${req.body.returnDate}&adults=${req.body.adults}&children=${req.body.children}&infants=${req.body.infants}&travelClass=${req.body.travelClass}&nonStop=${req.body.nonStop}&currencyCode=${req.body.currencyCode}&max=${req.body.maxResults}`;
+    const access_token = await getAccessToken();
 
     const test = await axios.get(flightsRequest, {
       headers: {
-        accept: "application/vnd.amadeus+json",
-        Authorization: "Bearer cUzREte2jMeFyAfllfwhGES9fjSP",
+        accept: 'application/vnd.amadeus+json',
+        Authorization: `Bearer ${access_token}`,
       },
     });
 
