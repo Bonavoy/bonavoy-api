@@ -1,12 +1,11 @@
 import dotenv from 'dotenv';
-
-import app from './src';
-import connectDb from './src/database';
-
 dotenv.config();
 
-connectDb();
+import startServer from './src';
+import connectDb from './src/database';
 
-app.listen(process.env.PORT, () => {
-  console.log(`Example app listening at http://localhost:${process.env.PORT}`);
-});
+//start server
+startServer();
+
+//connect mongodb
+connectDb();

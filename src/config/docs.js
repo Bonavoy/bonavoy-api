@@ -2,9 +2,9 @@ export const swaggerOptions = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Bonavoy REST api",
+      title: "Bonavoy REST API",
       version: "0.1.0",
-      description: "Bonavoy REST api",
+      description: "Bonavoy REST API",
       license: {
         name: "MIT",
         url: "https://spdx.org/licenses/MIT.html",
