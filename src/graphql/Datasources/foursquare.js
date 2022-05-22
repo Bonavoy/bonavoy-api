@@ -6,7 +6,32 @@ export default class FoursquareAPI extends RESTDataSource {
     this.baseURL = 'https://api.foursquare.com/v3';
   }
 
-  async getSpotsOfInterest(coords) {
-    this.get('/places/search');
+  willSendRequest(request) {
+    request.headers.set('Authorization', process.env.FOURSQUARE_API_KEY);
+  }
+
+  async getSpotsOfInterest(options) {
+    const { coords } = options;
+    const { results } = await this.get(
+      `/places/search?ll=${coords.lat},${coords.lng}`
+    );
+    return this.formatToGraphQLSchema(results);
+  }
+
+  /**
+   * format data from API to match our schema
+   * @param {SpotOfInterest} res
+   * @returns formatted list of spot of interest's
+   */
+  formatToGraphQLSchema(res) {
+    return res.map((spot) => ({
+      fsq_id: spot.fsq_id,
+      name: spot.name,
+      distance: spot.distance,
+      coords: {
+        lat: spot.geocodes.main.latitude,
+        lng: spot.geocodes.main.longitude,
+      },
+    }));
   }
 }

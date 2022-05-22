@@ -9,17 +9,17 @@ export const types = gql`
   type SpotOfInterest {
     fsq_id: ID
     name: String
-    rating: Int
+    distance: Int
     coords: Coords
   }
 
   type Coords {
-    lat: Int
-    lng: Int
+    lat: Float
+    lng: Float
   }
 
   input CoordsInput {
-    lat: Int
-    lng: Int
+    lat: Float
+    lng: Float
   }
 `;

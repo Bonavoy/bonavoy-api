@@ -1,9 +1,11 @@
 const queries = {
-  spotOfInterest: (_, args, { dataSources }) => {
-    console.log('here');
-    // const res = await dataSources.foursquareAPI.getSpotsOfInterest({});
-    // console.log(res);
-    return {};
+  spotOfInterest: async (_, args, { dataSources }) => {
+    const { input } = args;
+    const options = {
+      coords: input.coords,
+    };
+    const res = await dataSources.foursquareAPI.getSpotsOfInterest(options);
+    return res;
   },
 };
 
