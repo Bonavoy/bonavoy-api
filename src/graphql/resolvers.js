@@ -1,5 +1,6 @@
 import { User } from './User';
 import { SpotOfInterest } from './SpotOfInterest';
+import { Trip } from './Trip';
 
 const resolvers = {
   Query: {
@@ -9,6 +10,7 @@ const resolvers = {
   Mutation: {
     ...User.resolvers.mutations,
     ...SpotOfInterest.resolvers.mutations,
+    ...Trip.resolvers.mutations,
   },
 };
 

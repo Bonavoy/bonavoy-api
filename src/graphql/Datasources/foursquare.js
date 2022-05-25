@@ -11,12 +11,14 @@ export default class FoursquareAPI extends RESTDataSource {
   }
 
   async getSpotsOfInterest(options) {
-    const { coords } = options;
+    const { coords, limit } = options;
     const { results } = await this.get(
-      `/places/search?ll=${coords.lat},${coords.lng}`
+      `/places/search?ll=${coords.lat},${coords.lng}&limit=${limit}`
     );
     return this.formatToGraphQLSchema(results);
   }
+
+  async getSpotsOfInterestPhotoes(options) {}
 
   /**
    * format data from API to match our schema
