@@ -5,5 +5,6 @@ export const types = `
     from: String 
     to: String
     duration: Int
+    dayPlan: DayPlanInput
   }
 `;

@@ -2,6 +2,12 @@ import { gql } from 'apollo-server-express';
 
 export const types = gql`
   input SpotOfInterestInput {
+    fsq_id: String
+    from: String
+    to: String
+  }
+
+  input GetSpotOfInterestInput {
     coords: CoordsInput
     limit: Int
     filter: String

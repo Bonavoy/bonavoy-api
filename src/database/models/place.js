@@ -7,7 +7,7 @@ export const PlaceSchema = Schema({
   from: { type: Date },
   to: { type: Date },
   duration: { type: Number, required: true },
-  // dayPlan: [{ type: Schema.Types.ObjectId, ref: 'dayPlan' }],
+  dayPlan: { type: Schema.Types.ObjectId, ref: 'dayPlan' },
 });
 
 const Place = mongoose.model('place', PlaceSchema);
