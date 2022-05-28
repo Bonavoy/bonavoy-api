@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import * as routes from './routes';
+import FoursquareAPI from './graphql/Datasources/foursquare';
 // import { validateToken } from './middleware/auth';
 
 const startServer = async () => {
@@ -23,6 +24,11 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     context: ({ req, res }) => ({ req, res }),
+    dataSources: () => {
+      return {
+        foursquareAPI: new FoursquareAPI(),
+      };
+    },
   });
 
   //want to apply middleware to all routes that whay not called cors in appluMiddlware function for apollo server
