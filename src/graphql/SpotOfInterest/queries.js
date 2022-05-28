@@ -1,3 +1,3 @@
 export const queries = `
-  spotOfInterest(input: SearchSpotOfInterestInput): [SpotOfInterest]
+  spotOfInterest(input: SearchSpotsOfInterestInput): [SpotOfInterest]
 `;

@@ -7,7 +7,7 @@ export const types = gql`
     to: String
   }
 
-  input SearchSpotOfInterestInput {
+  input SearchSpotsOfInterestInput {
     coords: CoordsInput
     limit: Int
     filter: String
