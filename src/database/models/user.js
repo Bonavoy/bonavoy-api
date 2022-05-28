@@ -10,6 +10,7 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     userImage: { type: String },
     verified: false,
+    trips: [{ type: Schema.Types.ObjectId, ref: 'trip' }],
   },
   { timestamps: true }
 );

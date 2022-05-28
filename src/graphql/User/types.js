@@ -6,5 +6,6 @@ export const types = `
     loggedIn: Boolean
     firstName: String
     lastName: String
+    trips: [Trip]
   }
 `;
