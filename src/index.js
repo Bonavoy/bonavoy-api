@@ -4,9 +4,9 @@ import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
 
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUi from 'swagger-ui-express';
-import { swaggerOptions } from './config/docs';
+// import swaggerJsdoc from 'swagger-jsdoc';
+// import swaggerUi from 'swagger-ui-express';
+// import { swaggerOptions } from './config/docs';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -47,11 +47,11 @@ const startServer = async () => {
   apolloServer.applyMiddleware({ app });
 
   //docs
-  app.use(
-    '/docs',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerJsdoc(swaggerOptions))
-  );
+  // app.use(
+  //   '/docs',
+  //   swaggerUi.serve,
+  //   swaggerUi.setup(swaggerJsdoc(swaggerOptions))
+  // );
 
   // middleware
   app.use(express.json());
