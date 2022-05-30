@@ -5,4 +5,8 @@ export const mutations = `
     firstName: String!
     lastName: String!
   ): User
+  
+  authenticate(username: String!, password: String!): Authenticate!
+
+  refresh: String
 `;

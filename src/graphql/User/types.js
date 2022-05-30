@@ -8,4 +8,10 @@ export const types = `
     lastName: String
     trips: [Trip]
   }
+
+  type Authenticate {
+    username: String!
+    token: String!
+    refreshToken: String!
+  }
 `;
