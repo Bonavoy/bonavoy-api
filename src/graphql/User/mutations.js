@@ -4,9 +4,9 @@ export const mutations = `
     password: String!
     firstName: String!
     lastName: String!
-  ): User
+  ): User!
   
-  authenticate(username: String!, password: String!): Authenticate!
+  authenticate(username: String!, password: String!): Authenticate
 
-  refresh: String
+  refresh: String!
 `;

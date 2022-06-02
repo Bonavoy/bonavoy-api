@@ -43,14 +43,17 @@ const mutations = {
       throw new AuthenticationError('Invalid credentials');
     }
 
-    bcrypt.compare(password, dbUser.password, (err, results) => {
-      if (err) throw new ValidationError('BCRYPT ERROR');
-      if (results) {
-        const username = { username: dbUser.username };
-        const token = signAccessToken(username, secret);
-        const refreshToken = signRefreshToken(username, refreshTokenSecret);
-        return { ...username, token, refreshToken };
-      } else throw new AuthenticationError('Invalid credentials');
+    //promise due to needing to wait for async cb by compare function
+    return await new Promise((resolve, _) => {
+      bcrypt.compare(password, dbUser.password, (err, result) => {
+        if (err) throw new ValidationError('BCRYPT ERROR');
+        if (result) {
+          const username = { username: dbUser.username };
+          const token = signAccessToken(username, secret);
+          const refreshToken = signRefreshToken(username, refreshTokenSecret);
+          resolve({ ...username, token, refreshToken });
+        } else throw new AuthenticationError('Invalid credentials');
+      });
     });
   },
 };
