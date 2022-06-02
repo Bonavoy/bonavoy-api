@@ -13,6 +13,6 @@ export const types = `
     _id: String!
     username: String!
     token: String!
-    refreshToken: String!
+    refresh: String!
   }
 `;

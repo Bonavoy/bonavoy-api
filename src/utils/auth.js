@@ -27,7 +27,7 @@ export const verifyAccessToken = (token) => {
     secret,
     { algorithms: process.env.ALGORITHM },
     (err, decoded) => {
-      if (err) return res;
+      if (err) return err;
       return decoded;
     }
   );

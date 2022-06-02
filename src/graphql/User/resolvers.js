@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import fs from 'fs';
 import * as crud from '../../database/crud/user';
 
 import { AuthenticationError, ValidationError } from 'apollo-server-express';
@@ -49,7 +48,7 @@ const mutations = {
           resolve({
             ...user,
             token: signAccessToken(user),
-            refreshToken: signRefreshToken(user),
+            refresh: signRefreshToken(user),
           });
         } else throw new AuthenticationError('Invalid credentials');
       });
