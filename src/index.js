@@ -1,13 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 
+import { verifyAccessToken } from './utils/auth';
+
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
-// import * as routes from './routes';
 import FoursquareAPI from './graphql/Datasources/foursquare';
 // import { validateToken } from './middleware/auth';
 
@@ -19,7 +20,17 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => {
+      try {
+        if (req.headers['x-access-token']) {
+          const token = verifyAccessToken(req.headers['x-access-token']);
+          console.log(token);
+          return token;
+        }
+      } catch {
+        return { req, res };
+      }
+    },
     dataSources: () => {
       return {
         foursquareAPI: new FoursquareAPI(),

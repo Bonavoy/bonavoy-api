@@ -6,9 +6,6 @@ import { AuthenticationError, ValidationError } from 'apollo-server-express';
 import { signAccessToken } from '../../utils/auth';
 import { signRefreshToken } from '../../utils/auth';
 
-const secret = fs.readFileSync('secret.key', 'utf-8');
-const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
-
 const queries = {
   user: (_, args) => {
     return {
@@ -48,10 +45,12 @@ const mutations = {
       bcrypt.compare(password, dbUser.password, (err, result) => {
         if (err) throw new ValidationError('BCRYPT ERROR');
         if (result) {
-          const username = { username: dbUser.username };
-          const token = signAccessToken(username, secret);
-          const refreshToken = signRefreshToken(username, refreshTokenSecret);
-          resolve({ ...username, token, refreshToken });
+          const user = { username: dbUser.username, _id: dbUser._id };
+          resolve({
+            ...user,
+            token: signAccessToken(user),
+            refreshToken: signRefreshToken(user),
+          });
         } else throw new AuthenticationError('Invalid credentials');
       });
     });

@@ -10,6 +10,7 @@ export const types = `
   }
 
   type Authenticate {
+    _id: String!
     username: String!
     token: String!
     refreshToken: String!
