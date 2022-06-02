@@ -32,7 +32,7 @@ const mutations = {
     // return newUser;
   },
 
-  authenticate: async (_, { username, password }) => {
+  authenticate: async (_, { username, password }, auth) => {
     //get user from db
     const dbUser = await crud.getOneUser({ username: username });
     //if no user, throw error

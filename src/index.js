@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 
 import { verifyAccessToken } from './utils/auth';
 
@@ -20,11 +19,11 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
+    csrfPrevention: true,
     context: ({ req, res }) => {
       try {
         if (req.headers['x-access-token']) {
           const token = verifyAccessToken(req.headers['x-access-token']);
-          console.log(token);
           return token;
         }
       } catch {
@@ -38,20 +37,15 @@ const startServer = async () => {
     },
   });
 
-  //want to apply middleware to all routes that whay not called cors in appluMiddlware function for apollo server
-  app.use(
-    cors({
-      origin: [
-        'http://localhost:3000',
-        'http://bonavoy.com',
-        'https://studio.apollographql.com',
-      ],
-    })
-  );
-
   //all though not required to start (started automatically), its highly reccommended
   await apolloServer.start();
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({
+    app,
+    cors: {
+      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+      credentials: true,
+    },
+  });
 
   // middleware
   // app.use(express.json());
