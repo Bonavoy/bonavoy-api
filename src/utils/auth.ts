@@ -7,8 +7,8 @@ dotenv.config();
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
 
-export const signAccessToken = (payload) => {
-  return jwt.sign(payload, secret, {
+export const signAccessToken = (sub) => {
+  return jwt.sign({ sub }, secret, {
     expiresIn: process.env.ACCESS_TOKEN_LIFETIME,
     algorithm: process.env.ALGORITHM,
   });

@@ -47,7 +47,7 @@ const mutations = {
           const user = { username: dbUser.username, _id: dbUser._id };
           resolve({
             ...user,
-            token: signAccessToken(user),
+            token: signAccessToken(dbUser._id),
             // refresh: signRefreshToken(user),
           });
         } else throw new AuthenticationError('Invalid credentials');

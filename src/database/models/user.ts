@@ -9,7 +9,7 @@ const UserSchema = new Schema(
     lastname: { type: String, required: true },
     password: { type: String, required: true },
     userImage: { type: String },
-    verified: false,
+    verified: { type: Boolean },
     trips: [{ type: Schema.Types.ObjectId, ref: 'trip' }],
   },
   { timestamps: true }
