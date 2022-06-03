@@ -39,15 +39,14 @@ const startServer = async () => {
           requestContext.response.http.status = 401;
         }
       } else if (response.data?.authenticate || response.data?.refresh) {
-        // const tokenExpireDate = new Date();
-        // tokenExpireDate.setDate(
-        //   tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
-        // );
-        // const refreshToken = guid.raw();
-        // const token = jwt.verify(
-        //   response.data?.authenticate || response.data?.refresh,
-        //   JWT_SECRET
-        // );
+        const tokenExpireDate = new Date();
+        tokenExpireDate.setDate(
+          tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
+        );
+        const token = verifyAccessToken(
+          response.data?.authenticate.token || response.data?.refresh
+        );
+        const refreshToken = guid.raw();
         // refreshTokens[refreshToken] = token.data;
         // const refreshToken = jwt.sign({ data: refreshToken }, JWT_SECRET, {
         //   expiresIn: "7 days",

@@ -3,7 +3,7 @@ import * as crud from '../../database/crud/user';
 
 import { AuthenticationError, ValidationError } from 'apollo-server-express';
 import { signAccessToken } from '../../utils/auth';
-import { signRefreshToken } from '../../utils/auth';
+// import { signRefreshToken } from '../../utils/auth';
 
 const queries = {
   user: (_, args) => {
@@ -48,7 +48,7 @@ const mutations = {
           resolve({
             ...user,
             token: signAccessToken(user),
-            refresh: signRefreshToken(user),
+            // refresh: signRefreshToken(user),
           });
         } else throw new AuthenticationError('Invalid credentials');
       });
