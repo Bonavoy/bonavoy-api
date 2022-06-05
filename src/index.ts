@@ -2,6 +2,7 @@ import express from 'express';
 
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
+import { AuthContext } from '../types/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -18,11 +19,12 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     csrfPrevention: true,
-    context: ({ req, res }) => {
-      let ctx = {
+    context: ({ req }: { req: any }) => {
+      let ctx: AuthContext = {
         _id: null,
         username: null,
-        refreshToken: null,
+        token: null,
+        refresh: null,
       };
       try {
         if (req.headers['x-access-token']) {

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import jwt from 'jsonwebtoken';
+import jwt, { JsonWebTokenError } from 'jsonwebtoken';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -7,10 +7,10 @@ dotenv.config();
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
 
-export const signAccessToken = (sub) => {
-  return jwt.sign({ sub }, secret, {
+export const signAccessToken = (sub: string) => {
+  return jwt.sign({ sub }, secret as string, {
     expiresIn: process.env.ACCESS_TOKEN_LIFETIME,
-    algorithm: process.env.ALGORITHM,
+    algorithm: process.env.ALGORITHM as string,
   });
 };
 
@@ -21,12 +21,14 @@ export const signRefreshToken = (payload) => {
   });
 };
 
-export const verifyAccessToken = (token) => {
+export const verifyAccessToken = (token: string) => {
   return jwt.verify(
     token,
     secret,
-    { algorithms: process.env.ALGORITHM },
-    (err, decoded) => {
+    (
+      err: JsonWebTokenError,
+      decoded: { sub: string; iat: number; exp: number }
+    ) => {
       if (err) return err;
       return decoded;
     }
