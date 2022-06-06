@@ -4,6 +4,7 @@ export const createSession = async (session) => {
   return await Session.create({
     user: session.user,
     token: session.token,
+    expireAt: session.expiry,
   });
 };
 

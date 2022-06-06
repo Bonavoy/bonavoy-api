@@ -61,10 +61,17 @@ const mutations = {
           //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
           //then save to db
           const newRefresh = signRefreshToken(dbUser._id);
-          // dbUser.sessions = [...dbUser.sessions, newRefresh];
-          // dbUser.save();
 
-          await crud.createSession({ user: dbUser._id, token: newRefresh });
+          //create session document with expiry
+          await crud.createSession({
+            user: dbUser._id,
+            token: newRefresh,
+            expiry: new Date(
+              new Date().setMilliseconds(
+                Number(process.env.REFRESH_TOKEN_LIFETIME)
+              )
+            ),
+          });
 
           //send refresh as httponly cookie
           res.cookie('RTC', newRefresh, {
