@@ -5,7 +5,7 @@ import { AuthenticationError, ValidationError } from 'apollo-server-express';
 import { signAccessToken, signRefreshToken } from '../../utils/auth';
 
 //types
-import { TokenPayload } from '../../../types/auth';
+import { TokenDecoded, TokenPayload } from '../../../types/auth';
 
 const queries = {
   user: (_, args) => {
@@ -33,14 +33,17 @@ const mutations = {
     // return newUser;
   },
 
-  authenticate: async (_, { username, password }, auth) => {
+  authenticate: async (
+    _: unknown,
+    { username, password }: { username: string; password: string },
+    { ctx, res }: { ctx: TokenDecoded; res: any }
+  ) => {
     //get user from db
     const dbUser = await crud.getOneUser({ username: username });
     //if no user, throw error
     if (!dbUser) {
       throw new AuthenticationError('Invalid credentials');
     }
-
     //promise due to needing to wait for async cb by compare function
     return await new Promise((resolve) => {
       bcrypt.compare(password, dbUser.password, (err, result) => {
@@ -50,11 +53,19 @@ const mutations = {
             username: dbUser.username,
             _id: dbUser._id,
           };
-          resolve({
-            ...user,
-            token: signAccessToken(user),
-            refresh: signRefreshToken(dbUser._id),
+
+          res.cookie('id', signAccessToken(user), {
+            httpOnly: true,
+            secure: true,
+            maxAge: 50000,
+            sameSite: 'None',
           });
+          // resolve({
+          //   ...user,
+          //   token: signAccessToken(user),
+          //   refresh: signRefreshToken(dbUser._id),
+          // });
+          resolve(true);
         } else throw new AuthenticationError('Invalid credentials');
       });
     });

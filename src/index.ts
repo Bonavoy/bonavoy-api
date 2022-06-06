@@ -1,22 +1,20 @@
 import express from 'express';
 
 import { ApolloServer } from 'apollo-server-express';
-import type {
-  GraphQLExecutor,
-  ValueOrPromise,
-  GraphQLResponse,
-  GraphQLRequestContext,
-  SchemaHash,
-} from 'apollo-server-types';
-
 import { typeDefs, resolvers } from './graphql';
-import { AuthContext } from '../types/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
 import FoursquareAPI from './graphql/Datasources/foursquare';
-import { verifyAccessToken } from './utils/auth';
+import { verifyAccessToken, signRefreshToken } from './utils/auth';
+
+//types
+import type { TokenDecoded } from '../types/auth';
+import type {
+  GraphQLResponse,
+  GraphQLRequestContext,
+} from 'apollo-server-types';
 
 const startServer = async () => {
   //express app start
@@ -27,23 +25,23 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     csrfPrevention: true,
-    context: ({ req }: { req: any }) => {
-      let ctx: AuthContext = {
+    context: ({ req, res }: { req: any; res: any }) => {
+      let ctx: TokenDecoded = {
         _id: null,
         username: null,
-        token: null,
-        refresh: null,
+        iat: null,
+        exp: null,
       };
       try {
         if (req.headers['x-access-token']) {
           ctx = {
             ...(verifyAccessToken(
               req.headers['x-access-token']
-            ) as unknown as AuthContext),
+            ) as unknown as TokenDecoded),
           };
         }
       } catch (e) {}
-      return ctx;
+      return { ctx, res };
     },
     formatResponse: (
       response: GraphQLResponse,
@@ -55,21 +53,18 @@ const startServer = async () => {
           requestContext.response.http.status = 401;
         }
       } else if (response.data?.authenticate || response.data?.refresh) {
-        const tokenExpireDate = new Date();
-        tokenExpireDate.setDate(
-          tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
-        );
-        const token = verifyAccessToken(
-          response.data?.authenticate.token || response.data?.refresh
-        ) as unknown as AuthContext;
-        // const refreshToken = guid.raw();
-        // refreshTokens[refreshToken] = token.data;
-        // const refreshToken = jwt.sign({ data: refreshToken }, JWT_SECRET, {
-        //   expiresIn: "7 days",
-        // });
+        //this block only runs when aythenticate or refresh mutations are called.
+        //here we are basically attaching
+        // const tokenExpireDate = new Date();
+        // tokenExpireDate.setDate(
+        //   tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
+        // );
+        // const token = verifyAccessToken(
+        //   response.data?.authenticate.token || response.data?.refresh
+        // ) as unknown as TokenDecoded;
         // requestContext.response?.http?.headers.append(
-        //   "Set-Cookie",
-        //   `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
+        //   'Set-Cookie',
+        //   `refresh=${signRefreshToken(token._id)}; expires=${tokenExpireDate}`
         // );
       }
       return response;
