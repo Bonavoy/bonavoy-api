@@ -35,20 +35,15 @@ const startServer = async () => {
         username: null,
         iat: null,
         exp: null,
-        token: null,
-        refresh: null,
       };
+      if (req.cookies?.RTC) {
+        //access token
+        const { token, tokenError } = verifyAccessToken(req.cookies?.ATC);
 
-      //access token
-      const { token, tokenError } = verifyAccessToken(req.cookies?.ATC);
+        //refresh token
+        const { refresh, refreshError } = verifyRefreshToken(req.cookies?.RTC);
 
-      //refresh token
-      const { refresh, refreshError } = verifyRefreshToken(req.cookies?.RTC);
-
-      console.log(tokenError?.message);
-      console.log(refreshError?.message);
-      if (req.cookies?.ATC) {
-        ctx = { ...token, token: req.cookies?.ATC, refresh: req.cookies?.RTC };
+        ctx = { ...token };
       }
       return { ctx, req, res };
     },

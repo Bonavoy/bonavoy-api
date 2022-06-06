@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
-import * as crud from '../../database/crud/user';
+import * as crud from '../../database/crud';
 import { AuthenticationError } from 'apollo-server-express';
 import { signAccessToken, signRefreshToken } from '../../utils/auth';
 
@@ -50,7 +50,7 @@ const mutations = {
     }
     //promise due to needing to wait for async cb by compare function
     return await new Promise((resolve) => {
-      bcrypt.compare(password, dbUser.password, (err, result) => {
+      bcrypt.compare(password, dbUser.password, async (err, result) => {
         if (err) resolve(false);
         if (result) {
           const user: TokenPayload = {
@@ -61,8 +61,10 @@ const mutations = {
           //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
           //then save to db
           const newRefresh = signRefreshToken(dbUser._id);
-          dbUser.sessions = [...dbUser.sessions, newRefresh];
-          dbUser.save();
+          // dbUser.sessions = [...dbUser.sessions, newRefresh];
+          // dbUser.save();
+
+          await crud.createSession({ user: dbUser._id, token: newRefresh });
 
           //send refresh as httponly cookie
           res.cookie('RTC', newRefresh, {
@@ -91,7 +93,14 @@ const mutations = {
     _args: unknown,
     { ctx, req, res }: { ctx: TokenDecoded; req: Request; res: Response }
   ) => {
-    console.log(ctx);
+    //get user from db
+    const dbUser = await crud.getOneUser({ username: ctx.username });
+
+    if (!dbUser) {
+      throw new AuthenticationError('No user.');
+    }
+
+    dbUser.sessions.map((token) => {});
     return true;
   },
 };

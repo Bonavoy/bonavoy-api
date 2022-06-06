@@ -11,7 +11,6 @@ const UserSchema = new Schema(
     userImage: { type: String },
     verified: { type: Boolean, default: false },
     trips: [{ type: Schema.Types.ObjectId, ref: 'trip' }],
-    sessions: [{ type: String }],
   },
   { timestamps: true }
 );

@@ -3,8 +3,6 @@ export interface AuthContext {
   username: string | null;
   iat: number | null;
   exp: number | null;
-  token: string | null;
-  refresh: string | null;
 }
 
 export interface TokenPayload {
