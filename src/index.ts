@@ -1,6 +1,14 @@
 import express from 'express';
 
 import { ApolloServer } from 'apollo-server-express';
+import type {
+  GraphQLExecutor,
+  ValueOrPromise,
+  GraphQLResponse,
+  GraphQLRequestContext,
+  SchemaHash,
+} from 'apollo-server-types';
+
 import { typeDefs, resolvers } from './graphql';
 import { AuthContext } from '../types/auth';
 
@@ -28,37 +36,44 @@ const startServer = async () => {
       };
       try {
         if (req.headers['x-access-token']) {
-          ctx = { ...verifyAccessToken(req.headers['x-access-token']) };
+          ctx = {
+            ...(verifyAccessToken(
+              req.headers['x-access-token']
+            ) as unknown as AuthContext),
+          };
         }
       } catch (e) {}
       return ctx;
     },
-    // formatResponse: async (response, requestContext) => {
-    //   //if not auth, send 401 else make a refresh token
-    //   if (response.errors && !requestContext.request.variables?.password) {
-    //     if (requestContext.response?.http) {
-    //       requestContext.response.http.status = 401;
-    //     }
-    //   } else if (response.data?.authenticate || response.data?.refresh) {
-    //     const tokenExpireDate = new Date();
-    //     tokenExpireDate.setDate(
-    //       tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
-    //     );
-    //     const token = verifyAccessToken(
-    //       response.data?.authenticate.token || response.data?.refresh
-    //     );
-    //     // const refreshToken = guid.raw();
-    //     // refreshTokens[refreshToken] = token.data;
-    //     // const refreshToken = jwt.sign({ data: refreshToken }, JWT_SECRET, {
-    //     //   expiresIn: "7 days",
-    //     // });
-    //     // requestContext.response?.http?.headers.append(
-    //     //   "Set-Cookie",
-    //     //   `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
-    //     // );
-    //   }
-    //   return response;
-    // },
+    formatResponse: (
+      response: GraphQLResponse,
+      requestContext: GraphQLRequestContext<object>
+    ): GraphQLResponse => {
+      //if not auth, send 401 else make a refresh token
+      if (response.errors && !requestContext.request.variables?.password) {
+        if (requestContext.response?.http) {
+          requestContext.response.http.status = 401;
+        }
+      } else if (response.data?.authenticate || response.data?.refresh) {
+        const tokenExpireDate = new Date();
+        tokenExpireDate.setDate(
+          tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
+        );
+        const token = verifyAccessToken(
+          response.data?.authenticate.token || response.data?.refresh
+        ) as unknown as AuthContext;
+        // const refreshToken = guid.raw();
+        // refreshTokens[refreshToken] = token.data;
+        // const refreshToken = jwt.sign({ data: refreshToken }, JWT_SECRET, {
+        //   expiresIn: "7 days",
+        // });
+        // requestContext.response?.http?.headers.append(
+        //   "Set-Cookie",
+        //   `refreshToken=${refreshToken}; expires=${tokenExpireDate}`
+        // );
+      }
+      return response;
+    },
     dataSources: () => {
       return {
         foursquareAPI: new FoursquareAPI(),

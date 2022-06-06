@@ -2,8 +2,10 @@ import bcrypt from 'bcrypt';
 import * as crud from '../../database/crud/user';
 
 import { AuthenticationError, ValidationError } from 'apollo-server-express';
-import { signAccessToken } from '../../utils/auth';
-import { signRefreshToken } from '../../utils/auth';
+import { signAccessToken, signRefreshToken } from '../../utils/auth';
+
+//types
+import { TokenPayload } from '../../../types/auth';
 
 const queries = {
   user: (_, args) => {
@@ -40,15 +42,18 @@ const mutations = {
     }
 
     //promise due to needing to wait for async cb by compare function
-    return await new Promise((resolve, _) => {
+    return await new Promise((resolve) => {
       bcrypt.compare(password, dbUser.password, (err, result) => {
         if (err) throw new ValidationError('BCRYPT ERROR');
         if (result) {
-          const user = { username: dbUser.username, _id: dbUser._id };
+          const user: TokenPayload = {
+            username: dbUser.username,
+            _id: dbUser._id,
+          };
           resolve({
             ...user,
-            token: signAccessToken(dbUser._id),
-            refresh: signRefreshToken(user),
+            token: signAccessToken(user),
+            refresh: signRefreshToken(dbUser._id),
           });
         } else throw new AuthenticationError('Invalid credentials');
       });

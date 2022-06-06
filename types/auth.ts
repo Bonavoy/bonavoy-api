@@ -4,3 +4,8 @@ export interface AuthContext {
   token: string | null;
   refresh: string | null;
 }
+
+export interface TokenPayload {
+  _id: string | null;
+  username: string | null;
+}
