@@ -7,7 +7,7 @@ export const mutations = `
     refresh: [String!]!
   ): User!
   
-  authenticate(username: String!, password: String!): Boolean!
+  authenticate(username: String!, password: String!): String!
 
   refresh: String!
 `;

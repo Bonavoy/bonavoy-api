@@ -54,7 +54,8 @@ const mutations = {
             _id: dbUser._id,
           };
 
-          res.cookie('id', signAccessToken(user), {
+          //send refresh as httponly cookie
+          res.cookie('session', signAccessToken(user), {
             httpOnly: true,
             secure: true,
             maxAge: 50000,
@@ -65,7 +66,7 @@ const mutations = {
           //   token: signAccessToken(user),
           //   refresh: signRefreshToken(dbUser._id),
           // });
-          resolve(true);
+          resolve(signAccessToken(user));
         } else throw new AuthenticationError('Invalid credentials');
       });
     });

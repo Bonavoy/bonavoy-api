@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
@@ -20,6 +21,9 @@ const startServer = async () => {
   //express app start
   const app = express();
 
+  //middleware to run berfore apollo server
+  app.use(cookieParser());
+
   //apollo
   const apolloServer = new ApolloServer({
     typeDefs,
@@ -33,10 +37,10 @@ const startServer = async () => {
         exp: null,
       };
       try {
-        if (req.headers['x-access-token']) {
+        if (req.cookies.session) {
           ctx = {
             ...(verifyAccessToken(
-              req.headers['x-access-token']
+              req.cookies.session
             ) as unknown as TokenDecoded),
           };
         }
