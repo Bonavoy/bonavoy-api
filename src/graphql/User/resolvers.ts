@@ -1,11 +1,14 @@
 import bcrypt from 'bcrypt';
-import * as crud from '../../database/crud/user';
 
-import { AuthenticationError, ValidationError } from 'apollo-server-express';
+import * as crud from '../../database/crud/user';
+import { AuthenticationError } from 'apollo-server-express';
 import { signAccessToken, signRefreshToken } from '../../utils/auth';
 
 //types
 import { TokenDecoded, TokenPayload } from '../../../types/auth';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 const queries = {
   user: (_, args) => {
@@ -47,7 +50,7 @@ const mutations = {
     //promise due to needing to wait for async cb by compare function
     return await new Promise((resolve) => {
       bcrypt.compare(password, dbUser.password, (err, result) => {
-        if (err) throw new ValidationError('BCRYPT ERROR');
+        if (err) resolve(false);
         if (result) {
           const user: TokenPayload = {
             username: dbUser.username,
@@ -55,18 +58,23 @@ const mutations = {
           };
 
           //send refresh as httponly cookie
-          res.cookie('session', signAccessToken(user), {
+          res.cookie('RTC', signRefreshToken(dbUser._id), {
             httpOnly: true,
             secure: true,
-            maxAge: 50000,
+            maxAge: process.env.REFRESH_TOKEN_LIFETIME,
             sameSite: 'None',
           });
-          // resolve({
-          //   ...user,
-          //   token: signAccessToken(user),
-          //   refresh: signRefreshToken(dbUser._id),
-          // });
-          resolve(signAccessToken(user));
+
+          //send token as httponly cookie
+          //place more sensitive in this cookie
+          res.cookie('ATC', signAccessToken(user), {
+            httpOnly: true,
+            secure: true,
+            maxAge: process.env.ACCESS_TOKEN_LIFETIME,
+            sameSite: 'None',
+          });
+
+          resolve(true);
         } else throw new AuthenticationError('Invalid credentials');
       });
     });

@@ -1,10 +1,11 @@
 import fs from 'fs';
 import jwt, { JsonWebTokenError, Algorithm } from 'jsonwebtoken';
 
+//types
+import { TokenPayload } from '../../types/auth';
+
 import dotenv from 'dotenv';
 dotenv.config();
-
-import { TokenPayload } from '../../types/auth';
 
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
@@ -30,10 +31,7 @@ export const verifyAccessToken = (token: string) => {
     token,
     secret,
     { algorithms: process.env.ALGORITHM as unknown as Algorithm[] },
-    (
-      err: JsonWebTokenError,
-      decoded: { sub: string; iat: number; exp: number }
-    ) => {
+    (err: JsonWebTokenError, decoded: TokenPayload) => {
       if (err) return err;
       return decoded;
     }

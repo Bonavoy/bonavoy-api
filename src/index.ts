@@ -4,11 +4,8 @@ import cookieParser from 'cookie-parser';
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 import FoursquareAPI from './graphql/Datasources/foursquare';
-import { verifyAccessToken, signRefreshToken } from './utils/auth';
+import { verifyAccessToken } from './utils/auth';
 
 //types
 import type { TokenDecoded } from '../types/auth';
@@ -16,6 +13,9 @@ import type {
   GraphQLResponse,
   GraphQLRequestContext,
 } from 'apollo-server-types';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 const startServer = async () => {
   //express app start
@@ -37,7 +37,7 @@ const startServer = async () => {
         exp: null,
       };
       try {
-        if (req.cookies.session) {
+        if (req.cookies.ATC) {
           ctx = {
             ...(verifyAccessToken(
               req.cookies.session
