@@ -9,5 +9,5 @@ export const mutations = `
   
   authenticate(username: String!, password: String!): Boolean!
 
-  refresh: String!
+  refresh: Boolean!
 `;

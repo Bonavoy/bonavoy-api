@@ -1,14 +1,14 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs, resolvers } from './graphql';
 
 import FoursquareAPI from './graphql/Datasources/foursquare';
-import { verifyAccessToken } from './utils/auth';
+import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
 
 //types
-import type { TokenDecoded } from '../types/auth';
+import type { AuthContext } from '../types/auth';
 import type {
   GraphQLResponse,
   GraphQLRequestContext,
@@ -29,23 +29,28 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     csrfPrevention: true,
-    context: ({ req, res }: { req: any; res: any }) => {
-      let ctx: TokenDecoded = {
+    context: ({ req, res }: { req: Request; res: Response }) => {
+      let ctx: AuthContext = {
         _id: null,
         username: null,
         iat: null,
         exp: null,
+        token: null,
+        refresh: null,
       };
-      try {
-        if (req.cookies.ATC) {
-          ctx = {
-            ...(verifyAccessToken(
-              req.cookies.session
-            ) as unknown as TokenDecoded),
-          };
-        }
-      } catch (e) {}
-      return { ctx, res };
+
+      //access token
+      const { token, tokenError } = verifyAccessToken(req.cookies?.ATC);
+
+      //refresh token
+      const { refresh, refreshError } = verifyRefreshToken(req.cookies?.RTC);
+
+      console.log(tokenError?.message);
+      console.log(refreshError?.message);
+      if (req.cookies?.ATC) {
+        ctx = { ...token, token: req.cookies?.ATC, refresh: req.cookies?.RTC };
+      }
+      return { ctx, req, res };
     },
     formatResponse: (
       response: GraphQLResponse,
@@ -56,7 +61,7 @@ const startServer = async () => {
         if (requestContext.response?.http) {
           requestContext.response.http.status = 401;
         }
-      } else if (response.data?.authenticate || response.data?.refresh) {
+      } else if (!response.data?.authenticate && !response.data?.refresh) {
         //this block only runs when aythenticate or refresh mutations are called.
         //here we are basically attaching
         // const tokenExpireDate = new Date();

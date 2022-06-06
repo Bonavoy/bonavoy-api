@@ -9,8 +9,9 @@ const UserSchema = new Schema(
     lastname: { type: String, required: true },
     password: { type: String, required: true },
     userImage: { type: String },
-    verified: { type: Boolean },
+    verified: { type: Boolean, default: false },
     trips: [{ type: Schema.Types.ObjectId, ref: 'trip' }],
+    sessions: [{ type: String }],
   },
   { timestamps: true }
 );

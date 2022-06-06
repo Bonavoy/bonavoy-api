@@ -2,7 +2,7 @@ import fs from 'fs';
 import jwt, { JsonWebTokenError, Algorithm } from 'jsonwebtoken';
 
 //types
-import { TokenPayload } from '../../types/auth';
+import { TokenPayload, TokenDecoded, RefreshDecoded } from '../../types/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -26,29 +26,40 @@ export const signRefreshToken = (sub: string) => {
   });
 };
 
-export const verifyAccessToken = (token: string) => {
+export const verifyAccessToken = (
+  tokenStr: string
+): {
+  token: TokenDecoded;
+  tokenError: JsonWebTokenError;
+} => {
   return jwt.verify(
-    token,
+    tokenStr,
     secret,
     { algorithms: process.env.ALGORITHM as unknown as Algorithm[] },
-    (err: JsonWebTokenError, decoded: TokenPayload) => {
-      if (err) return err;
-      return decoded;
+    (tokenError: JsonWebTokenError, token: TokenPayload) => {
+      return { tokenError, token };
     }
-  );
+  ) as unknown as {
+    token: TokenDecoded;
+    tokenError: JsonWebTokenError;
+  };
 };
 
-export const verifyRefreshToken = (refresh: string) => {
+export const verifyRefreshToken = (
+  refreshStr: string
+): {
+  refresh: RefreshDecoded;
+  refreshError: JsonWebTokenError;
+} => {
   return jwt.verify(
-    refresh,
-    secret,
+    refreshStr,
+    refreshTokenSecret,
     { algorithms: process.env.ALGORITHM as unknown as Algorithm[] },
-    (
-      err: JsonWebTokenError,
-      decoded: { sub: string; iat: number; exp: number }
-    ) => {
-      if (err) return err;
-      return decoded;
+    (refreshError: JsonWebTokenError, refresh: RefreshDecoded) => {
+      return { refreshError, refresh };
     }
-  );
+  ) as unknown as {
+    refresh: RefreshDecoded;
+    refreshError: JsonWebTokenError;
+  };
 };

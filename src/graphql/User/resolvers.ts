@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
 import * as crud from '../../database/crud/user';
@@ -24,7 +25,7 @@ const queries = {
 };
 
 const mutations = {
-  createUser: (_, args) => {
+  createUser: (_: unknown, args) => {
     // const newUser = {
     //   id: '54321',
     //   email: args.email,
@@ -39,7 +40,7 @@ const mutations = {
   authenticate: async (
     _: unknown,
     { username, password }: { username: string; password: string },
-    { ctx, res }: { ctx: TokenDecoded; res: any }
+    { ctx, req, res }: { ctx: TokenDecoded; req: Request; res: Response }
   ) => {
     //get user from db
     const dbUser = await crud.getOneUser({ username: username });
@@ -57,12 +58,18 @@ const mutations = {
             _id: dbUser._id,
           };
 
+          //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
+          //then save to db
+          const newRefresh = signRefreshToken(dbUser._id);
+          dbUser.sessions = [...dbUser.sessions, newRefresh];
+          dbUser.save();
+
           //send refresh as httponly cookie
-          res.cookie('RTC', signRefreshToken(dbUser._id), {
+          res.cookie('RTC', newRefresh, {
             httpOnly: true,
             secure: true,
-            maxAge: process.env.REFRESH_TOKEN_LIFETIME,
-            sameSite: 'None',
+            maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
+            sameSite: 'none',
           });
 
           //send token as httponly cookie
@@ -70,14 +77,22 @@ const mutations = {
           res.cookie('ATC', signAccessToken(user), {
             httpOnly: true,
             secure: true,
-            maxAge: process.env.ACCESS_TOKEN_LIFETIME,
-            sameSite: 'None',
+            maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+            sameSite: 'none',
           });
 
           resolve(true);
         } else throw new AuthenticationError('Invalid credentials');
       });
     });
+  },
+  refresh: async (
+    _parent: unknown,
+    _args: unknown,
+    { ctx, req, res }: { ctx: TokenDecoded; req: Request; res: Response }
+  ) => {
+    console.log(ctx);
+    return true;
   },
 };
 
