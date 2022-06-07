@@ -11,8 +11,8 @@ dotenv.config();
 const secret = fs.readFileSync('secret.key', 'utf-8');
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
 
-//what we want to store on access token
-export const TokenPayloadBuilder = (user: User): TokenPayload => {
+//what we want to store on access token from the user doc
+export const tokenPayloadBuilder = (user: User): TokenPayload => {
   return {
     username: user.username,
     sub: user._id,

@@ -6,7 +6,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import {
   signAccessToken,
   signRefreshToken,
-  TokenPayloadBuilder,
+  tokenPayloadBuilder,
 } from '../../utils/auth';
 
 //types
@@ -57,9 +57,6 @@ const mutations = {
       bcrypt.compare(password, dbUser.password, async (err, result) => {
         if (err) resolve(false);
         if (result) {
-          //info we need to store on access token
-          const user = TokenPayloadBuilder(dbUser);
-
           //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
           //then save to db
           const newRefresh = signRefreshToken(dbUser._id);
@@ -85,7 +82,7 @@ const mutations = {
 
           //send token as httponly cookie
           //place more sensitive in this cookie
-          res.cookie('ATC', signAccessToken(user), {
+          res.cookie('ATC', signAccessToken(tokenPayloadBuilder(dbUser)), {
             httpOnly: true,
             secure: true,
             maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
@@ -110,11 +107,9 @@ const mutations = {
     if (!dbUser) {
       throw new AuthenticationError('Invalid credentials');
     }
-    //info we need to store on access token
-    const user = TokenPayloadBuilder(dbUser);
 
     //send on access token back
-    res.cookie('ATC', signAccessToken(user), {
+    res.cookie('ATC', signAccessToken(tokenPayloadBuilder(dbUser)), {
       httpOnly: true,
       secure: true,
       maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),

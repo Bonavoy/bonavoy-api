@@ -7,6 +7,4 @@ const SpotOfInterestSchema = new Schema({
   to: { type: Date },
 });
 
-const SpotOfInterest = mongoose.model('spotOfInterest', SpotOfInterestSchema);
-
-export default SpotOfInterest;
+export default mongoose.model('spotOfInterest', SpotOfInterestSchema);

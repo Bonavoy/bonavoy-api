@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
+import { Session } from '../../../types/models';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
 const Schema = mongoose.Schema;
-const SessionSchema = new Schema({
+const SessionSchema = new Schema<Session>({
   user: { type: Schema.Types.ObjectId, ref: 'user' },
   token: { type: String, required: true },
   expireAt: { type: Date, default: Date.now },

@@ -11,3 +11,10 @@ export interface User {
   verified: boolean;
   trips: Types.ObjectId[];
 }
+export interface Session {
+  _id: string;
+  user: Types.ObjectId;
+  token: string;
+  expireAt: Date;
+  createdAt: Date;
+}

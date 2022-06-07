@@ -10,6 +10,4 @@ export const PlaceSchema = new Schema({
   dayPlan: { type: Schema.Types.ObjectId, ref: 'dayPlan' },
 });
 
-const Place = mongoose.model('place', PlaceSchema);
-
-export default Place;
+export default mongoose.model('place', PlaceSchema);

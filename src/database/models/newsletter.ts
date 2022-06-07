@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const newsletterSchema = new Schema(
@@ -8,6 +8,4 @@ const newsletterSchema = new Schema(
   { timestamps: true }
 );
 
-const Newsletter = mongoose.model("newsletter", newsletterSchema);
-
-export default Newsletter;
+export default mongoose.model('newsletter', newsletterSchema);

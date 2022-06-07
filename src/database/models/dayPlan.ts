@@ -6,6 +6,4 @@ const DayPlanSchema = new Schema({
   spotsOfInterest: [{ type: Schema.Types.ObjectId, ref: 'spotOfInterest' }],
 });
 
-const DayPlan = mongoose.model('dayPlan', DayPlanSchema);
-
-export default DayPlan;
+export default mongoose.model('dayPlan', DayPlanSchema);

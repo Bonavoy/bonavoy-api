@@ -22,6 +22,7 @@ const startServer = async () => {
   const app = express();
 
   //middleware to run berfore apollo server
+  //TODO: BETTER COOKIE SECRET
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
   //apollo
@@ -43,12 +44,10 @@ const startServer = async () => {
       };
       if (req.signedCookies?.RTC) {
         //access token
-        const { token, tokenError } = verifyAccessToken(req.signedCookies?.ATC);
+        const { token } = verifyAccessToken(req.signedCookies?.ATC);
 
         //refresh token
-        const { refresh, refreshError } = verifyRefreshToken(
-          req.signedCookies?.RTC
-        );
+        const { refresh } = verifyRefreshToken(req.signedCookies?.RTC);
 
         ctx = { ...token, refresh: { ...refresh } };
       }
@@ -63,20 +62,6 @@ const startServer = async () => {
         if (requestContext.response?.http) {
           requestContext.response.http.status = 401;
         }
-      } else if (!response.data?.authenticate && !response.data?.refresh) {
-        //this block only runs when aythenticate or refresh mutations are called.
-        //here we are basically attaching
-        // const tokenExpireDate = new Date();
-        // tokenExpireDate.setDate(
-        //   tokenExpireDate.getDate() + 60 * 60 * 24 * 60 // 60 days
-        // );
-        // const token = verifyAccessToken(
-        //   response.data?.authenticate.token || response.data?.refresh
-        // ) as unknown as TokenDecoded;
-        // requestContext.response?.http?.headers.append(
-        //   'Set-Cookie',
-        //   `refresh=${signRefreshToken(token._id)}; expires=${tokenExpireDate}`
-        // );
       }
       return response;
     },
