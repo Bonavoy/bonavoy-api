@@ -7,10 +7,11 @@ import {
   signAccessToken,
   signRefreshToken,
   tokenPayloadBuilder,
+  validateUserSession,
 } from '../../utils/auth';
 
 //types
-import { AuthContext, TokenDecoded, TokenPayload } from '../../../types/auth';
+import { AuthContext, TokenDecoded } from '../../../types/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -101,22 +102,24 @@ const mutations = {
     _args: unknown,
     { ctx, req, res }: { ctx: AuthContext; req: Request; res: Response }
   ) => {
-    //get user using ONLY DECODED REFRESH DATA
-    const dbUser = await crud.getOneUser({ _id: ctx.refresh.sub });
-    //if no user, throw error
-    if (!dbUser) {
-      throw new AuthenticationError('Invalid credentials');
-    }
+    //see if valid refresh token and user
+    const validatedUser = await validateUserSession(
+      req.signedCookies.RTC,
+      ctx.refresh.sub
+    );
 
-    //send on access token back
-    res.cookie('ATC', signAccessToken(tokenPayloadBuilder(dbUser)), {
-      httpOnly: true,
-      secure: true,
-      maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-      sameSite: 'none',
-      path: '/',
-      signed: true,
-    });
+    if (validatedUser) {
+      //send an access token back
+      res.cookie('ATC', signAccessToken(tokenPayloadBuilder(validatedUser)), {
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+        sameSite: 'none',
+        path: '/',
+        signed: true,
+      });
+    } else throw new AuthenticationError('Invalid token');
+
     return true;
   },
 };

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
-import { User } from '../../../types/models';
+import { MongoUser } from '../../../types/models';
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema<User>(
+const UserSchema = new Schema<MongoUser>(
   {
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },

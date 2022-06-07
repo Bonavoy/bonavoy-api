@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
-export interface User {
+export interface MongoUser {
   _id: string;
   email: string;
   username: string;
@@ -11,7 +11,7 @@ export interface User {
   verified: boolean;
   trips: Types.ObjectId[];
 }
-export interface Session {
+export interface MongoSession {
   _id: string;
   user: Types.ObjectId;
   token: string;

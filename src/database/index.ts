@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 
+import dotenv from 'dotenv';
 dotenv.config();
+
 const connectDb = () => {
   mongoose.connect(
     process.env.MONGO_DATABASE_CONNECTION_STRING as string,
