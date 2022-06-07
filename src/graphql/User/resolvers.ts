@@ -3,10 +3,14 @@ import bcrypt from 'bcrypt';
 
 import * as crud from '../../database/crud';
 import { AuthenticationError } from 'apollo-server-express';
-import { signAccessToken, signRefreshToken } from '../../utils/auth';
+import {
+  signAccessToken,
+  signRefreshToken,
+  TokenPayloadBuilder,
+} from '../../utils/auth';
 
 //types
-import { TokenDecoded, TokenPayload } from '../../../types/auth';
+import { AuthContext, TokenDecoded, TokenPayload } from '../../../types/auth';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -53,10 +57,8 @@ const mutations = {
       bcrypt.compare(password, dbUser.password, async (err, result) => {
         if (err) resolve(false);
         if (result) {
-          const user: TokenPayload = {
-            username: dbUser.username,
-            _id: dbUser._id,
-          };
+          //info we need to store on access token
+          const user = TokenPayloadBuilder(dbUser);
 
           //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
           //then save to db
@@ -67,9 +69,7 @@ const mutations = {
             user: dbUser._id,
             token: newRefresh,
             expiry: new Date(
-              new Date().setMilliseconds(
-                Number(process.env.REFRESH_TOKEN_LIFETIME)
-              )
+              Date.now() + Number(process.env.REFRESH_TOKEN_LIFETIME)
             ),
           });
 
@@ -79,6 +79,8 @@ const mutations = {
             secure: true,
             maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
             sameSite: 'none',
+            path: '/',
+            signed: true,
           });
 
           //send token as httponly cookie
@@ -88,6 +90,8 @@ const mutations = {
             secure: true,
             maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
             sameSite: 'none',
+            path: '/',
+            signed: true,
           });
 
           resolve(true);
@@ -95,19 +99,29 @@ const mutations = {
       });
     });
   },
-  refresh: async (
+  token: async (
     _parent: unknown,
     _args: unknown,
-    { ctx, req, res }: { ctx: TokenDecoded; req: Request; res: Response }
+    { ctx, req, res }: { ctx: AuthContext; req: Request; res: Response }
   ) => {
-    //get user from db
-    const dbUser = await crud.getOneUser({ username: ctx.username });
-
+    //get user using ONLY DECODED REFRESH DATA
+    const dbUser = await crud.getOneUser({ _id: ctx.refresh.sub });
+    //if no user, throw error
     if (!dbUser) {
-      throw new AuthenticationError('No user.');
+      throw new AuthenticationError('Invalid credentials');
     }
+    //info we need to store on access token
+    const user = TokenPayloadBuilder(dbUser);
 
-    dbUser.sessions.map((token) => {});
+    //send on access token back
+    res.cookie('ATC', signAccessToken(user), {
+      httpOnly: true,
+      secure: true,
+      maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+      sameSite: 'none',
+      path: '/',
+      signed: true,
+    });
     return true;
   },
 };

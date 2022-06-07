@@ -22,7 +22,7 @@ const startServer = async () => {
   const app = express();
 
   //middleware to run berfore apollo server
-  app.use(cookieParser());
+  app.use(cookieParser(process.env.COOKIE_SECRET));
 
   //apollo
   const apolloServer = new ApolloServer({
@@ -31,19 +31,26 @@ const startServer = async () => {
     csrfPrevention: true,
     context: ({ req, res }: { req: Request; res: Response }) => {
       let ctx: AuthContext = {
-        _id: null,
+        sub: null,
         username: null,
         iat: null,
         exp: null,
+        refresh: {
+          sub: null,
+          iat: null,
+          exp: null,
+        },
       };
-      if (req.cookies?.RTC) {
+      if (req.signedCookies?.RTC) {
         //access token
-        const { token, tokenError } = verifyAccessToken(req.cookies?.ATC);
+        const { token, tokenError } = verifyAccessToken(req.signedCookies?.ATC);
 
         //refresh token
-        const { refresh, refreshError } = verifyRefreshToken(req.cookies?.RTC);
+        const { refresh, refreshError } = verifyRefreshToken(
+          req.signedCookies?.RTC
+        );
 
-        ctx = { ...token };
+        ctx = { ...token, refresh: { ...refresh } };
       }
       return { ctx, req, res };
     },
