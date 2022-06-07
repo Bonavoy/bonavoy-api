@@ -1,18 +1,22 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const Schema = mongoose.Schema;
-
-const SessionSchema = new Schema(
-  {
-    user: { type: Schema.Types.ObjectId, ref: 'user' },
-    token: { type: String, required: true },
-    expireAt: {
-      type: Date,
-    },
+const SessionSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'user' },
+  token: { type: String, required: true },
+  expireAt: { type: Date, default: Date.now },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  { timestamps: true }
-);
+});
 
-SessionSchema.index({ expireAt: 1 }, { expireAfterSeconds: 0 });
+//UPDATING TTL WILL ALSO REQUIRE DELETING MONGOOSE DB SESSION COLLECTION FOR NEW TTL TIME TO GET RECOGNZIED
+SessionSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: Number(process.env.REFRESH_TOKEN_LIFETIME) / 1000 }
+);
 
 export default mongoose.model('session', SessionSchema);
