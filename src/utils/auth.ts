@@ -1,5 +1,10 @@
 import fs from 'fs';
-import jwt, { JsonWebTokenError, Algorithm } from 'jsonwebtoken';
+import jwt, {
+  JsonWebTokenError,
+  Algorithm,
+  VerifyCallback,
+  VerifyErrors,
+} from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
 import User from '../database/models/user';
@@ -78,18 +83,18 @@ export const verifyAccessToken = (
   tokenStr: string
 ): {
   token: TokenDecoded;
-  tokenError: JsonWebTokenError;
+  tokenError: VerifyErrors | null;
 } => {
   return jwt.verify(
     tokenStr,
     secret,
-    { algorithms: process.env.ALGORITHM as unknown as Algorithm[] },
-    (tokenError: JsonWebTokenError, token: TokenPayload) => {
-      return { tokenError, token };
+    { algorithms: [process.env.ALGORITHM as Algorithm] },
+    (err, decoded) => {
+      return { token: decoded, tokenError: err };
     }
   ) as unknown as {
     token: TokenDecoded;
-    tokenError: JsonWebTokenError;
+    tokenError: VerifyErrors | null;
   };
 };
 
@@ -97,17 +102,17 @@ export const verifyRefreshToken = (
   refreshStr: string
 ): {
   refresh: RefreshDecoded;
-  refreshError: JsonWebTokenError;
+  refreshError: VerifyErrors | null;
 } => {
   return jwt.verify(
     refreshStr,
     refreshTokenSecret,
-    { algorithms: process.env.ALGORITHM as unknown as Algorithm[] },
-    (refreshError: JsonWebTokenError, refresh: RefreshDecoded) => {
-      return { refreshError, refresh };
+    { algorithms: [process.env.ALGORITHM as Algorithm] },
+    (err, decoded) => {
+      return { refresh: decoded, refreshError: err };
     }
   ) as unknown as {
     refresh: RefreshDecoded;
-    refreshError: JsonWebTokenError;
+    refreshError: VerifyErrors | null;
   };
 };

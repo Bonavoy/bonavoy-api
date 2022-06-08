@@ -1,7 +1,20 @@
 import axios from 'axios';
 
 const queries = {
-  getLocationSuggestions: async (_, { query, types, country, proximity }) => {
+  getLocationSuggestions: async (
+    _: unknown,
+    {
+      query,
+      types,
+      country,
+      proximity,
+    }: {
+      query: string;
+      types: string[];
+      country: string[];
+      proximity: number[];
+    }
+  ) => {
     try {
       // set query params
       const config = {

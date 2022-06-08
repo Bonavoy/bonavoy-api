@@ -5,7 +5,7 @@ import Place from '../models/place';
 import SpotOfInterest from '../models/spotOfInterest';
 import Trip from '../models/trip';
 
-export const createTrip = async (trip) => {
+export const createTrip = async (trip: any) => {
   const { name, author, participants, isPublic, places } = trip;
 
   const session = await mongoose.startSession();

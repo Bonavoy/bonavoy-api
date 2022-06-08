@@ -1,6 +1,6 @@
-import Newsletter from "../models/newsletter";
+import Newsletter from '../models/newsletter';
 
-export const addNewsletter = async (email) => {
+export const addNewsletter = async (email: string) => {
   return await Newsletter.create({
     email,
   })

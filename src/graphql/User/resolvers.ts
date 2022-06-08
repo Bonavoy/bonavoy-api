@@ -17,7 +17,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const queries = {
-  user: (_, args) => {
+  user: (_: unknown, args: unknown) => {
     return {
       id: '12345',
       email: 'some.user@email.com',
@@ -30,7 +30,7 @@ const queries = {
 };
 
 const mutations = {
-  createUser: (_: unknown, args) => {
+  createUser: (_: unknown, args: unknown) => {
     // const newUser = {
     //   id: '54321',
     //   email: args.email,
@@ -66,7 +66,7 @@ const mutations = {
           await crud.createSession({
             user: dbUser._id,
             token: newRefresh,
-            expiry: new Date(
+            expireAt: new Date(
               Date.now() + Number(process.env.REFRESH_TOKEN_LIFETIME)
             ),
           });
@@ -102,6 +102,9 @@ const mutations = {
     _args: unknown,
     { ctx, req, res }: { ctx: AuthContext; req: Request; res: Response }
   ) => {
+    //if no info in token, dont bother doing everything else
+    if (!ctx.refresh.sub) throw new AuthenticationError('Invalid token');
+
     //see if valid refresh token and user
     const validatedUser = await validateUserSession(
       req.signedCookies.RTC,

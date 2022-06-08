@@ -1,6 +1,7 @@
 import User from '../models/user';
+import { MongoUser } from '../../../types/models';
 
-export const createUser = async (user) => {
+export const createUser = async (user: MongoUser) => {
   return await User.create({
     email: user.email,
     username: user.username,
@@ -11,11 +12,11 @@ export const createUser = async (user) => {
   });
 };
 
-export const getUser = async (query) => {
+export const getUser = async (query: object) => {
   return await User.find(query);
 };
 
-export const getOneUser = async (query) => {
+export const getOneUser = async (query: object) => {
   return await User.findOne(query);
 };
 
