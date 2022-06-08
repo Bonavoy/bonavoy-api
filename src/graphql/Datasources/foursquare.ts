@@ -1,5 +1,7 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
 
+// TODO: WRITE TYPES
+
 export default class FoursquareAPI extends RESTDataSource {
   constructor() {
     super();
@@ -18,7 +20,7 @@ export default class FoursquareAPI extends RESTDataSource {
     return this.formatToGraphQLSchema(results);
   }
 
-  async getSpotsOfInterestPhotoes(options) {}
+  async getSpotsOfInterestPhotos(options) {}
 
   /**
    * format data from API to match our schema
