@@ -11,10 +11,19 @@ export interface MongoUser {
   verified: boolean;
   trips: Types.ObjectId[];
 }
+
 export interface MongoSession {
   _id: string;
   user: Types.ObjectId;
   token: string;
   expireAt: Date;
   createdAt: Date;
+}
+
+export interface MongoTrip {
+  name: string;
+  places: Types.ObjectId;
+  author: Types.ObjectId;
+  participants: Types.ObjectId[];
+  isPublic: boolean;
 }

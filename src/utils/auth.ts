@@ -10,9 +10,9 @@ import mongoose from 'mongoose';
 import User from '../database/models/user';
 
 //types
-import { TokenPayload, TokenDecoded, RefreshDecoded } from '../../types/auth';
-import { MongoUser } from '../../types/models';
-import { MongoSession } from '../../types/models';
+import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth';
+import { MongoUser } from '../types/models';
+import { MongoSession } from '../types/models';
 
 import dotenv from 'dotenv';
 dotenv.config();

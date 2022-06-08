@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MongoSession } from '../../../types/models';
+import { MongoSession } from '../../types/models';
 
 import dotenv from 'dotenv';
 dotenv.config();

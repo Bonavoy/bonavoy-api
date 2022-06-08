@@ -1,3 +1,7 @@
+import { createTrip } from '../../../database/crud/trip';
+
+// TODO: WRITE TYPES
+
 const dummySpots = [
   {
     fsq_id: '4d3c41911a67a0900aa00450',
@@ -145,21 +149,24 @@ const dummySpots = [
   },
 ];
 
-const queries = {
-  spotOfInterest: async (_, args, { dataSources }) => {
-    // const { input } = args;
-    // const options = {
-    //   coords: input.coords,
-    //   limit: input.limit,
-    // };
-    // const res = await dataSources.foursquareAPI.getSpotsOfInterest(options);
-    // return res;
-    return dummySpots;
+export default {
+  Query: {
+    spotOfInterest: async (_, args, { dataSources }) => {
+      // const { input } = args;
+      // const options = {
+      //   coords: input.coords,
+      //   limit: input.limit,
+      // };
+      // const res = await dataSources.foursquareAPI.getSpotsOfInterest(options);
+      // return res;
+      return dummySpots;
+    },
+  },
+  Mutation: {
+    createTrip: async (_: unknown, { trip }) => {
+      const res = await createTrip(trip);
+      return res;
+    },
+    addSpotOfInterest: (_, args) => {},
   },
 };
-
-const mutations = {
-  addSpotOfInterest: (_, args) => {},
-};
-
-export const resolvers = { queries, mutations };

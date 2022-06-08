@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
+import { MongoTrip } from '../../types/models';
+
 const Schema = mongoose.Schema;
 
-const TripSchema = new Schema(
+const TripSchema = new Schema<MongoTrip>(
   {
     name: { type: String, required: true },
     places: [{ type: Schema.Types.ObjectId, ref: 'place' }],

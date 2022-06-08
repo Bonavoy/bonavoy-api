@@ -1,17 +1,23 @@
 import mongoose from 'mongoose';
-import { extractTripValues } from '../../utils/database';
-import DayPlan from '../models/dayPlan';
+
+// import { extractTripValues } from '../../utils/database';
+
+//types
+import { MongoTrip } from '../../types/models';
+
+// db models
+// import DayPlan from '../models/dayPlan';
 import Place from '../models/place';
-import SpotOfInterest from '../models/spotOfInterest';
+// import SpotOfInterest from '../models/spotOfInterest';
 import Trip from '../models/trip';
 
-export const createTrip = async (trip: any) => {
+export const createTrip = async (trip: MongoTrip) => {
   const { name, author, participants, isPublic, places } = trip;
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  let newTrip;
+  let newTrip: any[];
   try {
     //   // rip if you gotta read this shit
     //   // extract spotsOfInterest, dayPlan and places
@@ -54,7 +60,7 @@ export const createTrip = async (trip: any) => {
     //   extractedPlaces.forEach((place, i) => (place.dayPlan = createdDayPlans[i]));
 
     // save places
-    const createdPlaces = await Place.create(places, { session });
+    const createdPlaces = await Place.create(places);
 
     // map to array of just the place id's
     const placeIds = createdPlaces.map((place) => place._id);

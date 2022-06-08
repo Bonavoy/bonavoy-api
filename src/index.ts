@@ -2,13 +2,13 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 
 import { ApolloServer } from 'apollo-server-express';
-import { typeDefs, resolvers } from './graphql';
+import { apolloApplication } from './graphql/modules';
 
-import FoursquareAPI from './graphql/Datasources/foursquare';
+import FoursquareAPI from './graphql/datasources/foursquare';
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
 
 //types
-import type { AuthContext } from '../types/auth';
+import type { AuthContext } from './types/auth';
 import type {
   GraphQLResponse,
   GraphQLRequestContext,
@@ -27,8 +27,7 @@ const startServer = async () => {
 
   //apollo
   const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
+    schema: apolloApplication.createSchemaForApollo(),
     csrfPrevention: true,
     context: ({ req, res }: { req: Request; res: Response }) => {
       let ctx: AuthContext = {
