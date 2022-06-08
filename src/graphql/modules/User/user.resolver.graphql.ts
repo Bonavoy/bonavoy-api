@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import * as crud from '../../../database/crud';
 import { AuthenticationError } from 'apollo-server-express';
 import {
   signAccessToken,
@@ -45,10 +44,15 @@ export default {
     authenticate: async (
       _: unknown,
       { username, password }: { username: string; password: string },
-      { ctx, req, res }: { ctx: TokenDecoded; req: Request; res: Response }
+      {
+        ctx,
+        req,
+        res,
+        dataSources,
+      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
     ) => {
       //get user from db
-      const dbUser = await crud.getOneUser({ username: username });
+      const dbUser = await dataSources.users.getOneUser({ username: username });
       //if no user, throw error
       if (!dbUser) {
         throw new AuthenticationError('Invalid credentials');
@@ -63,7 +67,7 @@ export default {
             const newRefresh = signRefreshToken(dbUser._id);
 
             //create session document with expiry
-            await crud.createSession({
+            await dataSources.sessions.createSession({
               user: dbUser._id,
               token: newRefresh,
               expireAt: new Date(

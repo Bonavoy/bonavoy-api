@@ -1,5 +1,5 @@
 import express from 'express';
-import * as crud from '../database/crud/user';
+import * as crud from '../graphql/datasources/database/crud/user';
 
 const router = express.Router();
 

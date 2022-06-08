@@ -1,7 +1,7 @@
 import app from '../../index';
 import request from 'supertest';
 import mongoose from 'mongoose';
-import User from '../../database/models/user';
+import User from '../../graphql/datasources/database/models/user';
 
 describe('Test the auth endpoints', () => {
   let db;

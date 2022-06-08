@@ -1,4 +1,5 @@
-import { createTrip } from '../../../database/crud/trip';
+//types
+import { TokenDecoded } from '../../../types/auth';
 
 // TODO: WRITE TYPES
 
@@ -151,7 +152,18 @@ const dummySpots = [
 
 export default {
   Query: {
-    spotOfInterest: async (_, args, { dataSources }) => {
+    spotOfInterest: async (
+      _: unknown,
+      { input },
+      {
+        ctx,
+        req,
+        res,
+        dataSources,
+      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
+    ) => {
+      //WRITE TYPES
+
       // const { input } = args;
       // const options = {
       //   coords: input.coords,
@@ -159,14 +171,27 @@ export default {
       // };
       // const res = await dataSources.foursquareAPI.getSpotsOfInterest(options);
       // return res;
+
       return dummySpots;
     },
   },
   Mutation: {
-    createTrip: async (_: unknown, { trip }) => {
-      const res = await createTrip(trip);
-      return res;
+    createTrip: async (
+      _: unknown,
+      { trip },
+      {
+        ctx,
+        req,
+        res,
+        dataSources,
+      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
+    ) => {
+      //write TYPES
+
+      return dataSources.trips.createTrip(trip);
     },
-    addSpotOfInterest: (_, args) => {},
+    addSpotOfInterest: (_, args) => {
+      //write TYPES
+    },
   },
 };

@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 
-import { addNewsletter } from "../database/crud/newsletter";
+import { addNewsletter } from "../graphql/datasources/database/crud/newsletter";
 
 dotenv.config();
 const router = express.Router();

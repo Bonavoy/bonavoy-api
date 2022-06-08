@@ -5,9 +5,9 @@ export default gql`
   type Query {
     getLocationSuggestions(
       query: String!
-      types: [String]
-      country: [String]
-      proximity: [String]
+      types: [String]!
+      country: [String]!
+      proximity: [String]!
     ): [LocationSuggestion!]!
   }
 

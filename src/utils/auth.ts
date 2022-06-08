@@ -7,7 +7,7 @@ import jwt, {
 } from 'jsonwebtoken';
 import mongoose from 'mongoose';
 
-import User from '../database/models/user';
+import User from '../graphql/datasources/database/models/user';
 
 //types
 import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth';

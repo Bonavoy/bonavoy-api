@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
 import { signAccessToken, signRefreshToken } from "../utils/auth";
-import * as crud from "../database/crud/user";
+import * as crud from "../graphql/datasources/database/crud/user";
 
 dotenv.config();
 const secret = fs.readFileSync("secret.key", "utf-8");

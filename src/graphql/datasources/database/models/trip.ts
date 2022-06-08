@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { MongoTrip } from '../../types/models';
+import { MongoTrip } from '../../../../types/models';
 
 const Schema = mongoose.Schema;
 

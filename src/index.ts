@@ -4,8 +4,8 @@ import cookieParser from 'cookie-parser';
 import { ApolloServer } from 'apollo-server-express';
 import { apolloApplication } from './graphql/modules';
 
-import FoursquareAPI from './graphql/datasources/foursquare';
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
+import dataSources from './graphql/datasources';
 
 //types
 import type { AuthContext } from './types/auth';
@@ -64,11 +64,7 @@ const startServer = async () => {
       }
       return response;
     },
-    dataSources: () => {
-      return {
-        foursquareAPI: new FoursquareAPI(),
-      };
-    },
+    dataSources: () => dataSources,
   });
 
   //all though not required to start (started automatically), its highly reccommended
