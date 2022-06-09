@@ -9,9 +9,7 @@ export default gql`
   #mutations
   type Mutation {
     createUser(input: UserInput): User!
-
     authenticate(username: String!, password: String!): Boolean!
-
     token: Boolean!
   }
 
