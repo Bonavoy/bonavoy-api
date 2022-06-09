@@ -4,7 +4,7 @@ import { MongoDataSource } from 'apollo-datasource-mongodb';
 // import { extractTripValues } from '../../utils/database';
 
 //types
-import { MongoTrip } from '../../../../types/models';
+import { MongoTrip } from '../models/trip';
 
 // db models
 import Place from '../models/place';

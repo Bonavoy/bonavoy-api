@@ -1,8 +1,16 @@
 import mongoose from 'mongoose';
-import { MongoSession } from '../../../../types/models';
 
 import dotenv from 'dotenv';
 dotenv.config();
+
+//type
+export interface MongoSession {
+  _id: string;
+  user: mongoose.Types.ObjectId;
+  token: string;
+  expireAt: Date;
+  createdAt: Date;
+}
 
 const Schema = mongoose.Schema;
 const SessionSchema = new Schema<MongoSession>({

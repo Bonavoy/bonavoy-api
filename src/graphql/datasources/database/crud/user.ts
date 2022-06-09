@@ -1,5 +1,5 @@
 import User from '../models/user';
-import { MongoUser } from '../../../../types/models';
+import { MongoUser } from '../models/user';
 
 import { MongoDataSource } from 'apollo-datasource-mongodb';
 

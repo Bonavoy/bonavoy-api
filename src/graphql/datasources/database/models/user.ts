@@ -1,6 +1,18 @@
 import mongoose from 'mongoose';
-import { MongoUser } from '../../../../types/models';
 const Schema = mongoose.Schema;
+
+//type
+export interface MongoUser {
+  _id: string;
+  email: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  userImage: string;
+  verified: boolean;
+  trips: mongoose.Types.ObjectId[];
+}
 
 const UserSchema = new Schema<MongoUser>(
   {

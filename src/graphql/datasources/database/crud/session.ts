@@ -1,5 +1,5 @@
 import Session from '../models/session';
-import { MongoSession } from '../../../../types/models';
+import { MongoSession } from '../models/session';
 
 import { MongoDataSource } from 'apollo-datasource-mongodb';
 

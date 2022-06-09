@@ -11,8 +11,8 @@ import User from '../graphql/datasources/database/models/user';
 
 //types
 import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth';
-import { MongoUser } from '../types/models';
-import { MongoSession } from '../types/models';
+import { MongoUser } from '../graphql/datasources/database/models/user';
+import { MongoSession } from '../graphql/datasources/database/models/session';
 
 import dotenv from 'dotenv';
 dotenv.config();
