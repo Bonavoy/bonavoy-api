@@ -1,3 +1,12 @@
+import { Request, Response } from 'express';
+
+export interface Context {
+  auth: AuthContext;
+  req: Request;
+  res: Response;
+  dataSources: any;
+}
+
 export interface TokenPayload {
   sub: string | null;
   username: string | null;

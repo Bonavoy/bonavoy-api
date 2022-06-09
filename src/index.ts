@@ -35,7 +35,7 @@ const startServer = async () => {
     ),
     csrfPrevention: true,
     context: ({ req, res }: { req: Request; res: Response }) => {
-      let ctx: AuthContext = {
+      let auth: AuthContext = {
         sub: null,
         username: null,
         iat: null,
@@ -53,9 +53,9 @@ const startServer = async () => {
         //refresh token
         const { refresh } = verifyRefreshToken(req.signedCookies?.RTC);
 
-        ctx = { ...token, refresh: { ...refresh } };
+        auth = { ...token, refresh: { ...refresh } };
       }
-      return { ctx, req, res };
+      return { auth, req, res };
     },
     formatResponse: (
       response: GraphQLResponse,

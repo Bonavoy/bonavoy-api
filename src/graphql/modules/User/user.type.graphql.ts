@@ -8,17 +8,20 @@ export default gql`
 
   #mutations
   type Mutation {
-    createUser(
-      email: String!
-      password: String!
-      firstName: String!
-      lastName: String!
-      refresh: [String!]!
-    ): User!
+    createUser(input: UserInput): User!
 
     authenticate(username: String!, password: String!): Boolean!
 
     token: Boolean!
+  }
+
+  #input
+  input UserInput {
+    username: String!
+    email: String!
+    password: String!
+    firstName: String!
+    lastName: String!
   }
 
   #types

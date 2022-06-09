@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
 import dotenv from 'dotenv';
@@ -13,11 +12,11 @@ import {
 } from '../../../utils/auth';
 
 //types
-import { AuthContext, TokenDecoded } from '../../../types/auth';
+import { Context } from '../../../types/auth';
 
 export default {
   Query: {
-    user: (_: unknown, args: unknown) => {
+    user: (_: unknown, args: unknown, ctx: Context) => {
       return {
         id: '12345',
         email: 'some.user@email.com',
@@ -29,7 +28,8 @@ export default {
     },
   },
   Mutation: {
-    createUser: (_: unknown, args: unknown) => {
+    createUser: (_: unknown, { input }: { input: any }, ctx: Context) => {
+      console.log(input);
       // const newUser = {
       //   id: '54321',
       //   email: args.email,
@@ -44,15 +44,12 @@ export default {
     authenticate: async (
       _: unknown,
       { username, password }: { username: string; password: string },
-      {
-        ctx,
-        req,
-        res,
-        dataSources,
-      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
+      ctx: Context
     ) => {
       //get user from db
-      const dbUser = await dataSources.users.getOneUser({ username: username });
+      const dbUser = await ctx.dataSources.users.getOneUser({
+        username: username,
+      });
       //if no user, throw error
       if (!dbUser) {
         throw new AuthenticationError('Invalid credentials');
@@ -67,7 +64,7 @@ export default {
             const newRefresh = signRefreshToken(dbUser._id);
 
             //create session document with expiry
-            await dataSources.sessions.createSession({
+            await ctx.dataSources.sessions.createSession({
               user: dbUser._id,
               token: newRefresh,
               expireAt: new Date(
@@ -76,7 +73,7 @@ export default {
             });
 
             //send refresh as httponly cookie
-            res.cookie('RTC', newRefresh, {
+            ctx.res.cookie('RTC', newRefresh, {
               httpOnly: true,
               secure: true,
               maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
@@ -87,44 +84,48 @@ export default {
 
             //send token as httponly cookie
             //place more sensitive in this cookie
-            res.cookie('ATC', signAccessToken(tokenPayloadBuilder(dbUser)), {
-              httpOnly: true,
-              secure: true,
-              maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-              sameSite: 'none',
-              path: '/',
-              signed: true,
-            });
+            ctx.res.cookie(
+              'ATC',
+              signAccessToken(tokenPayloadBuilder(dbUser)),
+              {
+                httpOnly: true,
+                secure: true,
+                maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+                sameSite: 'none',
+                path: '/',
+                signed: true,
+              }
+            );
 
             resolve(true);
           } else throw new AuthenticationError('Invalid credentials');
         });
       });
     },
-    token: async (
-      _parent: unknown,
-      _args: unknown,
-      { ctx, req, res }: { ctx: AuthContext; req: Request; res: Response }
-    ) => {
+    token: async (_parent: unknown, _args: unknown, ctx: Context) => {
       //if no info in token, dont bother doing everything else
-      if (!ctx.refresh.sub) throw new AuthenticationError('Invalid token');
+      if (!ctx.auth.refresh.sub) throw new AuthenticationError('Invalid token');
 
       //see if valid refresh token and user
       const validatedUser = await validateUserSession(
-        req.signedCookies.RTC,
-        ctx.refresh.sub
+        ctx.req.signedCookies.RTC,
+        ctx.auth.refresh.sub
       );
 
       if (validatedUser) {
         //send an access token back
-        res.cookie('ATC', signAccessToken(tokenPayloadBuilder(validatedUser)), {
-          httpOnly: true,
-          secure: true,
-          maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-          sameSite: 'none',
-          path: '/',
-          signed: true,
-        });
+        ctx.res.cookie(
+          'ATC',
+          signAccessToken(tokenPayloadBuilder(validatedUser)),
+          {
+            httpOnly: true,
+            secure: true,
+            maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+            sameSite: 'none',
+            path: '/',
+            signed: true,
+          }
+        );
       } else throw new AuthenticationError('Invalid token');
 
       return true;
