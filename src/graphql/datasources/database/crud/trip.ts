@@ -21,7 +21,7 @@ export default class Trips extends MongoDataSource<MongoTrip> {
     const session = await mongoose.startSession();
     session.startTransaction();
 
-    let newTrip: any[];
+    let newTrip: any;
     try {
       //   // rip if you gotta read this shit
       //   // extract spotsOfInterest, dayPlan and places
@@ -67,7 +67,7 @@ export default class Trips extends MongoDataSource<MongoTrip> {
       const createdPlaces = await Place.create(places);
 
       // map to array of just the place id's
-      const placeIds = createdPlaces.map((place) => place._id);
+      const placeIds = createdPlaces.map((place: any) => place._id);
 
       // save trip
       newTrip = await Trip.create(

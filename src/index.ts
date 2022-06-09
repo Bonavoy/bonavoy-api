@@ -3,9 +3,11 @@ import cookieParser from 'cookie-parser';
 
 import { ApolloServer } from 'apollo-server-express';
 import { apolloApplication } from './graphql/modules';
+import { applyMiddleware } from 'graphql-middleware';
 
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
 import dataSources from './graphql/datasources';
+import permissions from './graphql/permissions';
 
 //types
 import type { AuthContext } from './types/auth';
@@ -27,7 +29,10 @@ const startServer = async () => {
 
   //apollo
   const apolloServer = new ApolloServer({
-    schema: apolloApplication.createSchemaForApollo(),
+    schema: applyMiddleware(
+      apolloApplication.createSchemaForApollo(),
+      permissions
+    ),
     csrfPrevention: true,
     context: ({ req, res }: { req: Request; res: Response }) => {
       let ctx: AuthContext = {

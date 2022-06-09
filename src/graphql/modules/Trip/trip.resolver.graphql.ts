@@ -154,7 +154,7 @@ export default {
   Query: {
     spotOfInterest: async (
       _: unknown,
-      { input },
+      { input }: any,
       {
         ctx,
         req,
@@ -178,7 +178,7 @@ export default {
   Mutation: {
     createTrip: async (
       _: unknown,
-      { trip },
+      { trip }: any,
       {
         ctx,
         req,
@@ -190,7 +190,7 @@ export default {
 
       return dataSources.trips.createTrip(trip);
     },
-    addSpotOfInterest: (_, args) => {
+    addSpotOfInterest: (_: unknown, args: any) => {
       //write TYPES
     },
   },
