@@ -12,7 +12,12 @@ export default gql`
 
   #mutations
   type Mutation {
-    addSpotOfInterest(input: SpotOfInterestInput): [SpotOfInterest]
+    addSpotOfInterest(
+      tripId: ID
+      placeId: ID
+      dayPlanId: ID
+      spotOfInterest: SpotOfInterestInput
+    ): [SpotOfInterest]
   }
 
   #inputs
