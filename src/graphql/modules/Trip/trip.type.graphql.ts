@@ -4,6 +4,9 @@ import { gql } from 'graphql-modules';
 
 export default gql`
   #queries
+  type Query {
+    getTrip(tripId: ID): Trip
+  }
 
   #mutations
   type Mutation {
