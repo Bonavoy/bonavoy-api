@@ -151,30 +151,6 @@ const dummySpots = [
 ];
 
 export default {
-  Query: {
-    spotOfInterest: async (
-      _: unknown,
-      { input }: any,
-      {
-        ctx,
-        req,
-        res,
-        dataSources,
-      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
-    ) => {
-      //WRITE TYPES
-
-      // const { input } = args;
-      // const options = {
-      //   coords: input.coords,
-      //   limit: input.limit,
-      // };
-      // const res = await dataSources.foursquareAPI.getSpotsOfInterest(options);
-      // return res;
-
-      return dummySpots;
-    },
-  },
   Mutation: {
     createTrip: async (
       _: unknown,
@@ -189,9 +165,6 @@ export default {
       //write TYPES
 
       return dataSources.trips.createTrip(trip);
-    },
-    addSpotOfInterest: (_: unknown, args: any) => {
-      //write TYPES
     },
   },
 };
