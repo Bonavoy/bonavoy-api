@@ -5,6 +5,7 @@ import { gql } from 'graphql-modules';
 export default gql`
   #queries
   type Query {
+    getTrip(tripId: ID): Trip
     spotOfInterest(input: SearchSpotsOfInterestInput): [SpotOfInterest]
   }
 

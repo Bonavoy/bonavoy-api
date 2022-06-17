@@ -92,4 +92,8 @@ export default class Trips extends MongoDataSource<MongoTrip> {
       return newTrip;
     }
   }
+
+  async getTrip(tripId: string) {
+    return await Trip.findById(tripId);
+  }
 }

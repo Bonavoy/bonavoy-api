@@ -152,6 +152,18 @@ const dummySpots = [
 
 export default {
   Query: {
+    getTrip: async (
+      _: unknown,
+      { tripId }: any,
+      {
+        ctx,
+        req,
+        res,
+        dataSources,
+      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
+    ) => {
+      return await dataSources.trips.getTrip(tripId);
+    },
     spotOfInterest: async (
       _: unknown,
       { input }: any,
