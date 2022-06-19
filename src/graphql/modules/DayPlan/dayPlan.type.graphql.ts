@@ -16,13 +16,6 @@ export default gql`
     ): [SpotOfInterest]
   }
 
-  # inputs
-  input DayPlanInput {
-    fsq_id: String!
-    from: String
-    to: String
-  }
-
   # types
   type DayPlan {
     id: ID
