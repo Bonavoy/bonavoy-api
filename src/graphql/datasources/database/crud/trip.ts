@@ -94,6 +94,14 @@ export default class Trips extends MongoDataSource<MongoTrip> {
   }
 
   async getTrip(tripId: string) {
-    return await Trip.findById(tripId);
+    return await Trip.findById(tripId).populate({
+      path: 'places',
+      populate: {
+        path: 'dayPlan',
+        populate: {
+          path: 'spotsOfInterest',
+        },
+      },
+    });
   }
 }
