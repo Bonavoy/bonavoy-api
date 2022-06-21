@@ -1,30 +1,23 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
-import { AuthenticationError } from 'apollo-server-express';
+import { AuthenticationError } from "apollo-server-express";
 import {
   signAccessToken,
   signRefreshToken,
   tokenPayloadBuilder,
   validateUserSession,
-} from '../../../utils/auth';
+} from "../../../utils/auth";
 
 //types
-import { Context } from '../../../types/auth';
+import { Context } from "../../../types/auth";
 
 export default {
   Query: {
-    user: (_: unknown, args: unknown, ctx: Context) => {
-      return {
-        id: '12345',
-        email: 'some.user@email.com',
-        password: 'Pa$$w0rd!',
-        loggedIn: false,
-        firstName: 'Some',
-        lastName: 'User',
-      };
+    user: async (_: unknown, args: unknown, ctx: Context) => {
+      return await ctx.dataSources.users.findOneById(ctx.auth.sub);
     },
   },
   Mutation: {
@@ -52,7 +45,7 @@ export default {
       });
       //if no user, throw error
       if (!dbUser) {
-        throw new AuthenticationError('Invalid credentials');
+        throw new AuthenticationError("Invalid credentials");
       }
       //promise due to needing to wait for async cb by compare function
       return await new Promise((resolve) => {
@@ -73,38 +66,38 @@ export default {
             });
 
             //send refresh as httponly cookie
-            ctx.res.cookie('RTC', newRefresh, {
+            ctx.res.cookie("RTC", newRefresh, {
               httpOnly: true,
               secure: true,
               maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
-              sameSite: 'none',
-              path: '/',
+              sameSite: "none",
+              path: "/",
               signed: true,
             });
 
             //send token as httponly cookie
             //place more sensitive in this cookie
             ctx.res.cookie(
-              'ATC',
+              "ATC",
               signAccessToken(tokenPayloadBuilder(dbUser)),
               {
                 httpOnly: true,
                 secure: true,
                 maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-                sameSite: 'none',
-                path: '/',
+                sameSite: "none",
+                path: "/",
                 signed: true,
               }
             );
 
             resolve(true);
-          } else throw new AuthenticationError('Invalid credentials');
+          } else throw new AuthenticationError("Invalid credentials");
         });
       });
     },
     token: async (_parent: unknown, _args: unknown, ctx: Context) => {
       //if no info in token, dont bother doing everything else
-      if (!ctx.auth.refresh.sub) throw new AuthenticationError('Invalid token');
+      if (!ctx.auth.refresh.sub) throw new AuthenticationError("Invalid token");
 
       //see if valid refresh token and user
       const validatedUser = await validateUserSession(
@@ -115,18 +108,18 @@ export default {
       if (validatedUser) {
         //send an access token back
         ctx.res.cookie(
-          'ATC',
+          "ATC",
           signAccessToken(tokenPayloadBuilder(validatedUser)),
           {
             httpOnly: true,
             secure: true,
             maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-            sameSite: 'none',
-            path: '/',
+            sameSite: "none",
+            path: "/",
             signed: true,
           }
         );
-      } else throw new AuthenticationError('Invalid token');
+      } else throw new AuthenticationError("Invalid token");
 
       return true;
     },
