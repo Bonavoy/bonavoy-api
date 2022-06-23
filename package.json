@@ -10,7 +10,7 @@
     "schema": "./src/graphql/datasources/database/models/schema.prisma"
   },
   "dependencies": {
-    "apollo-datasource-mongodb": "^0.5.4",
+    "@prisma/client": "^3.15.2",
     "apollo-datasource-rest": "^3.6.0",
     "apollo-server-express": "^3.8.2",
     "axios": "^0.27.2",
@@ -22,8 +22,7 @@
     "graphql-middleware": "^6.1.29",
     "graphql-modules": "^2.0.0",
     "graphql-shield": "^7.5.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.3.6"
+    "jsonwebtoken": "^8.5.1"
   },
   "scripts": {
     "test": "jest",
