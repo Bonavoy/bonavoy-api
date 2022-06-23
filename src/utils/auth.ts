@@ -1,30 +1,21 @@
-import fs from 'fs';
-import jwt, {
-  JsonWebTokenError,
-  Algorithm,
-  VerifyCallback,
-  VerifyErrors,
-} from 'jsonwebtoken';
-import mongoose from 'mongoose';
-
-import User from '../graphql/datasources/database/models/user';
+import fs from "fs";
+import jwt, { Algorithm, VerifyErrors } from "jsonwebtoken";
 
 //types
-import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth';
-import { MongoUser } from '../graphql/datasources/database/models/user';
-import { MongoSession } from '../graphql/datasources/database/models/session';
+import { TokenPayload, TokenDecoded, RefreshDecoded } from "../types/auth";
+import { User, Session } from "@prisma/client";
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
-const secret = fs.readFileSync('secret.key', 'utf-8');
-const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8');
+const secret = fs.readFileSync("secret.key", "utf-8");
+const refreshTokenSecret = fs.readFileSync("refreshTokenSecret.key", "utf-8");
 
 //what we want to store on access token from the user doc
-export const tokenPayloadBuilder = (user: MongoUser): TokenPayload => {
+export const tokenPayloadBuilder = (user: User): TokenPayload => {
   return {
     username: user.username,
-    sub: user._id,
+    sub: user.id,
   };
 };
 
@@ -32,21 +23,24 @@ export const tokenPayloadBuilder = (user: MongoUser): TokenPayload => {
 export const validateUserSession = async (
   refresh: string,
   sub: string
-): Promise<MongoUser | null> => {
+): Promise<User | null> => {
   //get user and all sessions with the same id from token
-  const userAndSessions = (
-    await User.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(sub) } },
-      {
-        $lookup: {
-          from: 'sessions',
-          localField: '_id',
-          foreignField: 'user',
-          as: 'sessions',
-        },
-      },
-    ])
-  )[0];
+
+  
+
+  // const userAndSessions = (
+  //   await User.aggregate([
+  //     { $match: { _id: new mongoose.Types.ObjectId(sub) } },
+  //     {
+  //       $lookup: {
+  //         from: "sessions",
+  //         localField: "_id",
+  //         foreignField: "user",
+  //         as: "sessions",
+  //       },
+  //     },
+  //   ])
+  // )[0];
 
   // if nothing found, return null
   if (!userAndSessions) return null;
@@ -54,7 +48,7 @@ export const validateUserSession = async (
   // if any of the sessions include the current refresh token, send back true
   if (
     userAndSessions?.sessions.some(
-      (session: MongoSession) => session.token === refresh
+      (session: Session) => session.token === refresh
     )
   ) {
     return userAndSessions;

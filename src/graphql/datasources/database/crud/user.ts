@@ -1,29 +1,31 @@
-import User from '../models/user';
-import { MongoUser } from '../models/user';
+import { DataSource } from "apollo-datasource";
+import { PrismaClient, User } from "@prisma/client";
+import { Context } from "../../../../types/auth";
 
-import { MongoDataSource } from 'apollo-datasource-mongodb';
+export default class UserAPI extends DataSource {
+  prisma: PrismaClient;
+  context: Context;
 
-export default class Users extends MongoDataSource<MongoUser> {
-  async createUser(user: MongoUser) {
-    return await User.create({
-      email: user.email,
-      username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      password: user.password,
-      userImage: null,
+  constructor({ prisma }: any) {
+    super();
+    this.prisma = prisma;
+    this.context = {} as Context;
+  }
+
+  /**
+   * This is a function that gets called by ApolloServer when being setup.
+   * This function gets called with the datasource config including things
+   * like caches and context. We'll assign this.context to the request context
+   * here, so we can know about the user making requests
+   */
+  initialize(config: any) {
+    console.log(config);
+    this.context = config.context;
+  }
+
+  async createUser(user: User) {
+    await this.prisma.user.create({
+      data: user,
     });
   }
-
-  async getUser(query: object) {
-    return await User.find(query);
-  }
-
-  async getOneUser(query: object) {
-    return await User.findOne(query);
-  }
-
-  // async updateUser() {}
-
-  // async deleteUser() {}
 }
