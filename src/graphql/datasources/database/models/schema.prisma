@@ -56,6 +56,7 @@ model Place {
   mapbox_id String
   start     DateTime
   end       DateTime
+  order     Int
   duration  Int
   tripId    String
   trip      Trip      @relation(fields: [tripId], references: [id])
@@ -75,6 +76,7 @@ model Spot {
   id        String   @id @default(uuid())
   fsq_id    String
   name      String
+  order     Int
   start     DateTime
   end       DateTime
   dayPlanId String
