@@ -46,7 +46,7 @@ const startServer = async () => {
           exp: null,
         },
       };
-      if (req.signedCookies?.RTC) {
+      if (req.signedCookies?.ATC) {
         //access token
         const { token } = verifyAccessToken(req.signedCookies?.ATC);
 
