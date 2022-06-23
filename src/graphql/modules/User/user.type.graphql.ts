@@ -1,4 +1,4 @@
-import { gql } from 'graphql-modules';
+import { gql } from "graphql-modules";
 
 export default gql`
   #queries
@@ -8,7 +8,7 @@ export default gql`
 
   #mutations
   type Mutation {
-    createUser(input: UserInput): User!
+    createUser(input: UserInput): User
     authenticate(username: String!, password: String!): Boolean!
     token: Boolean!
   }
@@ -18,8 +18,8 @@ export default gql`
     username: String!
     email: String!
     password: String!
-    firstName: String!
-    lastName: String!
+    firstname: String!
+    lastname: String!
   }
 
   #types
@@ -28,8 +28,8 @@ export default gql`
     email: String
     password: String
     loggedIn: Boolean
-    firstName: String
-    lastName: String
+    firstname: String
+    lastname: String
     trips: [Trip]
   }
 

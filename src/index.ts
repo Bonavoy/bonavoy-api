@@ -45,12 +45,12 @@ const startServer = async () => {
           exp: null,
         },
       };
-      if (req.signedCookies?.RTC) {
+      if (req.signedCookies?.session) {
         //access token
         const { token } = verifyAccessToken(req.signedCookies?.ATC);
 
         //refresh token
-        const { refresh } = verifyRefreshToken(req.signedCookies?.RTC);
+        const { refresh } = verifyRefreshToken(req.signedCookies?.session);
 
         auth = { ...token, refresh: { ...refresh } };
       }

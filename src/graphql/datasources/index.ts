@@ -13,11 +13,11 @@ import SessionAPI from "./database/crud/session";
 // db
 import { PrismaClient } from "@prisma/client";
 
-const prismaClient = new PrismaClient();
+const prisma = new PrismaClient();
 export default {
   //mongo
-  users: new UserAPI({ prismaClient }),
-  sessions: new SessionAPI({ prismaClient }),
+  users: new UserAPI({ prisma }),
+  sessions: new SessionAPI({ prisma }),
   // trips: new Trips(tripModel as any),
   // dayPlans: new DayPlan(dayPlanModel as any),
 

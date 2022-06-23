@@ -3,7 +3,7 @@ import jwt, { Algorithm, VerifyErrors } from "jsonwebtoken";
 
 //types
 import { TokenPayload, TokenDecoded, RefreshDecoded } from "../types/auth";
-import { User, Session } from "@prisma/client";
+import { User } from "@prisma/client";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -17,44 +17,6 @@ export const tokenPayloadBuilder = (user: User): TokenPayload => {
     username: user.username,
     sub: user.id,
   };
-};
-
-//using refresh token and checking if in db and right user.
-export const validateUserSession = async (
-  refresh: string,
-  sub: string
-): Promise<User | null> => {
-  //get user and all sessions with the same id from token
-
-  
-
-  // const userAndSessions = (
-  //   await User.aggregate([
-  //     { $match: { _id: new mongoose.Types.ObjectId(sub) } },
-  //     {
-  //       $lookup: {
-  //         from: "sessions",
-  //         localField: "_id",
-  //         foreignField: "user",
-  //         as: "sessions",
-  //       },
-  //     },
-  //   ])
-  // )[0];
-
-  // if nothing found, return null
-  if (!userAndSessions) return null;
-
-  // if any of the sessions include the current refresh token, send back true
-  if (
-    userAndSessions?.sessions.some(
-      (session: Session) => session.token === refresh
-    )
-  ) {
-    return userAndSessions;
-  }
-
-  return null;
 };
 
 //access token will store more specific data

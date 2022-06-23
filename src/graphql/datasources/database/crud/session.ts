@@ -51,8 +51,11 @@ export default class SessionAPI extends DataSource {
 
   //get session using token and user id
   async getSession(query: { token: string; userId: string }) {
-    this.prisma.session.findFirst({
+    return await this.prisma.session.findFirst({
       where: { userId: query.userId, token: query.token },
+      include: {
+        user: true,
+      },
     });
   }
 }

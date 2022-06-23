@@ -1,5 +1,5 @@
 import { DataSource } from "apollo-datasource";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, Prisma } from "@prisma/client";
 import { Context } from "../../../../types/auth";
 
 export default class UserAPI extends DataSource {
@@ -19,13 +19,16 @@ export default class UserAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize(config: any) {
-    console.log(config);
     this.context = config.context;
   }
 
   async createUser(user: User) {
-    await this.prisma.user.create({
-      data: user,
-    });
+    try {
+      return await this.prisma.user.create({
+        data: user,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
+    }
   }
 }

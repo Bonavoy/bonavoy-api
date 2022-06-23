@@ -8,11 +8,11 @@ import {
   signAccessToken,
   signRefreshToken,
   tokenPayloadBuilder,
-  validateUserSession,
 } from "../../../utils/auth";
 
 //types
 import { Context } from "../../../types/auth";
+import type { User } from "@prisma/client";
 
 export default {
   Query: {
@@ -28,17 +28,17 @@ export default {
     },
   },
   Mutation: {
-    createUser: (_: unknown, { input }: { input: any }, ctx: Context) => {
-      console.log(input);
-      // const newUser = {
-      //   id: '54321',
-      //   email: args.email,
-      //   password: args.password,
-      //   loggedIn: false,
-      //   firstName: args.firstName,
-      //   lastName: args.lastName,
-      // };
-      // return newUser;
+    createUser: async (
+      _: unknown,
+      { input }: { input: User },
+      ctx: Context
+    ) => {
+      const newUser = await ctx.dataSources.users.createUser({
+        ...input,
+        password: bcrypt.hashSync(input.password, bcrypt.genSaltSync(10)),
+      });
+
+      return newUser;
     },
 
     authenticate: async (
@@ -73,7 +73,7 @@ export default {
             });
 
             //send refresh as httponly cookie
-            ctx.res.cookie("RTC", newRefresh, {
+            ctx.res.cookie("session", newRefresh, {
               httpOnly: true,
               secure: true,
               maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
@@ -103,27 +103,20 @@ export default {
       });
     },
     token: async (_parent: unknown, _args: unknown, ctx: Context) => {
-      //see if valid refresh token and user
-      const validatedUser = await validateUserSession(
-        ctx.req.signedCookies.RTC,
-        ctx.auth.refresh.sub
-      );
+      const user = ctx.dataSources.sessions.getSession({
+        token: ctx.req.signedCookies.session,
+        userId: ctx.auth.refresh.sub,
+      });
 
-      if (validatedUser) {
-        //send an access token back
-        ctx.res.cookie(
-          "ATC",
-          signAccessToken(tokenPayloadBuilder(validatedUser)),
-          {
-            httpOnly: true,
-            secure: true,
-            maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-            sameSite: "none",
-            path: "/",
-            signed: true,
-          }
-        );
-      }
+      //send an access token back
+      ctx.res.cookie("ATC", signAccessToken(tokenPayloadBuilder(user)), {
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+        sameSite: "none",
+        path: "/",
+        signed: true,
+      });
 
       return true;
     },

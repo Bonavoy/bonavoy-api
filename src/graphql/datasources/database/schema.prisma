@@ -25,7 +25,7 @@ model User {
   firstname      String
   lastname       String
   password       String
-  avatar         String
+  avatar         String?
   verified       Boolean          @default(false)
   AuthorsOnTrips AuthorsOnTrips[]
   Session        Session[]
