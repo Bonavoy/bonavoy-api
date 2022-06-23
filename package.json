@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "prisma": {
-    "schema": "./src/graphql/datasources/database/prisma/schema.prisma"
+    "schema": "./src/graphql/datasources/database/models/schema.prisma"
   },
   "dependencies": {
     "apollo-datasource-mongodb": "^0.5.4",

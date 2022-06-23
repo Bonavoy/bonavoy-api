@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model Session {
+//   user: { type: Schema.Types.ObjectId, ref: 'user' },
+//   token: { type: String, required: true },
+//   expireAt: { type: Date, default: Date.now },
+//   createdAt: {
+//     type: Date,
+//     default: Date.now,
+//   },
+// }
+
+model User {
+  id        String           @id @default(uuid())
+  email     String           @unique
+  username  String           @unique
+  firstname String
+  lastname  String
+  password  String
+  avatar    String
+  verified  Boolean          @default(false)
+  timestamp DateTime         @default(now())
+  trips     AuthorsOnTrips[]
+}
+
+model AuthorsOnTrips {
+  id     String   @id @default(uuid())
+  role   TripRole
+  userId String
+  user   User     @relation(fields: [userId], references: [id])
+  tripId String
+  trip   Trip     @relation(fields: [tripId], references: [id])
+}
+
+model Trip {
+  id       String           @id @default(uuid())
+  name     String
+  isPublic Boolean          @default(false)
+  authors  AuthorsOnTrips[]
+  places   Place[]
+}
+
+model Place {
+  id        String    @id @default(uuid())
+  name      String
+  mapbox_id String
+  start     DateTime
+  end       DateTime
+  duration  Int
+  tripId    String
+  trip      Trip      @relation(fields: [tripId], references: [id])
+  dayPlans  DayPlan[]
+}
+
+model DayPlan {
+  id      String   @id @default(uuid())
+  date    DateTime
+  order   Int
+  placeId String
+  place   Place    @relation(fields: [placeId], references: [id])
+  spots   Spot[]
+}
+
+model Spot {
+  id        String   @id @default(uuid())
+  fsq_id    String
+  name      String
+  start     DateTime
+  end       DateTime
+  dayPlanId String
+  dayPlan   DayPlan  @relation(fields: [dayPlanId], references: [id])
+}
+
+enum TripRole {
+  AUTHOR
+  EDITOR
+  VIEWER
+}
