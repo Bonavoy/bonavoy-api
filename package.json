@@ -1,13 +1,13 @@
 {
-  "name": "bonavoyapi",
+  "name": "bonavoy-api",
   "version": "1.0.0",
-  "description": "api for bonavoy client",
+  "description": "GraphQL API for Bonavoy",
   "main": "server.ts",
   "repository": "git@github.com:Bonavoy/bonavoy-API.git",
   "license": "MIT",
   "private": true,
   "prisma": {
-    "schema": "./src/graphql/datasources/database/models/schema.prisma"
+    "schema": "./src/graphql/datasources/database/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^3.15.2",
