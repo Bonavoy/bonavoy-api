@@ -39,8 +39,21 @@ export default class UserAPI extends DataSource {
     }
   }
 
-  createUserSession = async ({ id, refresh, ttl }: { id: string; refresh: string; ttl: number }): Promise<void> => {
-    await this.cache?.set(id, refresh)
+  //uses redis to store sessions with a ttl
+  createUserSession = async ({ id, session, ttl }: { id: string; session: string; ttl: number }): Promise<void> => {
+    const activeSessions = await this.cache?.get(id)
+    if (activeSessions) {
+      await this.cache?.set(id, JSON.stringify({ id, sessions: [...JSON.parse(activeSessions).sessions, session] }), {
+        ttl,
+      })
+    } else await this.cache?.set(id, JSON.stringify({ id, sessions: [session] }), { ttl })
+  }
+
+  //finds a session and returns boolean if it exists or not
+  findUserSession = async ({ id, session }: { id: string; session: string }): Promise<boolean> => {
+    const activeSessions = await this.cache?.get(id)
+    if (activeSessions) return JSON.parse(activeSessions).sessions.includes(session)
+    else return false
   }
 
   // can be {id} | {username} | {email}
@@ -48,27 +61,6 @@ export default class UserAPI extends DataSource {
     try {
       return this.prisma.user.findUnique({
         where: query,
-      })
-    } catch (e) {
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null
-    }
-  }
-
-  findUserByUsername = async (username?: string): Promise<User | null> => {
-    try {
-      return this.prisma.user.findUnique({
-        where: { username },
-      })
-    } catch (e) {
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null
-    }
-  }
-  findUserByEmail = async (email?: string): Promise<User | null> => {
-    try {
-      return this.prisma.user.findUnique({
-        where: { email },
       })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;

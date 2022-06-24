@@ -8,7 +8,7 @@ import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../..
 
 //types
 import { Context } from '../../../types/auth'
-import type { User, Session } from '@prisma/client'
+import type { User } from '@prisma/client'
 
 export default {
   Query: {
@@ -52,7 +52,7 @@ export default {
             //create session document with expiry
             await ctx.dataSources.users.createUserSession({
               id: dbUser.id,
-              refresh: ctx.req.signedCookies.session,
+              session: newRefresh,
               ttl: Number(process.env.REFRESH_TOKEN_LIFETIME),
             })
 
@@ -83,22 +83,22 @@ export default {
       })
     },
     token: async (_parent: unknown, _args: unknown, ctx: Context) => {
-      const user: (Session & { user: User }) | null = await ctx.dataSources.sessions.getSession({
-        token: ctx.req.signedCookies.session,
-        userId: ctx.auth.refresh.sub as string,
-      })
+      // const user: ( user: User) | null = await ctx.dataSources.sessions.getSession({
+      //   token: ctx.req.signedCookies.session,
+      //   userId: ctx.auth.refresh.sub as string,
+      // })
 
-      if (user) {
-        //send an access token back
-        return !!ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(user.user)), {
-          httpOnly: true,
-          secure: true,
-          maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-          sameSite: 'none',
-          path: '/',
-          signed: true,
-        })
-      }
+      // if (user) {
+      //   //send an access token back
+      //   return !!ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(user.user)), {
+      //     httpOnly: true,
+      //     secure: true,
+      //     maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+      //     sameSite: 'none',
+      //     path: '/',
+      //     signed: true,
+      //   })
+      // }
       return false
     },
   },
