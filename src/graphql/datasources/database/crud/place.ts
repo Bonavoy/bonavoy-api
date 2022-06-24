@@ -14,7 +14,7 @@ export default class PlaceAPI extends DataSource {
     this.context = {} as Context
   }
 
-  async findPlacesByTrip(tripId: string) {
+  findPlacesByTrip = async (tripId: string) => {
     return await this.prisma.place.findMany({
       orderBy: {
         order: 'asc',
