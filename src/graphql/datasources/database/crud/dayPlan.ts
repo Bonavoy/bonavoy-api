@@ -1,10 +1,35 @@
-import { MongoDataSource } from 'apollo-datasource-mongodb';
+import { DataSource } from 'apollo-datasource'
 
-import { MongoSession } from '../models/session';
-import dayPlan from '../models/dayPlan';
+import { PrismaClient, DayPlan } from '@prisma/client'
 
-export default class DayPlan extends MongoDataSource<MongoSession> {
-  async getDayPlan(dayPlanId: string) {
-    return await dayPlan.findById(dayPlanId).populate('spotsOfInterest');
+import { Context } from '../../../../types/auth'
+
+export default class DayPlanAPI extends DataSource {
+  prisma: PrismaClient
+  context: Context
+
+  constructor({ prisma }: { prisma: PrismaClient }) {
+    super()
+    this.prisma = prisma
+    this.context = {} as Context
+  }
+
+  async findDayPlanByDate(placeId: string, date: string) {
+    return await this.prisma.dayPlan.findFirst({
+      where: {
+        date: date,
+        place: {
+          id: placeId,
+        },
+      },
+    })
+  }
+
+  async createDayPlan(dayPlan: DayPlan) {
+    return await this.prisma.dayPlan.create({
+      data: {
+        ...dayPlan,
+      },
+    })
   }
 }
