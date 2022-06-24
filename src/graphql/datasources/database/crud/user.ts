@@ -1,29 +1,71 @@
-import User from '../models/user';
-import { MongoUser } from '../models/user';
+import { DataSource } from "apollo-datasource";
 
-import { MongoDataSource } from 'apollo-datasource-mongodb';
+//types
+import { Context } from "../../../../types/auth";
+import type { PrismaClient, User } from "@prisma/client";
+export default class UserAPI extends DataSource {
+  prisma: PrismaClient;
+  context: Context;
 
-export default class Users extends MongoDataSource<MongoUser> {
-  async createUser(user: MongoUser) {
-    return await User.create({
-      email: user.email,
-      username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      password: user.password,
-      userImage: null,
-    });
+  constructor({ prisma }: { prisma: PrismaClient }) {
+    super();
+    this.prisma = prisma;
+    this.context = {} as Context;
   }
 
-  async getUser(query: object) {
-    return await User.find(query);
-  }
+  /**
+   * This is a function that gets called by ApolloServer when being setup.
+   * This function gets called with the datasource config including things
+   * like caches and context. We'll assign this.context to the request context
+   * here, so we can know about the user making requests
+   */
+  initialize = (config: any) => {
+    this.context = config.context;
+  };
 
-  async getOneUser(query: object) {
-    return await User.findOne(query);
-  }
+  createUser = async (user: User): Promise<User | null> => {
+    try {
+      return this.prisma.user.create({
+        data: user,
+      });
+    } catch (e) {
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
+      return null;
+    }
+  };
 
-  // async updateUser() {}
+  // can be {id}
+  // can be {username}
+  // can be {email}
+  findUser = async (query: object): Promise<User | null> => {
+    try {
+      return this.prisma.user.findUnique({
+        where: query,
+      });
+    } catch (e) {
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
+      return null;
+    }
+  };
 
-  // async deleteUser() {}
+  findUserByUsername = async (username?: string): Promise<User | null> => {
+    try {
+      return this.prisma.user.findUnique({
+        where: { username },
+      });
+    } catch (e) {
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
+      return null;
+    }
+  };
+  findUserByEmail = async (email?: string): Promise<User | null> => {
+    try {
+      return this.prisma.user.findUnique({
+        where: { email },
+      });
+    } catch (e) {
+      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
+      return null;
+    }
+  };
 }

@@ -1,26 +1,25 @@
 // FILE COMBINES ALL DATASOURCES TO ONE OBJ
 
 //external apis
-import FoursquareAPI from './api/foursquare';
+import FoursquareAPI from "./api/foursquare";
 
-//mongo models
-import userModel from './database/models/user';
-import sessionModel from './database/models/session';
-import tripModel from './database/models/trip';
-import dayPlanModel from './database/models/dayPlan';
+//crud
+import UserAPI from "./database/crud/user";
+import SessionAPI from "./database/crud/session";
+// import Sessions from "./database/crud/session";
+// import Trips from "./database/crud/trip";
+// import DayPlan from "./database/crud/dayPlan";
 
-//mongo crud
-import Users from './database/crud/user';
-import Sessions from './database/crud/session';
-import Trips from './database/crud/trip';
-import DayPlan from './database/crud/dayPlan';
+// db
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 export default {
   //mongo
-  users: new Users(userModel as any),
-  sessions: new Sessions(sessionModel as any),
-  trips: new Trips(tripModel as any),
-  dayPlans: new DayPlan(dayPlanModel as any),
+  users: new UserAPI({ prisma }),
+  sessions: new SessionAPI({ prisma }),
+  // trips: new Trips(tripModel as any),
+  // dayPlans: new DayPlan(dayPlanModel as any),
 
   //external
   foursquareAPI: new FoursquareAPI(),

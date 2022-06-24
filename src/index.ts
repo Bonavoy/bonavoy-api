@@ -1,22 +1,22 @@
-import express, { Request, Response } from 'express';
-import cookieParser from 'cookie-parser';
+import express, { Request, Response } from "express";
+import cookieParser from "cookie-parser";
 
-import { ApolloServer } from 'apollo-server-express';
-import { apolloApplication } from './graphql/modules';
-import { applyMiddleware } from 'graphql-middleware';
+import { ApolloServer } from "apollo-server-express";
+import { apolloApplication } from "./graphql/modules";
+import { applyMiddleware } from "graphql-middleware";
 
-import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
-import dataSources from './graphql/datasources';
-import permissions from './graphql/permissions';
+import { verifyAccessToken, verifyRefreshToken } from "./utils/auth";
+import dataSources from "./graphql/datasources";
+import permissions from "./graphql/permissions";
 
 //types
-import type { AuthContext } from './types/auth';
-import type {
-  GraphQLResponse,
-  GraphQLRequestContext,
-} from 'apollo-server-types';
+import type { AuthContext } from "./types/auth";
+// import type {
+//   GraphQLResponse,
+//   GraphQLRequestContext,
+// } from "apollo-server-types";
 
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 const startServer = async () => {
@@ -24,7 +24,6 @@ const startServer = async () => {
   const app = express();
 
   //middleware to run berfore apollo server
-  //TODO: BETTER COOKIE SECRET
   app.use(cookieParser(process.env.COOKIE_SECRET));
 
   //apollo
@@ -46,29 +45,29 @@ const startServer = async () => {
           exp: null,
         },
       };
-      if (req.signedCookies?.RTC) {
+      if (req.signedCookies?.session) {
         //access token
         const { token } = verifyAccessToken(req.signedCookies?.ATC);
 
         //refresh token
-        const { refresh } = verifyRefreshToken(req.signedCookies?.RTC);
+        const { refresh } = verifyRefreshToken(req.signedCookies?.session);
 
         auth = { ...token, refresh: { ...refresh } };
       }
       return { auth, req, res };
     },
-    formatResponse: (
-      response: GraphQLResponse,
-      requestContext: GraphQLRequestContext<object>
-    ): GraphQLResponse => {
-      //if not auth, send 401 else make a refresh token
-      if (response.errors && !requestContext.request.variables?.password) {
-        if (requestContext.response?.http) {
-          requestContext.response.http.status = 401;
-        }
-      }
-      return response;
-    },
+    // formatResponse: (
+    //   response: GraphQLResponse,
+    //   requestContext: GraphQLRequestContext<object>
+    // ): GraphQLResponse => {
+    //   //if not auth, send 401 else make a refresh token
+    //   if (response.errors && !requestContext.request.variables?.password) {
+    //     if (requestContext.response?.http) {
+    //       requestContext.response.http.status = 401;
+    //     }
+    //   }
+    //   return response;
+    // },
     dataSources: () => dataSources,
   });
 
@@ -77,7 +76,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
       credentials: true,
     },
   });

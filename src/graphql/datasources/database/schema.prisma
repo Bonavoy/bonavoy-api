@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expireAt  DateTime
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  username       String           @unique
+  firstname      String
+  lastname       String
+  password       String
+  avatar         String?
+  verified       Boolean          @default(false)
+  AuthorsOnTrips AuthorsOnTrips[]
+  Session        Session[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model AuthorsOnTrips {
+  id     String   @id @default(uuid())
+  userId String
+  user   User     @relation(fields: [userId], references: [id])
+  role   TripRole
+  tripId String
+  trip   Trip     @relation(fields: [tripId], references: [id])
+}
+
+model Trip {
+  id        String           @id @default(uuid())
+  name      String
+  isPublic  Boolean          @default(false)
+  authors   AuthorsOnTrips[]
+  places    Place[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Place {
+  id        String    @id @default(uuid())
+  name      String
+  mapbox_id String
+  start     DateTime
+  end       DateTime
+  order     Int
+  duration  Int
+  tripId    String
+  trip      Trip      @relation(fields: [tripId], references: [id])
+  dayPlans  DayPlan[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model DayPlan {
+  id        String   @id @default(uuid())
+  date      DateTime
+  order     Int
+  placeId   String
+  place     Place    @relation(fields: [placeId], references: [id])
+  spots     Spot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Spot {
+  id        String   @id @default(uuid())
+  fsq_id    String
+  name      String
+  order     Int
+  start     DateTime
+  end       DateTime
+  dayPlanId String
+  dayPlan   DayPlan  @relation(fields: [dayPlanId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TripRole {
+  AUTHOR
+  EDITOR
+  VIEWER
+}
