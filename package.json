@@ -22,8 +22,8 @@
     "graphql-middleware": "^6.1.29",
     "graphql-modules": "^2.0.0",
     "graphql-shield": "^7.5.0",
-    "ioredis": "^5.0.6",
-    "jsonwebtoken": "^8.5.1"
+    "jsonwebtoken": "^8.5.1",
+    "redis": "^4.1.0"
   },
   "scripts": {
     "test": "jest",
