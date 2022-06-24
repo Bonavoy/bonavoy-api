@@ -1,20 +1,18 @@
-import { DataSource } from 'apollo-datasource'
+import { DataSource, DataSourceConfig } from 'apollo-datasource'
 
 //types
 import { Context } from '../../../../types/auth'
 import type { PrismaClient, User } from '@prisma/client'
-import type { KeyvAdapter } from '../../../../utils/redisKeyValueCache'
+import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
 
 export default class UserAPI extends DataSource {
   prisma: PrismaClient
-  context: Context | null
-  cache: KeyvAdapter | null
+  context: Context | undefined
+  cache: KeyvAdapter | undefined
 
   constructor({ prisma }: { prisma: PrismaClient }) {
     super()
     this.prisma = prisma
-    this.context = null
-    this.cache = null
   }
 
   /**
@@ -23,9 +21,9 @@ export default class UserAPI extends DataSource {
    * like caches and context. We'll assign this.context to the request context
    * here, so we can know about the user making requests
    */
-  initialize = (config: any) => {
+  initialize = (config: DataSourceConfig<Context>) => {
     this.context = config.context
-    this.cache = config.cache
+    this.cache = config.cache as KeyvAdapter
   }
 
   createUser = async (user: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User | null> => {
@@ -41,7 +39,7 @@ export default class UserAPI extends DataSource {
 
   //uses redis to store sessions with a ttl
   createUserSession = async ({ id, session, ttl }: { id: string; session: string; ttl: number }): Promise<void> => {
-    const activeSessions = await this.cache?.get(id)
+    const activeSessions = (await this.cache?.get(id)) as string
     if (activeSessions) {
       await this.cache?.set(id, JSON.stringify({ id, sessions: [...JSON.parse(activeSessions).sessions, session] }), {
         ttl,
@@ -51,7 +49,7 @@ export default class UserAPI extends DataSource {
 
   //finds a session and returns boolean if it exists or not
   findUserSession = async ({ id, session }: { id: string; session: string }): Promise<boolean> => {
-    const activeSessions = await this.cache?.get(id)
+    const activeSessions = (await this.cache?.get(id)) as string
     if (activeSessions) return JSON.parse(activeSessions).sessions.includes(session)
     else return false
   }

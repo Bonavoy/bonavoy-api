@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express, { application, Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 
 import { ApolloServer } from 'apollo-server-express'
@@ -7,8 +7,7 @@ import { applyMiddleware } from 'graphql-middleware'
 
 //redis
 import Keyv from 'keyv'
-// import { KeyvAdapter } from '@apollo/utils.keyvadapter'
-import { KeyvAdapter } from './utils/redisKeyValueCache'
+import { KeyvAdapter } from './utils/classes/KeyvAdapter'
 
 //utils
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth'
@@ -34,7 +33,8 @@ const startServer = async () => {
 
   //apollo
   const apolloServer = new ApolloServer({
-    schema: applyMiddleware(apolloApplication.createSchemaForApollo(), permissions),
+    schema: applyMiddleware(apolloApplication.schema, permissions),
+    executor: apolloApplication.createApolloExecutor(),
     csrfPrevention: true,
     cache: new KeyvAdapter(new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}`)),
     context: ({ req, res }: { req: Request; res: Response }) => {
