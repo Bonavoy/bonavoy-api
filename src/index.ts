@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 
-import { ApolloServer } from 'apollo-server-express';
-import { apolloApplication } from './graphql/modules';
-import { applyMiddleware } from 'graphql-middleware';
+import { ApolloServer } from "apollo-server-express";
+import redisClient from "./libs/redis";
+import { apolloApplication } from "./graphql/modules";
+import { applyMiddleware } from "graphql-middleware";
 
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
 import dataSources from './graphql/datasources';

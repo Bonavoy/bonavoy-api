@@ -1,16 +1,16 @@
-import { DataSource } from "apollo-datasource";
+import { DataSource } from 'apollo-datasource'
 
 //types
-import { Context } from "../../../../types/auth";
-import type { PrismaClient, User } from "@prisma/client";
+import { Context } from '../../../../types/auth'
+import type { PrismaClient, User } from '@prisma/client'
 export default class UserAPI extends DataSource {
-  prisma: PrismaClient;
-  context: Context;
+  prisma: PrismaClient
+  context: Context
 
   constructor({ prisma }: { prisma: PrismaClient }) {
-    super();
-    this.prisma = prisma;
-    this.context = {} as Context;
+    super()
+    this.prisma = prisma
+    this.context = {} as Context
   }
 
   /**
@@ -20,19 +20,19 @@ export default class UserAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize = (config: any) => {
-    this.context = config.context;
-  };
+    this.context = config.context
+  }
 
   createUser = async (user: User): Promise<User | null> => {
     try {
       return this.prisma.user.create({
         data: user,
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
+  }
 
   // can be {id}
   // can be {username}
@@ -41,31 +41,31 @@ export default class UserAPI extends DataSource {
     try {
       return this.prisma.user.findUnique({
         where: query,
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
+  }
 
   findUserByUsername = async (username?: string): Promise<User | null> => {
     try {
       return this.prisma.user.findUnique({
         where: { username },
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
+  }
   findUserByEmail = async (email?: string): Promise<User | null> => {
     try {
       return this.prisma.user.findUnique({
         where: { email },
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
+  }
 }

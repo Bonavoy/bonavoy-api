@@ -30,7 +30,7 @@ export default {
   Mutation: {
     createUser: async (
       _: unknown,
-      { input }: { input: User },
+      { input }: { input: Omit<User, "createdAt" | "updatedAt"> },
       ctx: Context
     ) => {
       const newUser = await ctx.dataSources.users.createUser({

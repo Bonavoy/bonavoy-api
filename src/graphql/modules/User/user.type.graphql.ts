@@ -24,14 +24,14 @@ export default gql`
 
   #types
   type User {
-    _id: String
-    email: String
-    username: String
-    firstname: String
-    lastname: String
-    password: String
+    id: ID!
+    email: String!
+    username: String!
+    firstname: String!
+    lastname: String!
+    password: String!
     avatar: String
-    verified: Boolean
+    verified: Boolean!
     trips: [Trip]
   }
 `;

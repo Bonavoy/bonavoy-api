@@ -1,17 +1,17 @@
-import { DataSource } from "apollo-datasource";
+import { DataSource } from 'apollo-datasource'
 
 //types
-import type { PrismaClient, Session, User } from "@prisma/client";
-import { Context } from "../../../../types/auth";
+import type { PrismaClient, Session, User } from '@prisma/client'
+import { Context } from '../../../../types/auth'
 
 export default class SessionAPI extends DataSource {
-  prisma: PrismaClient;
-  context: Context;
+  prisma: PrismaClient
+  context: Context
 
-  constructor({ prisma }: any) {
-    super();
-    this.prisma = prisma;
-    this.context = {} as Context;
+  constructor({ prisma }: { prisma: PrismaClient }) {
+    super()
+    this.prisma = prisma
+    this.context = {} as Context
   }
 
   /**
@@ -21,27 +21,24 @@ export default class SessionAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize = (config: any) => {
-    this.context = config.context;
-  };
+    this.context = config.context
+  }
 
   createSession = async (session: Session) => {
-    this.prisma.session.create({ data: session });
-  };
+    this.prisma.session.create({ data: session })
+  }
 
   //get session using token and user id
-  getSession = async (query: {
-    token: string;
-    userId: string;
-  }): Promise<(Session & { user: User }) | null> => {
+  getSession = async (query: { token: string; userId: string }): Promise<(Session & { user: User }) | null> => {
     try {
       return this.prisma.session.findFirst({
         where: { userId: query.userId, token: query.token },
         include: {
           user: true,
         },
-      });
+      })
     } catch (e) {
-      return null;
+      return null
     }
-  };
+  }
 }
