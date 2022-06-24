@@ -1,7 +1,7 @@
-import { shield } from "graphql-shield";
+import { shield } from 'graphql-shield';
 
 //rules
-import { isAuthenticated, isSession } from "./rules";
+import { isAuthenticated, isSession } from './rules';
 
 export default shield({
   Query: {
