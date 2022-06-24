@@ -14,7 +14,7 @@ export default class DayPlanAPI extends DataSource {
     this.context = {} as Context
   }
 
-  async findDayPlanByDate(placeId: string, date: string) {
+  findDayPlanByDate = async (placeId: string, date: string) => {
     return await this.prisma.dayPlan.findFirst({
       where: {
         date: date,
@@ -25,7 +25,7 @@ export default class DayPlanAPI extends DataSource {
     })
   }
 
-  async createDayPlan(dayPlan: DayPlan) {
+  createDayPlan = async (dayPlan: DayPlan) => {
     return await this.prisma.dayPlan.create({
       data: {
         ...dayPlan,
