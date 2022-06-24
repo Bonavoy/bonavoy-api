@@ -3,7 +3,7 @@ import { gql } from "graphql-modules";
 export default gql`
   #queries
   type Query {
-    user(id: String!): User
+    user: User
   }
 
   #mutations
@@ -24,12 +24,14 @@ export default gql`
 
   #types
   type User {
-    id: ID
+    _id: String
     email: String
-    password: String
-    loggedIn: Boolean
+    username: String
     firstname: String
     lastname: String
+    password: String
+    avatar: String
+    verified: Boolean
     trips: [Trip]
   }
 `;
