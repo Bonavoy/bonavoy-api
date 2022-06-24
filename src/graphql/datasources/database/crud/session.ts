@@ -21,10 +21,11 @@ export default class SessionAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize = (config: any) => {
+    console.log(config)
     this.context = config.context
   }
 
-  createSession = async (session: Session) => {
+  createSession = async (session: Omit<Session, 'id' | 'createdAt'>) => {
     this.prisma.session.create({ data: session })
   }
 

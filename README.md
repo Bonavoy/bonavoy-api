@@ -1,6 +1,6 @@
-# Bonavoy REST API
+# Bonavoy GraphQL API
 
-Repo for Bonavoy's REST API
+Repo for Bonavoy's GraphQL API
 
 # Setup
 
@@ -15,5 +15,5 @@ Run `yarn test` or `yarn test:watch`
 
 # Documentation
 
-- Local: http://localhost:4000/docs
-- Prod: http://api.bonavoy.com/docs
+- Local: http://localhost:4000/graphql
+- Prod: http://api.bonavoy.com/graphql

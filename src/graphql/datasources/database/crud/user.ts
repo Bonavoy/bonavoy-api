@@ -23,7 +23,7 @@ export default class UserAPI extends DataSource {
     this.context = config.context
   }
 
-  createUser = async (user: User): Promise<User | null> => {
+  createUser = async (user: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User | null> => {
     try {
       return this.prisma.user.create({
         data: user,
