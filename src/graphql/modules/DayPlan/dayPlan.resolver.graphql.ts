@@ -1,33 +1,35 @@
 //types
-import { TokenDecoded } from '../../../types/auth';
-import { SpotOfInterest } from '../../../types/trip.types';
+import { DayPlan } from '@prisma/client'
+import { TokenDecoded } from '../../../types/auth'
+import { BonavoyDataSources } from '../../datasources'
 
 // TODO: WRITE TYPES
 export default {
   Query: {
-    getDayPlan: async (
+    getDayPlanByDate: async (
       _: unknown,
-      args: { dayPlanId: string },
+      args: { placeId: string; date: string },
       {
         ctx,
         req,
         res,
         dataSources,
-      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: any }
+      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
     ) => {
-      const { dayPlanId } = args;
-      return await dataSources.dayPlans.getDayPlan(dayPlanId);
+      const { placeId, date } = args
+      return await dataSources.dayPlans.findDayPlanByDate(placeId, date)
     },
   },
   Mutation: {
-    appendSpotOfInterest: (
+    createDayPlan: async (
       _: unknown,
       args: {
-        dayPlanId: string;
-        spotOfInterest: SpotOfInterest;
-      }
+        dayPlan: DayPlan
+      },
+      { dataSources }: { dataSources: BonavoyDataSources },
     ) => {
-      return {};
+      const { dayPlan } = args
+      return await dataSources.dayPlans.createDayPlan(dayPlan)
     },
   },
-};
+}
