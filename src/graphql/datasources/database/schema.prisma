@@ -10,15 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
-  expireAt  DateTime
-  createdAt DateTime @default(now())
-}
-
 model User {
   id             String           @id @default(uuid())
   email          String           @unique
@@ -29,7 +20,6 @@ model User {
   avatar         String?
   verified       Boolean          @default(false)
   AuthorsOnTrips AuthorsOnTrips[]
-  Session        Session[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }

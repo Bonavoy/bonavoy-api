@@ -7,7 +7,8 @@ import { applyMiddleware } from 'graphql-middleware'
 
 //redis
 import Keyv from 'keyv'
-import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+// import { KeyvAdapter } from '@apollo/utils.keyvadapter'
+import { KeyvAdapter } from './utils/redisKeyValueCache'
 
 //utils
 import { verifyAccessToken, verifyRefreshToken } from './utils/auth'
@@ -35,9 +36,7 @@ const startServer = async () => {
   const apolloServer = new ApolloServer({
     schema: applyMiddleware(apolloApplication.createSchemaForApollo(), permissions),
     csrfPrevention: true,
-    cache: new KeyvAdapter(
-      new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}:${process.env.REDIS_PORT}`),
-    ),
+    cache: new KeyvAdapter(new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}`)),
     context: ({ req, res }: { req: Request; res: Response }) => {
       let auth: AuthContext = {
         sub: null,

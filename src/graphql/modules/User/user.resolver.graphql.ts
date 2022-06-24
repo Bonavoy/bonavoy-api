@@ -50,10 +50,10 @@ export default {
             const newRefresh = signRefreshToken(dbUser.id)
 
             //create session document with expiry
-            await ctx.dataSources.sessions.createSession({
-              userId: dbUser.id,
-              token: newRefresh,
-              expireAt: new Date(Date.now() + Number(process.env.REFRESH_TOKEN_LIFETIME)),
+            await ctx.dataSources.users.createUserSession({
+              id: dbUser.id,
+              refresh: ctx.req.signedCookies.session,
+              ttl: Number(process.env.REFRESH_TOKEN_LIFETIME),
             })
 
             //send refresh as httponly cookie

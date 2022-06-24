@@ -3,14 +3,18 @@ import { DataSource } from 'apollo-datasource'
 //types
 import { Context } from '../../../../types/auth'
 import type { PrismaClient, User } from '@prisma/client'
+import type { KeyvAdapter } from '../../../../utils/redisKeyValueCache'
+
 export default class UserAPI extends DataSource {
   prisma: PrismaClient
-  context: Context
+  context: Context | null
+  cache: KeyvAdapter | null
 
   constructor({ prisma }: { prisma: PrismaClient }) {
     super()
     this.prisma = prisma
-    this.context = {} as Context
+    this.context = null
+    this.cache = null
   }
 
   /**
@@ -21,6 +25,7 @@ export default class UserAPI extends DataSource {
    */
   initialize = (config: any) => {
     this.context = config.context
+    this.cache = config.cache
   }
 
   createUser = async (user: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User | null> => {
@@ -34,9 +39,11 @@ export default class UserAPI extends DataSource {
     }
   }
 
-  // can be {id}
-  // can be {username}
-  // can be {email}
+  createUserSession = async ({ id, refresh, ttl }: { id: string; refresh: string; ttl: number }): Promise<void> => {
+    await this.cache?.set(id, refresh)
+  }
+
+  // can be {id} | {username} | {email}
   findUser = async (query: object): Promise<User | null> => {
     try {
       return this.prisma.user.findUnique({

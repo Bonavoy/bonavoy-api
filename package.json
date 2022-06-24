@@ -10,7 +10,6 @@
     "schema": "./src/graphql/datasources/database/schema.prisma"
   },
   "dependencies": {
-    "@apollo/utils.keyvadapter": "^1.1.0",
     "@keyv/redis": "^2.3.6",
     "@prisma/client": "^3.15.2",
     "apollo-datasource-rest": "^3.6.0",

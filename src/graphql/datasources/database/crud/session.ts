@@ -3,15 +3,18 @@ import { DataSource } from 'apollo-datasource'
 //types
 import type { PrismaClient, Session, User } from '@prisma/client'
 import { Context } from '../../../../types/auth'
+import type { KeyvAdapter } from '../../../../utils/redisKeyValueCache'
 
 export default class SessionAPI extends DataSource {
   prisma: PrismaClient
-  context: Context
+  context: Context | null
+  cache: KeyvAdapter | null
 
   constructor({ prisma }: { prisma: PrismaClient }) {
     super()
     this.prisma = prisma
-    this.context = {} as Context
+    this.context = null
+    this.cache = null
   }
 
   /**
@@ -21,12 +24,14 @@ export default class SessionAPI extends DataSource {
    * here, so we can know about the user making requests
    */
   initialize = (config: any) => {
-    console.log(config)
     this.context = config.context
+    this.cache = config.cache
   }
 
   createSession = async (session: Omit<Session, 'id' | 'createdAt'>) => {
-    this.prisma.session.create({ data: session })
+    const userSession = await this.cache?.get(session.userId)
+    // await this.cache?.set()
+    // this.prisma.session.create({ data: session })
   }
 
   //get session using token and user id
