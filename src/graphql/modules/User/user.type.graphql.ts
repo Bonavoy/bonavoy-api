@@ -32,11 +32,4 @@ export default gql`
     lastname: String
     trips: [Trip]
   }
-
-  type Authenticate {
-    _id: String!
-    username: String!
-    token: String!
-    refresh: String!
-  }
 `;
