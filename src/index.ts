@@ -1,4 +1,4 @@
-import express, { application, Request, Response } from 'express'
+import express, { Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 
 import { ApolloServer } from 'apollo-server-express'
