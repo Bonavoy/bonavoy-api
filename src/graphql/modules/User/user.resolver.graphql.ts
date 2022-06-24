@@ -51,7 +51,7 @@ export default {
 
             //create session document with expiry
             await ctx.dataSources.users.createUserSession({
-              id: dbUser.id,
+              user: dbUser,
               session: newRefresh,
               ttl: Number(process.env.REFRESH_TOKEN_LIFETIME),
             })
@@ -83,22 +83,24 @@ export default {
       })
     },
     token: async (_parent: unknown, _args: unknown, ctx: Context) => {
-      // const user: ( user: User) | null = await ctx.dataSources.sessions.getSession({
-      //   token: ctx.req.signedCookies.session,
-      //   userId: ctx.auth.refresh.sub as string,
-      // })
+      //using id and refreshtoken, we see if the session is valid on redis
+      const validSession = await ctx.dataSources.users.findUserSession({
+        id: ctx.auth.refresh.sub as string,
+        session: ctx.req.signedCookies?.session as string,
+      })
 
-      // if (user) {
-      //   //send an access token back
-      //   return !!ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(user.user)), {
-      //     httpOnly: true,
-      //     secure: true,
-      //     maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-      //     sameSite: 'none',
-      //     path: '/',
-      //     signed: true,
-      //   })
-      // }
+      if (validSession) {
+        //send an access token back
+        return !!ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(validSession)), {
+          httpOnly: true,
+          secure: true,
+          maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+          sameSite: 'none',
+          path: '/',
+          signed: true,
+        })
+      }
+
       return false
     },
   },

@@ -38,20 +38,26 @@ export default class UserAPI extends DataSource {
   }
 
   //uses redis to store sessions with a ttl
-  createUserSession = async ({ id, session, ttl }: { id: string; session: string; ttl: number }): Promise<void> => {
-    const activeSessions = (await this.cache?.get(id)) as string
+  createUserSession = async ({ user, session, ttl }: { user: User; session: string; ttl: number }): Promise<void> => {
+    const activeSessions = (await this.cache?.get(user.id)) as string
     if (activeSessions) {
-      await this.cache?.set(id, JSON.stringify({ id, sessions: [...JSON.parse(activeSessions).sessions, session] }), {
-        ttl,
-      })
-    } else await this.cache?.set(id, JSON.stringify({ id, sessions: [session] }), { ttl })
+      await this.cache?.set(
+        user.id,
+        JSON.stringify({ user, sessions: [...JSON.parse(activeSessions).sessions, session] }),
+        {
+          ttl,
+        },
+      )
+    } else await this.cache?.set(user.id, JSON.stringify({ user, sessions: [session] }), { ttl })
   }
 
   //finds a session and returns boolean if it exists or not
-  findUserSession = async ({ id, session }: { id: string; session: string }): Promise<boolean> => {
-    const activeSessions = (await this.cache?.get(id)) as string
-    if (activeSessions) return JSON.parse(activeSessions).sessions.includes(session)
-    else return false
+  findUserSession = async ({ id, session }: { id: string; session: string }): Promise<User | null> => {
+    const activeSessions = JSON.parse((await this.cache?.get(id)) as string)
+
+    //return the user back
+    if (activeSessions?.sessions?.includes(session)) return activeSessions.user
+    else return null
   }
 
   // can be {id} | {username} | {email}
