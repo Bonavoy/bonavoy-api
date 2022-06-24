@@ -57,7 +57,7 @@ export default {
             })
 
             //send refresh as httponly cookie
-            ctx.res.cookie('session', newRefresh, {
+            ctx.res.cookie(process.env.REFRESH_TOKEN_NAME as string, newRefresh, {
               httpOnly: true,
               secure: true,
               maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
@@ -68,7 +68,7 @@ export default {
 
             //send token as httponly cookie
             //place more sensitive in this cookie
-            ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(dbUser)), {
+            ctx.res.cookie(process.env.ACCESS_TOKEN_NAME as string, signAccessToken(tokenPayloadBuilder(dbUser)), {
               httpOnly: true,
               secure: true,
               maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
@@ -86,19 +86,23 @@ export default {
       //using id and refreshtoken, we see if the session is valid on redis
       const validSession = await ctx.dataSources.users.findUserSession({
         id: ctx.auth.refresh.sub as string,
-        session: ctx.req.signedCookies?.session as string,
+        session: ctx.req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string],
       })
 
       if (validSession) {
         //send an access token back
-        return !!ctx.res.cookie('ATC', signAccessToken(tokenPayloadBuilder(validSession)), {
-          httpOnly: true,
-          secure: true,
-          maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-          sameSite: 'none',
-          path: '/',
-          signed: true,
-        })
+        return !!ctx.res.cookie(
+          process.env.ACCESS_TOKEN_NAME as string,
+          signAccessToken(tokenPayloadBuilder(validSession)),
+          {
+            httpOnly: true,
+            secure: true,
+            maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+            sameSite: 'none',
+            path: '/',
+            signed: true,
+          },
+        )
       }
 
       return false

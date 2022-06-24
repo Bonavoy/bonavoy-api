@@ -49,12 +49,13 @@ const startServer = async () => {
           exp: null,
         },
       }
-      if (req.signedCookies?.session) {
+
+      if (req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string]) {
         //access token
-        const { token } = verifyAccessToken(req.signedCookies?.ATC)
+        const { token } = verifyAccessToken(req.signedCookies?.[process.env.ACCESS_TOKEN_NAME as string])
 
         //refresh token
-        const { refresh } = verifyRefreshToken(req.signedCookies?.session)
+        const { refresh } = verifyRefreshToken(req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string])
 
         auth = { ...token, refresh: { ...refresh } }
       }
