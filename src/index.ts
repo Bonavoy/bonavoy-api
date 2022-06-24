@@ -1,22 +1,22 @@
-import express, { Request, Response } from "express";
-import cookieParser from "cookie-parser";
+import express, { Request, Response } from 'express';
+import cookieParser from 'cookie-parser';
 
-import { ApolloServer } from "apollo-server-express";
-import { apolloApplication } from "./graphql/modules";
-import { applyMiddleware } from "graphql-middleware";
+import { ApolloServer } from 'apollo-server-express';
+import { apolloApplication } from './graphql/modules';
+import { applyMiddleware } from 'graphql-middleware';
 
-import { verifyAccessToken, verifyRefreshToken } from "./utils/auth";
-import dataSources from "./graphql/datasources";
-import permissions from "./graphql/permissions";
+import { verifyAccessToken, verifyRefreshToken } from './utils/auth';
+import dataSources from './graphql/datasources';
+import permissions from './graphql/permissions';
 
 //types
-import type { AuthContext } from "./types/auth";
+import type { AuthContext } from './types/auth';
 // import type {
 //   GraphQLResponse,
 //   GraphQLRequestContext,
 // } from "apollo-server-types";
 
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 const startServer = async () => {
@@ -76,7 +76,7 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
       credentials: true,
     },
   });
