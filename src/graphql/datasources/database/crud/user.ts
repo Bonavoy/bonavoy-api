@@ -1,16 +1,18 @@
-import { DataSource } from "apollo-datasource";
+import { DataSource, DataSourceConfig } from 'apollo-datasource'
 
 //types
-import { Context } from "../../../../types/auth";
-import type { PrismaClient, User } from "@prisma/client";
+import { Context } from '../../../../types/auth'
+import type { PrismaClient, User } from '@prisma/client'
+import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
+
 export default class UserAPI extends DataSource {
-  prisma: PrismaClient;
-  context: Context;
+  prisma: PrismaClient
+  context: Context | undefined
+  cache: KeyvAdapter | undefined
 
   constructor({ prisma }: { prisma: PrismaClient }) {
-    super();
-    this.prisma = prisma;
-    this.context = {} as Context;
+    super()
+    this.prisma = prisma
   }
 
   /**
@@ -19,53 +21,54 @@ export default class UserAPI extends DataSource {
    * like caches and context. We'll assign this.context to the request context
    * here, so we can know about the user making requests
    */
-  initialize = (config: any) => {
-    this.context = config.context;
-  };
+  initialize = (config: DataSourceConfig<Context>) => {
+    this.context = config.context
+    this.cache = config.cache as KeyvAdapter
+  }
 
-  createUser = async (user: User): Promise<User | null> => {
+  createUser = async (user: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User | null> => {
     try {
       return this.prisma.user.create({
         data: user,
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
+  }
 
-  // can be {id}
-  // can be {username}
-  // can be {email}
+  //uses redis to store sessions with a ttl
+  createUserSession = async ({ user, session, ttl }: { user: User; session: string; ttl: number }): Promise<void> => {
+    const activeSessions = (await this.cache?.get(user.id)) as string
+    if (activeSessions) {
+      await this.cache?.set(
+        user.id,
+        JSON.stringify({ user, sessions: [...JSON.parse(activeSessions).sessions, session] }),
+        {
+          ttl,
+        },
+      )
+    } else await this.cache?.set(user.id, JSON.stringify({ user, sessions: [session] }), { ttl })
+  }
+
+  //finds a session and returns boolean if it exists or not
+  findUserSession = async ({ id, session }: { id: string; session: string }): Promise<User | null> => {
+    const activeSessions = JSON.parse((await this.cache?.get(id)) as string)
+
+    //return the user back
+    if (activeSessions?.sessions?.includes(session)) return activeSessions.user
+    else return null
+  }
+
+  // can be {id} | {username} | {email}
   findUser = async (query: object): Promise<User | null> => {
     try {
       return this.prisma.user.findUnique({
         where: query,
-      });
+      })
     } catch (e) {
       // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
+      return null
     }
-  };
-
-  findUserByUsername = async (username?: string): Promise<User | null> => {
-    try {
-      return this.prisma.user.findUnique({
-        where: { username },
-      });
-    } catch (e) {
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
-    }
-  };
-  findUserByEmail = async (email?: string): Promise<User | null> => {
-    try {
-      return this.prisma.user.findUnique({
-        where: { email },
-      });
-    } catch (e) {
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null;
-    }
-  };
+  }
 }
