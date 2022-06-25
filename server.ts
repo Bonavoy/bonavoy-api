@@ -1,4 +1,4 @@
-import startServer from './src';
+import startServer from './src'
 
 //start server
-startServer();
+startServer()

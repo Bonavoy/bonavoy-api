@@ -1,7 +1,7 @@
 //types
-import { TokenDecoded } from '../../../types/auth';
-import { Trip } from '@prisma/client';
-import { BonavoyDataSources } from '../../datasources';
+import { TokenDecoded } from '../../../types/auth'
+import { Trip } from '@prisma/client'
+import { BonavoyDataSources } from '../../datasources'
 
 export default {
   Query: {
@@ -14,13 +14,13 @@ export default {
         res,
         dataSources,
       }: {
-        ctx: TokenDecoded;
-        req: Request;
-        res: Response;
-        dataSources: BonavoyDataSources;
-      }
+        ctx: TokenDecoded
+        req: Request
+        res: Response
+        dataSources: BonavoyDataSources
+      },
     ) => {
-      return await dataSources.trips.findTrip(tripId);
+      return await dataSources.trips.findTrip(tripId)
     },
   },
   Mutation: {
@@ -33,13 +33,13 @@ export default {
         res,
         dataSources,
       }: {
-        ctx: TokenDecoded;
-        req: Request;
-        res: Response;
-        dataSources: BonavoyDataSources;
-      }
+        ctx: TokenDecoded
+        req: Request
+        res: Response
+        dataSources: BonavoyDataSources
+      },
     ) => {
-      return dataSources.trips.createTrip(trip);
+      return dataSources.trips.createTrip(trip)
     },
   },
-};
+}

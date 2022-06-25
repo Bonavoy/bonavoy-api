@@ -1,23 +1,16 @@
-import { gql } from 'graphql-modules';
+import { gql } from 'graphql-modules'
 
 // trips: [Trip] add this to User type once trips resolvers is setup
 
 export default gql`
   #queries
   type Query {
-    getSpotOfInterestRecommendations(
-      input: SpotOfInterestRecommendationsInputs
-    ): [SpotOfInterest]
+    getSpotOfInterestRecommendations(input: SpotOfInterestRecommendationsInputs): [SpotOfInterest]
   }
 
   #mutations
   type Mutation {
-    addSpotOfInterest(
-      tripId: ID
-      placeId: ID
-      dayPlanId: ID
-      spotOfInterest: SpotOfInterestInput
-    ): [SpotOfInterest]
+    addSpotOfInterest(tripId: ID, placeId: ID, dayPlanId: ID, spotOfInterest: SpotOfInterestInput): [SpotOfInterest]
   }
 
   #inputs
@@ -50,4 +43,4 @@ export default gql`
     lat: Float
     lng: Float
   }
-`;
+`

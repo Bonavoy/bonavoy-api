@@ -1,4 +1,4 @@
-import { gql } from 'graphql-modules';
+import { gql } from 'graphql-modules'
 
 export default gql`
   #queries
@@ -27,4 +27,4 @@ export default gql`
     text: String!
     type: String!
   }
-`;
+`

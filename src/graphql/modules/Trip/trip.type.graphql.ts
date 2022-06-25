@@ -1,4 +1,4 @@
-import { gql } from 'graphql-modules';
+import { gql } from 'graphql-modules'
 
 // trips: [Trip] add this to User type once trips resolvers is setup
 
@@ -25,4 +25,4 @@ export default gql`
     name: String
     isPublic: Boolean
   }
-`;
+`
