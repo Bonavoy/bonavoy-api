@@ -3,7 +3,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   # queries
   type Query {
-    getTripDayPlans(tripId: ID): [Place]
+    findPlacesByTrip(tripId: ID): [Place]
   }
 
   # types
