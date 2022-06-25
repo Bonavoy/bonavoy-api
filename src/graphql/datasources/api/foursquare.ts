@@ -1,4 +1,4 @@
-import { RESTDataSource } from 'apollo-datasource-rest';
+import { RESTDataSource } from 'apollo-datasource-rest'
 
 // TODO: WRITE TYPES
 const dummy = [
@@ -146,16 +146,16 @@ const dummy = [
       lng: -115.576055,
     },
   },
-];
+]
 
 export default class FoursquareAPI extends RESTDataSource {
   constructor() {
-    super();
-    this.baseURL = 'https://api.foursquare.com/v3';
+    super()
+    this.baseURL = 'https://api.foursquare.com/v3'
   }
 
   willSendRequest(request: any) {
-    request.headers.set('Authorization', process.env.FOURSQUARE_API_KEY);
+    request.headers.set('Authorization', process.env.FOURSQUARE_API_KEY)
   }
 
   async getSpotsOfInterest(options: any) {
@@ -164,7 +164,7 @@ export default class FoursquareAPI extends RESTDataSource {
     //   `/places/search?ll=${coords.lat},${coords.lng}&limit=${limit}`
     // );
     // return this.formatToGraphQLSchema(results);
-    return dummy;
+    return dummy
   }
 
   async getSpotsOfInterestPhotos(options: any) {}
@@ -183,6 +183,6 @@ export default class FoursquareAPI extends RESTDataSource {
         lat: spot.geocodes.main.latitude,
         lng: spot.geocodes.main.longitude,
       },
-    }));
+    }))
   }
 }
