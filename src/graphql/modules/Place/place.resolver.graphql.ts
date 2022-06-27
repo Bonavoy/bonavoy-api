@@ -5,7 +5,7 @@ import { BonavoyDataSources } from '../../datasources'
 // TODO: WRITE TYPES
 export default {
   Query: {
-    getTripDayPlans: async (
+    findPlacesByTrip: async (
       _: unknown,
       args: { tripId: string },
       { dataSources }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },

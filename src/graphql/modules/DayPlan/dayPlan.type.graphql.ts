@@ -5,7 +5,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   # queries
   type Query {
-    getDayPlanByDate(placeId: ID, date: String): DayPlan
+    getDayPlanByDate(placeId: ID, date: DateTime): DayPlan
   }
 
   # mutations
@@ -15,7 +15,7 @@ export default gql`
 
   # input
   input CreateDayPlanInput {
-    date: String
+    date: DateTime
     order: Int
     placeId: ID
   }
@@ -23,7 +23,7 @@ export default gql`
   # types
   type DayPlan {
     id: ID
-    date: String
+    date: DateTime
     order: Int
     placeId: ID
   }
