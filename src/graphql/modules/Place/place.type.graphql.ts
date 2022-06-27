@@ -3,7 +3,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   # queries
   type Query {
-    getTripDayPlans(tripId: ID): [Place]
+    findPlacesByTrip(tripId: ID): [Place]
   }
 
   # types
@@ -11,8 +11,8 @@ export default gql`
     id: ID
     name: String
     mapbox_id: String
-    start: String
-    end: String
+    start: DateTime
+    end: DateTime
     order: Int
     duration: Int
     tripId: ID

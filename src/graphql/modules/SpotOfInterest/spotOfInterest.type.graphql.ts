@@ -16,8 +16,8 @@ export default gql`
   #inputs
   input SpotOfInterestInput {
     fsq_id: String!
-    from: String
-    to: String
+    from: DateTime
+    to: DateTime
   }
 
   input SpotOfInterestRecommendationsInputs {
