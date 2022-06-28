@@ -21,8 +21,10 @@ export default gql`
 
   #types
   type Trip {
-    id: ID
-    name: String
-    isPublic: Boolean
+    id: ID!
+    name: String!
+    isPublic: Boolean!
+    authors: [AuthorsOnTrips!]
+    places: [Place!]
   }
 `

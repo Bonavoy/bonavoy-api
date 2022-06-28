@@ -1,6 +1,7 @@
 import { GraphQLScalarType, Kind } from 'graphql'
 import { getISODateTime } from '../../../../utils/date'
 
+// TODO: change the any types to something more specific
 export default {
   DateTime: new GraphQLScalarType({
     name: 'DateTime',
@@ -11,11 +12,8 @@ export default {
     parseValue(value: any) {
       return new Date(value + 'Z') // set timezone to UTC
     },
-    parseLiteral(ast) {
-      if (ast.kind === Kind.INT) {
-        return new Date(parseInt(ast.value, 10)) // Convert hard-coded AST string to integer and then to Date
-      }
-      return null // Invalid hard-coded value (not an integer)
+    parseLiteral(value: any) {
+      return new Date(value + 'Z') // set timezone to UTC
     },
   }),
 }

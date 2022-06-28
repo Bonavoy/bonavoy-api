@@ -22,9 +22,9 @@ export default gql`
 
   # types
   type DayPlan {
-    id: ID
+    id: ID!
     date: DateTime
-    order: Int
-    placeId: ID
+    order: Int!
+    spots: [Spot!]
   }
 `
