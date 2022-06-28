@@ -158,7 +158,7 @@ export default class FoursquareAPI extends RESTDataSource {
     request.headers.set('Authorization', process.env.FOURSQUARE_API_KEY)
   }
 
-  async getSpotsOfInterest(options: any) {
+  async getSpots(options: any) {
     // const { coords, limit } = options;
     // const { results } = await this.get(
     //   `/places/search?ll=${coords.lat},${coords.lng}&limit=${limit}`
@@ -167,13 +167,8 @@ export default class FoursquareAPI extends RESTDataSource {
     return dummy
   }
 
-  async getSpotsOfInterestPhotos(options: any) {}
+  async getSpotPhotos(options: any) {}
 
-  /**
-   * format data from API to match our schema
-   * @param {SpotOfInterest} res
-   * @returns formatted list of spot of interest's
-   */
   formatToGraphQLSchema(res: any) {
     return res.map((spot: any) => ({
       fsq_id: spot.fsq_id,

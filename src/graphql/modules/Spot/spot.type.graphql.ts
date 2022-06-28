@@ -5,12 +5,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   #queries
   type Query {
-    getSpotRecommendations(input: SpotRecommendationInputs): [SpotOfInterest]
-  }
-
-  #mutations
-  type Mutation {
-    addSpotToDayPlan(tripId: ID, placeId: ID, dayPlanId: ID, Spot: SpotInput): [Spot]
+    getSpotRecommendations(input: SpotRecommendationInputs): [ExternalSpot]
   }
 
   #inputs
@@ -40,6 +35,12 @@ export default gql`
     order: Int!
     start: DateTime
     end: DateTime
+  }
+
+  type ExternalSpot {
+    fsq_id: String
+    coords: Coords
+    name: String!
   }
 
   type Coords {
