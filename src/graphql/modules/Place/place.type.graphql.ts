@@ -8,13 +8,13 @@ export default gql`
 
   # types
   type Place {
-    id: ID
-    name: String
-    mapbox_id: String
+    id: ID!
+    name: String!
+    mapbox_id: String!
     start: DateTime
     end: DateTime
-    order: Int
-    duration: Int
-    tripId: ID
+    order: Int!
+    duration: Int!
+    dayPlans: [DayPlan!]
   }
 `

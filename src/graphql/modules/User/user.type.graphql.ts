@@ -32,6 +32,19 @@ export default gql`
     password: String!
     avatar: String
     verified: Boolean!
-    trips: [Trip]
+    authorsOnTrips: [AuthorsOnTrips]
+  }
+
+  type AuthorsOnTrips {
+    id: ID!
+    role: TripRole!
+    tripId: ID!
+    trip: Trip!
+  }
+
+  enum TripRole {
+    AUTHOR
+    EDITOR
+    VIEWER
   }
 `

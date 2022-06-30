@@ -5,22 +5,17 @@ import { gql } from 'graphql-modules'
 export default gql`
   #queries
   type Query {
-    getSpotOfInterestRecommendations(input: SpotOfInterestRecommendationsInputs): [SpotOfInterest]
-  }
-
-  #mutations
-  type Mutation {
-    addSpotOfInterest(tripId: ID, placeId: ID, dayPlanId: ID, spotOfInterest: SpotOfInterestInput): [SpotOfInterest]
+    getSpotRecommendations(input: SpotRecommendationInputs): [ExternalSpot]
   }
 
   #inputs
-  input SpotOfInterestInput {
+  input SpotInput {
     fsq_id: String!
     from: DateTime
     to: DateTime
   }
 
-  input SpotOfInterestRecommendationsInputs {
+  input SpotRecommendationInputs {
     coords: CoordsInput
     limit: Int
     filter: String
@@ -32,11 +27,20 @@ export default gql`
   }
 
   #types
-  type SpotOfInterest {
-    fsq_id: ID
-    name: String
-    distance: Int
+  type Spot {
+    id: ID!
+    fsq_id: String
+    # coords: Coords
+    name: String!
+    order: Int!
+    start: DateTime
+    end: DateTime
+  }
+
+  type ExternalSpot {
+    fsq_id: String
     coords: Coords
+    name: String!
   }
 
   type Coords {
