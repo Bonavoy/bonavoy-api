@@ -9,6 +9,7 @@ import UserAPI from './database/crud/user'
 import TripsAPI from './database/crud/trip'
 import DayPlanAPI from './database/crud/dayPlan'
 import PlaceAPI from './database/crud/place'
+import SpotAPI from './database/crud/spot'
 
 const prisma = new PrismaClient()
 
@@ -18,6 +19,7 @@ export interface BonavoyDataSources {
   foursquareAPI: FoursquareAPI
   dayPlans: DayPlanAPI
   places: PlaceAPI
+  spots: SpotAPI
 }
 
 export default {
@@ -26,6 +28,7 @@ export default {
   trips: new TripsAPI({ prisma }),
   dayPlans: new DayPlanAPI({ prisma }),
   places: new PlaceAPI({ prisma }),
+  spots: new SpotAPI({ prisma }),
 
   //external
   foursquareAPI: new FoursquareAPI(),

@@ -8,11 +8,19 @@ export default gql`
     getSpotRecommendations(input: SpotRecommendationInputs): [ExternalSpot]
   }
 
+  # mutations
+  type Mutation {
+    addSpotToDayPlan(spot: SpotInput): Spot
+  }
+
   #inputs
   input SpotInput {
     fsq_id: String!
-    from: DateTime
-    to: DateTime
+    order: Int!
+    name: String
+    start: DateTime
+    end: DateTime
+    dayPlanId: ID!
   }
 
   input SpotRecommendationInputs {
@@ -30,11 +38,11 @@ export default gql`
   type Spot {
     id: ID!
     fsq_id: String
-    # coords: Coords
     name: String!
     order: Int!
     start: DateTime
     end: DateTime
+    dayPlanId: ID!
   }
 
   type ExternalSpot {

@@ -74,8 +74,8 @@ model Spot {
   fsq_id    String
   name      String
   order     Int
-  start     DateTime
-  end       DateTime
+  start     DateTime?
+  end       DateTime?
   dayPlanId String
   dayPlan   DayPlan  @relation(fields: [dayPlanId], references: [id])
   createdAt DateTime @default(now())

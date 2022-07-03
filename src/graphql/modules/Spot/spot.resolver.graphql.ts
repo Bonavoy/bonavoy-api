@@ -26,4 +26,17 @@ export default {
       return spotRecommendations
     },
   },
+  Mutation: {
+    addSpotToDayPlan: async (
+      _: unknown,
+      args: {
+        spot: Spot
+      },
+      { dataSources }: { dataSources: BonavoyDataSources },
+    ) => {
+      const { spot } = args
+      // const order = dataSources.spots.findHighestOrderSpot(spot.dayPlanId)
+      return await dataSources.spots.addSpotToDayPlan(spot)
+    },
+  },
 }
