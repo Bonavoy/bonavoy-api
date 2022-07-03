@@ -4,6 +4,7 @@ export default gql`
   # queries
   type Query {
     findPlacesByTrip(tripId: ID): [Place]
+    findPlaceByDate(tripId: ID, date: DateTime): Place
   }
 
   # types
