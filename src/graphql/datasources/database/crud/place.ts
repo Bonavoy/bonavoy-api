@@ -24,13 +24,33 @@ export default class PlaceAPI extends DataSource {
     this.context = config.context
   }
 
-  findPlacesByTrip = async (tripId: string) => {
+  findPlacesByTrip = async (tripId: string): Promise<Place[]> => {
     return await this.prisma.place.findMany({
       orderBy: {
         order: 'asc',
       },
       where: {
         tripId,
+      },
+    })
+  }
+
+  /**
+   *
+   * @param tripId the trip to find place in
+   * @param date date of trip to get place for
+   * @returns Place | null
+   */
+  findPlaceByDate = async (tripId: string, date: Date): Promise<Place | null> => {
+    return await this.prisma.place.findFirst({
+      where: {
+        tripId,
+        start: {
+          lte: date,
+        },
+        end: {
+          gte: date,
+        },
       },
     })
   }
