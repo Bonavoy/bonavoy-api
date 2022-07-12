@@ -3,17 +3,12 @@ import { shield } from 'graphql-shield'
 //rules
 import { isAuthenticated, isSession } from './rules'
 
-export default shield(
-  {
-    Query: {
-      user: isAuthenticated,
-    },
-    Mutation: {
-      token: isSession,
-      createTrip: isAuthenticated,
-    },
+export default shield({
+  Query: {
+    user: isAuthenticated,
   },
-  {
-    debug: true,
+  Mutation: {
+    token: isSession,
+    createTrip: isAuthenticated,
   },
-)
+})
