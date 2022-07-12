@@ -32,6 +32,9 @@ export default class DayPlanAPI extends DataSource {
           id: placeId,
         },
       },
+      include: {
+        spots: true,
+      },
     })
   }
 
