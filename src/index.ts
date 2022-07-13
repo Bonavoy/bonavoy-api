@@ -50,6 +50,8 @@ const startServer = async () => {
         },
       }
 
+      console.log(req)
+
       if (req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string]) {
         //access token
         const { token } = verifyAccessToken(req.signedCookies?.[process.env.ACCESS_TOKEN_NAME as string])
