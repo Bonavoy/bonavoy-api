@@ -31,6 +31,6 @@ export default gql`
 
   type Geometry {
     type: String!
-    coordinates: [Int]!
+    coordinates: [Float]!
   }
 `
