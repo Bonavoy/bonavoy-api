@@ -38,7 +38,7 @@ export default {
       const dbUser: User | null = await ctx.dataSources.users.findUser({ username })
 
       //if no user, throw error
-      if (!dbUser) return false
+      if (!dbUser) throw new AuthenticationError('Invalid credentials')
 
       //promise due to needing to wait for async cb by compare function
       return await new Promise((resolve) => {
