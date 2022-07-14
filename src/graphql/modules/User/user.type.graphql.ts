@@ -3,7 +3,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   #queries
   type Query {
-    user: User
+    user: User!
   }
 
   #mutations

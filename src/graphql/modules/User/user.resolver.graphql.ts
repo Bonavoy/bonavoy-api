@@ -12,15 +12,9 @@ import type { User } from '@prisma/client'
 
 export default {
   Query: {
-    user: (_: unknown, args: unknown, ctx: Context) => {
-      return {
-        id: '12345',
-        email: 'some.user@email.com',
-        password: 'Pa$$w0rd!',
-        loggedIn: false,
-        firstName: 'Some',
-        lastName: 'User',
-      }
+    user: async (_: unknown, args: unknown, ctx: Context) => {
+      //get user from db
+      return await ctx.dataSources.users.findUser({id: ctx.auth.sub})
     },
   },
   Mutation: {
