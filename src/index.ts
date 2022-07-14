@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express, { Request, Response } from 'express'
 import cookieParser from 'cookie-parser'
 
@@ -20,9 +21,6 @@ import type { AuthContext } from './types/auth'
 //   GraphQLResponse,
 //   GraphQLRequestContext,
 // } from "apollo-server-types";
-
-import dotenv from 'dotenv'
-dotenv.config()
 
 const startServer = async () => {
   //express app start

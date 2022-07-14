@@ -1,12 +1,10 @@
 import fs from 'fs'
 import jwt, { Algorithm, VerifyErrors } from 'jsonwebtoken'
+import 'dotenv/config'
 
 //types
 import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth'
 import { User } from '@prisma/client'
-
-import dotenv from 'dotenv'
-dotenv.config()
 
 const secret = fs.readFileSync('secret.key', 'utf-8')
 const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8')

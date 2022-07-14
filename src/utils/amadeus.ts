@@ -1,6 +1,5 @@
 import axios from 'axios'
-import dotenv from 'dotenv'
-dotenv.config()
+import 'dotenv/config'
 
 const params = new URLSearchParams()
 params.append('grant_type', 'client_credentials')
