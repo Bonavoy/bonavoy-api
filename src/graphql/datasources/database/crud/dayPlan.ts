@@ -24,17 +24,40 @@ export default class DayPlanAPI extends DataSource {
     this.context = config.context
   }
 
-  findDayPlanByDate = async (placeId: string, date: string) => {
+  /**
+   * gets the day plan for a given date in a trip
+   *
+   * @param tripId
+   * @param date
+   * @returns
+   */
+  findDayPlanByDate = async (tripId: string, date: string) => {
     return await this.prisma.dayPlan.findFirst({
       where: {
-        date: date,
         place: {
-          id: placeId,
+          tripId,
         },
+        date,
       },
-      include: {
-        spots: true,
-      },
+      // where: {
+      //   id: tripId,
+      //   places: {
+      //     every: {
+      //       dayPlans: {
+      //         every: {
+      //           date,
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
+      // include: {
+      //   places: {
+      //     include: {
+      //       dayPlans: true,
+      //     },
+      //   },
+      // },
     })
   }
 

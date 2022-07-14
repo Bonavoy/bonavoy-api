@@ -4,7 +4,7 @@ export default gql`
   # queries
   type Query {
     findPlacesByTrip(tripId: ID): [Place]
-    findPlaceByDate(tripId: ID, date: DateTime): Place
+    getPlaceByDate(tripId: ID, date: DateTime): Place
   }
 
   # types
@@ -16,6 +16,6 @@ export default gql`
     end: DateTime
     order: Int!
     duration: Int!
-    dayPlans: [DayPlan!]
+    dayPlans(date: DateTime): [DayPlan!]
   }
 `

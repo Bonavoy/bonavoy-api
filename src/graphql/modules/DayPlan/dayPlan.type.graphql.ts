@@ -5,7 +5,7 @@ import { gql } from 'graphql-modules'
 export default gql`
   # queries
   type Query {
-    getDayPlanByDate(placeId: ID, date: DateTime): DayPlan
+    getDayPlanByDate(tripId: ID, date: DateTime): DayPlan
   }
 
   # mutations

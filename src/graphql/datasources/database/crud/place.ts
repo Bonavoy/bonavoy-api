@@ -1,8 +1,6 @@
-import { DataSource } from 'apollo-datasource'
-
-//types
-import type { DataSourceConfig } from 'apollo-datasource'
+import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, Place } from '@prisma/client'
+
 import { Context } from '../../../../types/auth'
 
 export default class PlaceAPI extends DataSource {
@@ -32,6 +30,13 @@ export default class PlaceAPI extends DataSource {
       where: {
         tripId,
       },
+      include: {
+        dayPlans: {
+          include: {
+            spots: true,
+          },
+        },
+      },
     })
   }
 
@@ -50,6 +55,14 @@ export default class PlaceAPI extends DataSource {
         },
         end: {
           gte: date,
+        },
+      },
+      include: {
+        // todo: only include if GraphQL query has asked for this field
+        dayPlans: {
+          include: {
+            spots: true,
+          },
         },
       },
     })
