@@ -1,7 +1,5 @@
 import bcrypt from 'bcrypt'
-
-import dotenv from 'dotenv'
-dotenv.config()
+import 'dotenv/config'
 
 import { AuthenticationError } from 'apollo-server-express'
 import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../utils/auth'
@@ -14,7 +12,7 @@ export default {
   Query: {
     user: async (_: unknown, args: unknown, ctx: Context) => {
       //get user from db
-      return await ctx.dataSources.users.findUser({id: ctx.auth.sub})
+      return await ctx.dataSources.users.findUser({ id: ctx.auth.sub })
     },
   },
   Mutation: {
