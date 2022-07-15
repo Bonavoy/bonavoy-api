@@ -6,9 +6,9 @@ export const isAuthenticated = rule({ cache: 'contextual' })(async (_parent: unk
   //basically see if ACESS TOKEN has a user id once verified in context of grapgql
 
   //checks if there is a valid auth token
-  if (!!ctx.auth.sub) return true
+  if (ctx.auth.sub) return true
   //if no auth token, check if we have a valid refresh token
-  else if (!!!ctx.auth.sub && !!ctx.auth.refresh.sub) return 'Token expired!'
+  else if (!ctx.auth.sub && ctx.auth.refresh.sub) return 'Token expired!'
   return false
 })
 
