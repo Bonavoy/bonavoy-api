@@ -37,7 +37,7 @@ export default gql`
   #types
   type Spot {
     id: ID!
-    fsq_id: String
+    fsq_id: String!
     name: String!
     order: Int!
     start: DateTime
