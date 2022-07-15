@@ -35,6 +35,7 @@ export default {
       { dataSources }: { dataSources: BonavoyDataSources },
     ) => {
       const { spot } = args
+      console.log(spot)
       // const order = dataSources.spots.findHighestOrderSpot(spot.dayPlanId)
       return await dataSources.spots.addSpotToDayPlan(spot)
     },
