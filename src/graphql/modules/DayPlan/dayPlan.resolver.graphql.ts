@@ -8,7 +8,7 @@ export default {
   Query: {
     getDayPlanByDate: async (
       _: unknown,
-      args: { placeId: string; date: string },
+      args: { tripId: string; date: string },
       {
         ctx,
         req,
@@ -16,8 +16,8 @@ export default {
         dataSources,
       }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
     ) => {
-      const { placeId, date } = args
-      return await dataSources.dayPlans.findDayPlanByDate(placeId, date)
+      const { tripId, date } = args
+      return await dataSources.dayPlans.findDayPlanByDate(tripId, date)
     },
   },
   Mutation: {
