@@ -10,17 +10,17 @@ export default gql`
 
   # mutations
   type Mutation {
-    addSpotToDayPlan(spot: SpotInput): Spot
+    spot(spot: SpotInput, date: DateTime, tripId: ID, placeId: ID): Spot
   }
 
   #inputs
   input SpotInput {
     fsq_id: String!
-    order: Int!
+    order: Int
     name: String
     start: DateTime
     end: DateTime
-    dayPlanId: ID!
+    dayPlanId: ID
   }
 
   input SpotRecommendationInputs {
