@@ -13,5 +13,5 @@ export default shield(
       createTrip: isAuthenticated,
     },
   },
-  { debug: true },
+  { debug: process.env.NODE_ENV === 'development' },
 )
