@@ -18,9 +18,9 @@ export default gql`
 
   #types
   type LocationSuggestion {
-    bbox: [Float]!
-    center: [Float]!
-    geometry: Geometry!
+    bbox: [Float]
+    center: [Float]
+    geometry: Geometry
     id: ID!
     place_name: String!
     place_type: [String]!
