@@ -3,11 +3,6 @@ import { gql } from 'graphql-modules'
 // trips: [Trip] add this to User type once trips resolvers is setup
 
 export default gql`
-  #queries
-  type Query {
-    getSpotRecommendations(input: SpotRecommendationInputs): [ExternalSpot]
-  }
-
   # mutations
   type Mutation {
     spot(spot: SpotInput, date: DateTime, tripId: ID, placeId: ID): Spot

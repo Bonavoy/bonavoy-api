@@ -8,8 +8,18 @@ import dayPlanModule from './DayPlan/dayPlan.module.graphql'
 import spotModule from './Spot/spot.module.graphql'
 import placeModule from './Place/place.module.graphql'
 import dateTimeModule from './scalarTypes/DateTime/dateTime.module.graphql'
+import venueModule from './Venue/venue.module.graphql'
 
 //combine all resolvers and types
 export const apolloApplication = createApplication({
-  modules: [userModule, tripModule, locationModule, spotModule, dayPlanModule, placeModule, dateTimeModule],
+  modules: [
+    userModule,
+    tripModule,
+    locationModule,
+    spotModule,
+    dayPlanModule,
+    placeModule,
+    dateTimeModule,
+    venueModule,
+  ],
 })
