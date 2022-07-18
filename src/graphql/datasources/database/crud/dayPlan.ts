@@ -5,6 +5,18 @@ import type { DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, DayPlan } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 
+export interface CreateDayPlan {
+  date: Date
+  order: number
+  placeId: string
+}
+
+export interface FindDayPlanFilters {
+  date: Date
+  tripId?: string
+  placeId?: string
+}
+
 export default class DayPlanAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
@@ -31,37 +43,19 @@ export default class DayPlanAPI extends DataSource {
    * @param date
    * @returns
    */
-  findDayPlanByDate = async (tripId: string, date: string) => {
+  findDayPlan = async ({ date, tripId, placeId }: FindDayPlanFilters): Promise<DayPlan | null> => {
     return await this.prisma.dayPlan.findFirst({
       where: {
         place: {
-          tripId,
+          ...(tripId && { tripId }),
+          ...(placeId && { placeId }),
         },
         date,
       },
-      // where: {
-      //   id: tripId,
-      //   places: {
-      //     every: {
-      //       dayPlans: {
-      //         every: {
-      //           date,
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
-      // include: {
-      //   places: {
-      //     include: {
-      //       dayPlans: true,
-      //     },
-      //   },
-      // },
     })
   }
 
-  createDayPlan = async (dayPlan: DayPlan) => {
+  createDayPlan = async (dayPlan: CreateDayPlan) => {
     return await this.prisma.dayPlan.create({
       data: {
         ...dayPlan,
