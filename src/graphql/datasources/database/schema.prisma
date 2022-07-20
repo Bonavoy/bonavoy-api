@@ -39,6 +39,8 @@ model Trip {
   isPublic  Boolean          @default(false)
   authors   AuthorsOnTrips[]
   places    Place[]
+  startDate DateTime
+  endDate   DateTime
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 }
@@ -70,16 +72,16 @@ model DayPlan {
 }
 
 model Spot {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   fsq_id    String
   name      String
   order     Int
   start     DateTime?
   end       DateTime?
   dayPlanId String
-  dayPlan   DayPlan  @relation(fields: [dayPlanId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 enum TripRole {
