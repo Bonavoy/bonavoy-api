@@ -24,20 +24,25 @@ export default class TripsAPI extends DataSource {
     this.context = config.context
   }
 
-  createTrip = async (trip: Trip & { places: Place }) => {
-    return await this.prisma.trip.create({
-      data: {
-        ...trip,
-        authors: {
-          create: [
-            {
+  createTrip = async (trip: Trip & { places: Place[] }) => {
+    return await this.prisma.trip
+      .create({
+        data: {
+          ...trip,
+          authors: {
+            create: {
               userId: this.context?.auth.sub as string,
               role: 'AUTHOR',
             },
-          ],
+          },
+          places: {
+            createMany: {
+              data: trip.places,
+            },
+          },
         },
-      },
-    })
+      })
+      .catch((err) => console.log(err))
   }
 
   findTrip = async (tripId: string) => {

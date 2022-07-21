@@ -10,7 +10,7 @@ export default {
     },
   },
   Mutation: {
-    createTrip: async (_: unknown, { trip }: { trip: Trip & { places: Place } }, ctx: Context) => {
+    createTrip: async (_: unknown, { trip }: { trip: Trip & { places: Place[] } }, ctx: Context) => {
       return ctx.dataSources.trips.createTrip(trip)
     },
   },
