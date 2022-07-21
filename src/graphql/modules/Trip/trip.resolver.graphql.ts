@@ -1,4 +1,4 @@
-import { Trip } from '@prisma/client'
+import { Place, Trip } from '@prisma/client'
 
 //types
 import { Context } from '../../../types/auth'
@@ -10,8 +10,8 @@ export default {
     },
   },
   Mutation: {
-    createTrip: async (_: unknown, { trip }: { trip: Trip }, ctx: Context) => {
-      return ctx.dataSources.trips.createTrip(trip, ctx.auth.sub as string)
+    createTrip: async (_: unknown, { trip }: { trip: Trip & { places: Place } }, ctx: Context) => {
+      return ctx.dataSources.trips.createTrip(trip)
     },
   },
 }

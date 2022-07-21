@@ -22,7 +22,7 @@ export default {
       // create day plan if no day plan id was
       if (!spot.dayPlanId) {
         const places = await dataSources.places.findPlacesByTrip(tripId)
-        const firstDate = new Date(places[0].start)
+        const firstDate = new Date(places[0].start as Date)
         const order = differenceInDays(date, firstDate) + 1
         const dayPlan = await dataSources.dayPlans.createDayPlan({ placeId, order, date })
 

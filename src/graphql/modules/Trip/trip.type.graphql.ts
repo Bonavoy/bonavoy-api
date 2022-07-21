@@ -19,7 +19,7 @@ export default gql`
     places: [PlaceInput]
     startDate: DateTime
     endDate: DateTime
-    # isPublic: Boolean
+    isPublic: Boolean
   }
 
   #types
