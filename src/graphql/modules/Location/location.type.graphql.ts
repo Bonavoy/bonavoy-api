@@ -14,8 +14,6 @@ export default gql`
   #mutations
   # type Mutation {}
 
-  #inputs
-
   #types
   type LocationSuggestion {
     bbox: [Float]

@@ -11,7 +11,7 @@ export default {
   },
   Mutation: {
     createTrip: async (_: unknown, { trip }: { trip: Trip }, ctx: Context) => {
-      return ctx.dataSources.trips.createTrip(trip)
+      return ctx.dataSources.trips.createTrip(trip, ctx.auth.sub as string)
     },
   },
 }

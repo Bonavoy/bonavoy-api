@@ -49,11 +49,13 @@ model Place {
   id        String    @id @default(uuid())
   name      String
   mapbox_id String
-  start     DateTime
-  end       DateTime
+  start     DateTime?
+  end       DateTime?
   order     Int
-  duration  Int
   tripId    String
+  bbox      Float[]
+  center    Float[]
+  geometry  Float[]
   trip      Trip      @relation(fields: [tripId], references: [id])
   dayPlans  DayPlan[]
   createdAt DateTime  @default(now())

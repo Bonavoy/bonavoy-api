@@ -10,13 +10,16 @@ export default gql`
 
   #mutations
   type Mutation {
-    createTrip(trip: TripInput): Trip
+    createTrip(trip: TripInput): Trip!
   }
 
   #inputs
   input TripInput {
     name: String
-    isPublic: Boolean
+    places: [PlaceInput]
+    startDate: DateTime
+    endDate: DateTime
+    # isPublic: Boolean
   }
 
   #types
@@ -25,6 +28,8 @@ export default gql`
     name: String!
     isPublic: Boolean!
     authors: [AuthorsOnTrips!]
-    places: [Place!]
+    places: [Place]
+    startDate: DateTime
+    endDate: DateTime
   }
 `
