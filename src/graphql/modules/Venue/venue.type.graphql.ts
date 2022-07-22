@@ -5,19 +5,19 @@ import { gql } from 'graphql-modules'
 export default gql`
   #queries
   type Query {
-    venue(input: VenueRecommendationInputs): [Venue]
+    venuePage(input: VenueRecommendationInputs): VenuePage
   }
 
   # inputs
   input VenueRecommendationInputs {
     coords: CoordsInput!
-    pageSize: Int
-    offset: Int
+    pageSize: Int!
+    cursor: String
   }
 
   input CoordsInput {
-    lat: Float
-    lng: Float
+    lat: Float!
+    lng: Float!
   }
 
   # types
@@ -26,6 +26,11 @@ export default gql`
     coords: Coords!
     name: String!
     category: String
+  }
+
+  type VenuePage {
+    venues: [Venue]
+    cursor: String
   }
 
   type Coords {

@@ -16,7 +16,7 @@ interface Venue {
 
 export default {
   Query: {
-    venue: async (
+    venuePage: async (
       _: unknown,
       args: { input: VenueRecommendationParams },
       {
@@ -31,10 +31,10 @@ export default {
       const options = {
         coords: input.coords,
         pageSize: input.pageSize ?? 16,
-        offset: input.offset,
+        ...(input.cursor && { cursor: input.cursor }),
       }
-      const spotRecommendations = await dataSources.foursquareAPI.getVenueRecommendations(options)
-      return spotRecommendations
+      const venueRecommendations = await dataSources.foursquareAPI.getVenueRecommendations(options)
+      return venueRecommendations
     },
   },
 }
