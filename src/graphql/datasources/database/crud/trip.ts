@@ -2,7 +2,7 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, Trip } from '@prisma/client'
+import type { Place, PrismaClient, Trip } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 
 export default class TripsAPI extends DataSource {
@@ -24,12 +24,25 @@ export default class TripsAPI extends DataSource {
     this.context = config.context
   }
 
-  createTrip = async (trip: Trip) => {
-    return await this.prisma.trip.create({
-      data: {
-        ...trip,
-      },
-    })
+  createTrip = async (trip: Trip & { places: Place[] }) => {
+    return await this.prisma.trip
+      .create({
+        data: {
+          ...trip,
+          authors: {
+            create: {
+              userId: this.context?.auth.sub as string,
+              role: 'AUTHOR',
+            },
+          },
+          places: {
+            createMany: {
+              data: trip.places,
+            },
+          },
+        },
+      })
+      .catch((err) => console.log(err))
   }
 
   findTrip = async (tripId: string) => {

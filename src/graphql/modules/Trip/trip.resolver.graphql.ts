@@ -1,45 +1,17 @@
+import { Place, Trip } from '@prisma/client'
+
 //types
-import { TokenDecoded } from '../../../types/auth'
-import { Trip } from '@prisma/client'
-import { BonavoyDataSources } from '../../datasources'
+import { Context } from '../../../types/auth'
 
 export default {
   Query: {
-    getTrip: async (
-      _: unknown,
-      { tripId }: { tripId: string },
-      {
-        ctx,
-        req,
-        res,
-        dataSources,
-      }: {
-        ctx: TokenDecoded
-        req: Request
-        res: Response
-        dataSources: BonavoyDataSources
-      },
-    ) => {
-      return await dataSources.trips.findTrip(tripId)
+    getTrip: async (_: unknown, { tripId }: { tripId: string }, ctx: Context) => {
+      return await ctx.dataSources.trips.findTrip(tripId)
     },
   },
   Mutation: {
-    createTrip: async (
-      _: unknown,
-      { trip }: { trip: Trip },
-      {
-        ctx,
-        req,
-        res,
-        dataSources,
-      }: {
-        ctx: TokenDecoded
-        req: Request
-        res: Response
-        dataSources: BonavoyDataSources
-      },
-    ) => {
-      return dataSources.trips.createTrip(trip)
+    createTrip: async (_: unknown, { trip }: { trip: Trip & { places: Place[] } }, ctx: Context) => {
+      return ctx.dataSources.trips.createTrip(trip)
     },
   },
 }
