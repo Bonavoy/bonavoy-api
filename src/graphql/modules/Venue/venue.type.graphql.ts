@@ -26,6 +26,8 @@ export default gql`
     coords: Coords!
     name: String!
     category: String
+    prefix: String
+    suffix: String
   }
 
   type VenuePage {
