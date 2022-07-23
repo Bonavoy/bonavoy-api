@@ -17,7 +17,6 @@ export default class FoursquareAPI extends RESTDataSource {
   async didReceiveResponse(response: Response, _: Request): Promise<any> {
     const nextCursorLink = await response.headers.get('Link')
     const body = await response.json()
-    console.log(body)
     return { body, nextCursorLink }
   }
 
