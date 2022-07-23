@@ -1,5 +1,4 @@
 import { Request, Response, RESTDataSource } from 'apollo-datasource-rest'
-
 export interface VenueRecommendationParams {
   coords: { lat: number; lng: number }
   pageSize: number
@@ -30,10 +29,30 @@ export default class FoursquareAPI extends RESTDataSource {
     const { body, nextCursorLink } = await this.get(
       `/places/search?ll=${coords.lat},${coords.lng}&limit=${pageSize}${cursorParam}`,
     )
+    const formattedVenues = this.format(body.results)
+
     return {
-      venues: this.format(body.results),
+      venues: await this.getVenuePhotos(formattedVenues),
       cursor: this.parseHeaderLink(nextCursorLink),
     }
+  }
+
+  // mutates venues object
+  getVenuePhotos = async (venues: Array<any>) => {
+    const getVenuePhotoPromises = venues.map((venue) => this.getPhotoUrlComponents(venue.fsq_id))
+    const venuePhotos = await Promise.all(getVenuePhotoPromises)
+    return venues.map((venue, i) => {
+      return {
+        ...venue,
+        coords: { ...venue.coords },
+        ...venuePhotos[i],
+      }
+    })
+  }
+
+  getPhotoUrlComponents = async (fsq_id: string) => {
+    const { body } = await this.get(`/places/${fsq_id}/photos`)
+    return { prefix: body.at(0)?.prefix, suffix: body.at(0)?.suffix }
   }
 
   parseHeaderLink = (headerLink: string) => {
