@@ -58,10 +58,10 @@ export default class PlaceAPI extends DataSource {
     return await this.prisma.place.findFirst({
       where: {
         tripId,
-        start: {
+        startDate: {
           lte: date,
         },
-        end: {
+        endDate: {
           gte: date,
         },
       },

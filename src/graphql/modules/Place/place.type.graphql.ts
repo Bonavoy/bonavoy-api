@@ -9,24 +9,37 @@ export default gql`
 
   #inputs
   input PlaceInput {
-    name: String!
+    text: String!
+    place_name: String!
     mapbox_id: String!
     start: DateTime
     end: DateTime
     order: Int!
     bbox: [Float]
     center: [Float]
-    geometry: [Float]
+    geometry: GeometryInput
+  }
+
+  input GeometryInput {
+    type: String
+    coordinates: [Float]
   }
 
   # types
   type Place {
     id: ID!
-    name: String!
+    text: String!
+    place_name: String!
     mapbox_id: String!
     start: DateTime
     end: DateTime
     order: Int!
+    geometry: Geometry
     dayPlans(date: DateTime): [DayPlan!]
+  }
+
+  type Geometry {
+    type: String
+    coordinates: [Float]
   }
 `
