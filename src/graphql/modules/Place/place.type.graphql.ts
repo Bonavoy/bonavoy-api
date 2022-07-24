@@ -17,12 +17,8 @@ export default gql`
     order: Int!
     bbox: [Float]
     center: [Float]
-    geometry: GeometryInput
-  }
-
-  input GeometryInput {
-    type: String
-    coordinates: [Float]
+    geometry: [Float]
+    colour: String
   }
 
   # types
@@ -34,12 +30,8 @@ export default gql`
     start: DateTime
     end: DateTime
     order: Int!
-    geometry: Geometry
+    geometry: [Float]
+    colour: String
     dayPlans(date: DateTime): [DayPlan!]
-  }
-
-  type Geometry {
-    type: String
-    coordinates: [Float]
   }
 `
