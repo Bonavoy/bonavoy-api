@@ -49,8 +49,9 @@ model Place {
   id        String    @id @default(uuid())
   name      String
   mapbox_id String
-  start     DateTime?
-  end       DateTime?
+  startDate DateTime?
+  endDate   DateTime?
+  colour    String
   order     Int
   tripId    String
   bbox      Float[]
@@ -78,8 +79,8 @@ model Spot {
   fsq_id    String
   name      String
   order     Int
-  start     DateTime?
-  end       DateTime?
+  startTime DateTime?
+  endTime   DateTime?
   dayPlanId String
   dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id])
   createdAt DateTime  @default(now())

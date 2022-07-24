@@ -50,6 +50,9 @@ export default class TripsAPI extends DataSource {
       where: {
         id: tripId,
       },
+      include: {
+        places: true,
+      },
     })
   }
 }
