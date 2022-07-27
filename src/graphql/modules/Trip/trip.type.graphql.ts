@@ -11,6 +11,7 @@ export default gql`
   #mutations
   type Mutation {
     createTrip(trip: TripInput): Trip!
+    updateTripName(tripId: ID!, name: String!): String!
   }
 
   #inputs

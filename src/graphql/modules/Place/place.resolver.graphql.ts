@@ -39,8 +39,8 @@ export default {
         args.secondNewOrder,
       )
     },
-    deletePlace: async (_: unknown, placeId: string, ctx: Context) => {
-      return await ctx.dataSources.places.deletePlace(placeId)
+    deletePlace: async (_: unknown, { placeId }: { placeId: string }, ctx: Context) => {
+      return !!(await ctx.dataSources.places.deletePlace(placeId))
     },
   },
 }

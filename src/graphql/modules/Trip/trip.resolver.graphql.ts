@@ -13,5 +13,8 @@ export default {
     createTrip: async (_: unknown, { trip }: { trip: Trip & { places: Place[] } }, ctx: Context) => {
       return ctx.dataSources.trips.createTrip(trip)
     },
+    updateTripName: async (_: unknown, { tripId, name }: { tripId: string; name: string }, ctx: Context) => {
+      return ctx.dataSources.trips.updateTripName(tripId, name)
+    },
   },
 }

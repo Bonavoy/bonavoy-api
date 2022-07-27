@@ -57,4 +57,20 @@ export default class TripsAPI extends DataSource {
       },
     })
   }
+
+  updateTripName = async (tripId: string, name: string) => {
+    return (
+      await this.prisma.trip.update({
+        where: {
+          id: tripId,
+        },
+        data: {
+          name,
+        },
+        select: {
+          name: true,
+        },
+      })
+    ).name
+  }
 }
