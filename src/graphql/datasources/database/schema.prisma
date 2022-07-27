@@ -57,7 +57,6 @@ model Place {
   tripId     String
   bbox       Float[]
   center     Float[]
-  geometry   Float[]
   trip       Trip      @relation(fields: [tripId], references: [id])
   dayPlans   DayPlan[]
   createdAt  DateTime  @default(now())

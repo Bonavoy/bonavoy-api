@@ -42,7 +42,6 @@ export default gql`
     startDate: DateTime
     endDate: DateTime
     order: Int!
-    geometry: [Float]
     colour: String
     dayPlans(date: DateTime): [DayPlan!]
   }
