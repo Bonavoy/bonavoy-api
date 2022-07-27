@@ -15,6 +15,7 @@ export default gql`
       firstNewOrder: Int!
       secondNewOrder: Int!
     ): [PlaceOrder!]!
+    deletePlace(placeId: ID!): Boolean!
   }
 
   #inputs
