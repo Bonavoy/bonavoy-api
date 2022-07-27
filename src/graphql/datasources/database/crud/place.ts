@@ -75,4 +75,37 @@ export default class PlaceAPI extends DataSource {
       },
     })
   }
+
+  updatePlaceOrder = async (
+    firstPlaceId: string,
+    secondPlaceId: string,
+    firstNewOrder: number,
+    secondNewOrder: number,
+  ) => {
+    const firstPlace = this.prisma.place.update({
+      where: {
+        id: firstPlaceId,
+      },
+      data: {
+        order: firstNewOrder,
+      },
+      select: {
+        id: true,
+        order: true,
+      },
+    })
+    const secondPlace = this.prisma.place.update({
+      where: {
+        id: secondPlaceId,
+      },
+      data: {
+        order: secondNewOrder,
+      },
+      select: {
+        id: true,
+        order: true,
+      },
+    })
+    return await this.prisma.$transaction([firstPlace, secondPlace])
+  }
 }

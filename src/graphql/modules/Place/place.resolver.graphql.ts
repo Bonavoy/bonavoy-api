@@ -1,6 +1,6 @@
 // types
-import { TokenDecoded } from '../../../types/auth'
-import { BonavoyDataSources } from '../../datasources'
+import { Place } from '@prisma/client'
+import { Context } from '../../../types/auth'
 
 // TODO: WRITE TYPES
 export default {
@@ -17,21 +17,27 @@ export default {
     },
   },
   Query: {
-    findPlacesByTrip: async (
-      _: unknown,
-      args: { tripId: string },
-      { dataSources }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
-    ) => {
+    findPlacesByTrip: async (_: unknown, args: { tripId: string }, ctx: Context) => {
       const { tripId } = args
-      return await dataSources.places.findPlacesByTrip(tripId)
+      return await ctx.dataSources.places.findPlacesByTrip(tripId)
     },
-    getPlaceByDate: async (
-      _: unknown,
-      args: { tripId: string; date: Date },
-      { dataSources }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
-    ) => {
+    getPlaceByDate: async (_: unknown, args: { tripId: string; date: Date }, ctx: Context) => {
       const { tripId, date } = args
-      return await dataSources.places.findPlaceByDate(tripId, date)
+      return await ctx.dataSources.places.findPlaceByDate(tripId, date)
+    },
+  },
+  Mutation: {
+    updateOrder: async (
+      _: unknown,
+      args: { firstPlaceId: string; secondPlaceId: string; firstNewOrder: number; secondNewOrder: number },
+      ctx: Context,
+    ) => {
+      return await ctx.dataSources.places.updatePlaceOrder(
+        args.firstPlaceId,
+        args.secondPlaceId,
+        args.firstNewOrder,
+        args.secondNewOrder,
+      )
     },
   },
 }
