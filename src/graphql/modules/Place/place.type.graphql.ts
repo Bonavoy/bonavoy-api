@@ -28,7 +28,6 @@ export default gql`
     order: Int!
     bbox: [Float]
     center: [Float]
-    geometry: [Float]
     colour: String
     # dayPlans: [CreateDayPlanInput]
   }
@@ -42,6 +41,8 @@ export default gql`
     startDate: DateTime
     endDate: DateTime
     order: Int!
+    bbox: [Float]
+    center: [Float]
     colour: String
     dayPlans(date: DateTime): [DayPlan!]
   }
