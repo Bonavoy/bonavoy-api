@@ -31,7 +31,8 @@ export default {
       { dataSources }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
     ) => {
       const { tripId, date } = args
-      return await dataSources.places.findPlaceByDate(tripId, date)
+      const place = await dataSources.places.findPlaceByDate(tripId, date)
+      return place
     },
   },
 }

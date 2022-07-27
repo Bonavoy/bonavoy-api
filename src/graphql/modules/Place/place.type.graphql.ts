@@ -27,6 +27,7 @@ export default gql`
     start: DateTime
     end: DateTime
     order: Int!
+    center: [Float]
     dayPlans(date: DateTime): [DayPlan!]
   }
 `

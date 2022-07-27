@@ -8,12 +8,6 @@ interface Coords {
   lng: number
 }
 
-interface Venue {
-  fsq_id: string
-  name: string
-  coords: Coords
-}
-
 export default {
   Query: {
     venuePage: async (
