@@ -46,20 +46,21 @@ model Trip {
 }
 
 model Place {
-  id        String    @id @default(uuid())
-  name      String
-  mapbox_id String
-  start     DateTime?
-  end       DateTime?
-  order     Int
-  tripId    String
-  bbox      Float[]
-  center    Float[]
-  geometry  Float[]
-  trip      Trip      @relation(fields: [tripId], references: [id])
-  dayPlans  DayPlan[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  text       String
+  place_name String
+  mapbox_id  String
+  startDate  DateTime?
+  endDate    DateTime?
+  colour     String
+  order      Int
+  tripId     String
+  bbox       Float[]
+  center     Float[]
+  trip       Trip      @relation(fields: [tripId], references: [id])
+  dayPlans   DayPlan[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model DayPlan {
@@ -78,8 +79,8 @@ model Spot {
   fsq_id    String
   name      String
   order     Int
-  start     DateTime?
-  end       DateTime?
+  startTime DateTime?
+  endTime   DateTime?
   dayPlanId String
   dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id])
   createdAt DateTime  @default(now())

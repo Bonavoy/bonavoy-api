@@ -7,27 +7,48 @@ export default gql`
     getPlaceByDate(tripId: ID, date: DateTime): Place
   }
 
+  # mutations
+  type Mutation {
+    updateOrder(
+      firstPlaceId: String!
+      secondPlaceId: String!
+      firstNewOrder: Int!
+      secondNewOrder: Int!
+    ): [PlaceOrder!]!
+  }
+
   #inputs
   input PlaceInput {
-    name: String!
+    id: ID
+    text: String!
+    place_name: String!
     mapbox_id: String!
-    start: DateTime
-    end: DateTime
+    startDate: DateTime
+    endDate: DateTime
     order: Int!
     bbox: [Float]
     center: [Float]
-    geometry: [Float]
+    colour: String
+    # dayPlans: [CreateDayPlanInput]
   }
 
   # types
   type Place {
     id: ID!
-    name: String!
+    text: String!
+    place_name: String!
     mapbox_id: String!
-    start: DateTime
-    end: DateTime
+    startDate: DateTime
+    endDate: DateTime
     order: Int!
+    bbox: [Float]
     center: [Float]
+    colour: String
     dayPlans(date: DateTime): [DayPlan!]
+  }
+
+  type PlaceOrder {
+    id: String!
+    order: Int
   }
 `
