@@ -116,4 +116,13 @@ export default class PlaceAPI extends DataSource {
       },
     })
   }
+
+  createPlace = async (place: Omit<Place, 'tripId'>, tripId: string) => {
+    return await this.prisma.place.create({
+      data: {
+        tripId,
+        ...place,
+      },
+    })
+  }
 }
