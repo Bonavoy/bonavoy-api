@@ -108,4 +108,21 @@ export default class PlaceAPI extends DataSource {
     })
     return await this.prisma.$transaction([firstPlace, secondPlace])
   }
+
+  deletePlace = async (placeId: string) => {
+    return await this.prisma.place.delete({
+      where: {
+        id: placeId,
+      },
+    })
+  }
+
+  createPlace = async (place: Omit<Place, 'tripId'>, tripId: string) => {
+    return await this.prisma.place.create({
+      data: {
+        tripId,
+        ...place,
+      },
+    })
+  }
 }

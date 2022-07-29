@@ -27,6 +27,9 @@ export default {
     },
   },
   Mutation: {
+    createPlace: async (_: unknown, { place, tripId }: { place: Place; tripId: string }, ctx: Context) => {
+      return await ctx.dataSources.places.createPlace(place, tripId)
+    },
     updateOrder: async (
       _: unknown,
       args: { firstPlaceId: string; secondPlaceId: string; firstNewOrder: number; secondNewOrder: number },
@@ -38,6 +41,9 @@ export default {
         args.firstNewOrder,
         args.secondNewOrder,
       )
+    },
+    deletePlace: async (_: unknown, { placeId }: { placeId: string }, ctx: Context) => {
+      return !!(await ctx.dataSources.places.deletePlace(placeId))
     },
   },
 }

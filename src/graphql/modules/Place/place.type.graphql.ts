@@ -9,12 +9,14 @@ export default gql`
 
   # mutations
   type Mutation {
+    createPlace(place: PlaceInput!, tripId: ID!): Place!
     updateOrder(
       firstPlaceId: String!
       secondPlaceId: String!
       firstNewOrder: Int!
       secondNewOrder: Int!
     ): [PlaceOrder!]!
+    deletePlace(placeId: ID!): Boolean!
   }
 
   #inputs
