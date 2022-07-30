@@ -6,6 +6,7 @@ export default gql`
   #queries
   type Query {
     getTrip(tripId: ID): Trip
+    trips: [Trip]
   }
 
   #mutations
