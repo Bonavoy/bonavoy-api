@@ -45,5 +45,12 @@ export default {
     deletePlace: async (_: unknown, { placeId }: { placeId: string }, ctx: Context) => {
       return !!(await ctx.dataSources.places.deletePlace(placeId))
     },
+    updatePlaceDates: async (
+      _: unknown,
+      { placeId, startDate, endDate }: { placeId: string; startDate: Date; endDate: Date },
+      ctx: Context,
+    ) => {
+      return await ctx.dataSources.places.updatePlaceDates(placeId, startDate, endDate)
+    },
   },
 }

@@ -56,7 +56,6 @@ export default gql`
   }
 
   type PlaceDates {
-    placeId: ID!
     startDate: String!
     endDate: String!
   }
