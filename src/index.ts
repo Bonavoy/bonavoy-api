@@ -79,12 +79,17 @@ const startServer = async () => {
     dataSources: () => dataSources,
   })
 
+  let origins = ['https://planner.bonavoy.com/']
+  if (isDevelopmentEnv) {
+    origins = ['http://localhost:3000', 'https://studio.apollographql.com']
+  }
+
   //all though not required to start (started automatically), its highly reccommended
   await apolloServer.start()
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+      origin: origins,
       credentials: true,
     },
     path: '/',
