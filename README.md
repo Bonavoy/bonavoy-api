@@ -17,3 +17,7 @@ Run `yarn test` or `yarn test:watch`
 
 - Local: http://localhost:4000/graphql
 - Prod: http://api.bonavoy.com/graphql
+
+# Deployment
+
+`docker run -it -p <PORT>:4000 <CONTAINER_NAME>`
