@@ -11,8 +11,7 @@ export default {
     },
     trips: async (_: unknown, __: null, ctx: Context) => {
       const userId = ctx.auth.sub
-      if (!userId) throw new AuthenticationError('User not authenticated')
-      return await ctx.dataSources.trips.findManyTrips(userId)
+      return await ctx.dataSources.trips.findManyTrips(userId!)
     },
   },
   Mutation: {
