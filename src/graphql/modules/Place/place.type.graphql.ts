@@ -17,6 +17,7 @@ export default gql`
       secondNewOrder: Int!
     ): [PlaceOrder!]!
     deletePlace(placeId: ID!): Boolean!
+    updatePlaceDates(placeId: ID!, startDate: String!, endDate: String!): PlaceDates!
   }
 
   #inputs
@@ -52,5 +53,10 @@ export default gql`
   type PlaceOrder {
     id: String!
     order: Int
+  }
+
+  type PlaceDates {
+    startDate: String!
+    endDate: String!
   }
 `

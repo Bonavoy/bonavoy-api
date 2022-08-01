@@ -125,4 +125,20 @@ export default class PlaceAPI extends DataSource {
       },
     })
   }
+
+  updatePlaceDates = async (placeId: string, startDate: Date, endDate: Date) => {
+    return await this.prisma.place.update({
+      where: {
+        id: placeId,
+      },
+      data: {
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    })
+  }
 }
