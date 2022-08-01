@@ -3,8 +3,8 @@ import 'dotenv/config'
 
 const params = new URLSearchParams()
 params.append('grant_type', 'client_credentials')
-params.append('client_id', process.env.AMADEUS_API_KEY)
-params.append('client_secret', process.env.AMADEUS_API_SECRET)
+params.append('client_id', process.env.AMADEUS_API_KEY as string)
+params.append('client_secret', process.env.AMADEUS_API_SECRET as string)
 
 /**
  * get amadeus access token to do requests and stuff
