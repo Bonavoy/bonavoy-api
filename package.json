@@ -27,7 +27,7 @@
     "keyv": "^4.3.3"
   },
   "scripts": {
-    "start": "node ./build/server.js",
+    "start": "NODE_ENV=production node ./build/server.js",
     "build": "tsc --project ./",
     "dev": "nodemon --exec ts-node server.ts",
     "lint": "eslint src/**/*.ts",
