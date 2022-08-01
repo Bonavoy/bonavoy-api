@@ -7,6 +7,7 @@ export default shield(
   {
     Query: {
       user: isAuthenticated,
+      trips: isAuthenticated,
     },
     Mutation: {
       token: isSession,
