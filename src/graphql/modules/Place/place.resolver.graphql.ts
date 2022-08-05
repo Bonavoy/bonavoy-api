@@ -4,18 +4,6 @@ import { Context } from '../../../types/auth'
 
 // TODO: WRITE TYPES
 export default {
-  Place: {
-    dayPlans: async (places: any, args: { date: Date }) => {
-      const { date } = args
-      let dayPlanArr = places.dayPlans
-      if (date) {
-        dayPlanArr = places.dayPlans.filter((dayPlan: any) => {
-          return new Date(dayPlan.date).getTime() === date.getTime()
-        })
-      }
-      return dayPlanArr
-    },
-  },
   Query: {
     findPlacesByTrip: async (_: unknown, args: { tripId: string }, ctx: Context) => {
       const { tripId } = args

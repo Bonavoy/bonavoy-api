@@ -1,4 +1,4 @@
-import { GraphQLScalarType, Kind } from 'graphql'
+import { GraphQLScalarType } from 'graphql'
 import { getISODateTime } from '../../../../utils/date'
 
 // TODO: change the any types to something more specific

@@ -17,10 +17,6 @@ import permissions from './graphql/permissions'
 
 //types
 import type { AuthContext } from './types/auth'
-// import type {
-//   GraphQLResponse,
-//   GraphQLRequestContext,
-// } from "apollo-server-types";
 
 const startServer = async () => {
   //express app start
@@ -59,18 +55,6 @@ const startServer = async () => {
       }
       return { auth, req, res }
     },
-    // formatResponse: (
-    //   response: GraphQLResponse,
-    //   requestContext: GraphQLRequestContext<object>
-    // ): GraphQLResponse => {
-    //   //if not auth, send 401 else make a refresh token
-    //   if (response.errors && !requestContext.request.variables?.password) {
-    //     if (requestContext.response?.http) {
-    //       requestContext.response.http.status = 401;
-    //     }
-    //   }
-    //   return response;
-    // },
     dataSources: () => dataSources,
   })
 
