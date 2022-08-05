@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import express, { Request, Response } from 'express'
+import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core'
 import cookieParser from 'cookie-parser'
 
 import { ApolloServer } from 'apollo-server-express'
@@ -25,11 +26,14 @@ const startServer = async () => {
   //middleware to run berfore apollo server
   app.use(cookieParser(process.env.COOKIE_SECRET))
 
+  const isDevelopmentEnv = process.env.NODE_ENV === 'development'
+
   //apollo
   const apolloServer = new ApolloServer({
     schema: applyMiddleware(apolloApplication.schema, permissions),
     executor: apolloApplication.createApolloExecutor(),
     csrfPrevention: true,
+    plugins: isDevelopmentEnv ? [] : [ApolloServerPluginLandingPageDisabled()],
     cache: new KeyvAdapter(new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}`)),
     context: ({ req, res }: { req: Request; res: Response }) => {
       let auth: AuthContext = {
@@ -63,7 +67,9 @@ const startServer = async () => {
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+      origin: isDevelopmentEnv
+        ? ['http://localhost:3000', 'https://studio.apollographql.com']
+        : ['https://planner.bonavoy.com/'],
       credentials: true,
     },
     path: '/',
