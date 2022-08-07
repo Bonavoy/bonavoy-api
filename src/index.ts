@@ -69,7 +69,7 @@ const startServer = async () => {
     cors: {
       origin: isDevelopmentEnv
         ? ['http://localhost:3000', 'https://studio.apollographql.com']
-        : ['https://planner.bonavoy.com/'],
+        : ['https://planner.bonavoy.com'],
       credentials: true,
     },
     path: '/',
