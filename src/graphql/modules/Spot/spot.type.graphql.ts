@@ -6,6 +6,7 @@ export default gql`
   # mutations
   type Mutation {
     spot(spot: SpotInput, date: DateTime, tripId: ID, placeId: ID): Spot
+    deleteSpot(spotId: ID): Spot
   }
 
   #inputs

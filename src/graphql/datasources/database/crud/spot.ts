@@ -42,4 +42,12 @@ export default class SpotAPI extends DataSource {
       },
     })
   }
+
+  deleteSpot = async (id: string) => {
+    return await this.prisma.spot.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }
