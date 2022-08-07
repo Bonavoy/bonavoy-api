@@ -1,5 +1,4 @@
 import { Place, Trip } from '@prisma/client'
-import { AuthenticationError } from 'apollo-server-express'
 
 //types
 import { Context } from '../../../types/auth'
@@ -10,8 +9,7 @@ export default {
       return await ctx.dataSources.trips.findTrip(tripId)
     },
     trips: async (_: unknown, __: null, ctx: Context) => {
-      const userId = ctx.auth.sub
-      return await ctx.dataSources.trips.findManyTrips(userId!)
+      return await ctx.dataSources.trips.findManyTrips(ctx.auth.sub as string)
     },
   },
   Mutation: {

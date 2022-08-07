@@ -18,10 +18,6 @@ import permissions from './graphql/permissions'
 
 //types
 import type { AuthContext } from './types/auth'
-// import type {
-//   GraphQLResponse,
-//   GraphQLRequestContext,
-// } from "apollo-server-types";
 
 const startServer = async () => {
   //express app start
@@ -63,33 +59,17 @@ const startServer = async () => {
       }
       return { auth, req, res }
     },
-    // formatResponse: (
-    //   response: GraphQLResponse,
-    //   requestContext: GraphQLRequestContext<object>
-    // ): GraphQLResponse => {
-    //   //if not auth, send 401 else make a refresh token
-    //   if (response.errors && !requestContext.request.variables?.password) {
-    //     if (requestContext.response?.http) {
-    //       requestContext.response.http.status = 401;
-    //     }
-    //   }
-    //   return response;
-    // },
-    introspection: isDevelopmentEnv,
     dataSources: () => dataSources,
   })
-
-  let origins = ['https://planner.bonavoy.com/']
-  if (isDevelopmentEnv) {
-    origins = ['http://localhost:3000', 'https://studio.apollographql.com']
-  }
 
   //all though not required to start (started automatically), its highly reccommended
   await apolloServer.start()
   apolloServer.applyMiddleware({
     app,
     cors: {
-      origin: origins,
+      origin: isDevelopmentEnv
+        ? ['http://localhost:3000', 'https://studio.apollographql.com']
+        : ['https://planner.bonavoy.com/'],
       credentials: true,
     },
     path: '/',
