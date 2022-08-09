@@ -8,7 +8,7 @@ export default {
     spotSuggestionPage: async (
       _: unknown,
       args: { input: SpotSuggestionParams },
-      { dataSources }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
+      ctx: Context,
     ) => {
       //WRITE TYPES
       const { input } = args
