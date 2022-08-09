@@ -1,15 +1,10 @@
 //types
-import { TokenDecoded } from '../../../types/auth'
-import { BonavoyDataSources } from '../../datasources'
+import { Context } from '../../../types/auth'
 import { SpotSuggestionParams } from '../../datasources/api/foursquare'
 
 export default {
   Query: {
-    spotSuggestionPage: async (
-      _: unknown,
-      args: { input: SpotSuggestionParams },
-      ctx: Context,
-    ) => {
+    spotSuggestionPage: async (_: unknown, args: { input: SpotSuggestionParams }, ctx: Context) => {
       //WRITE TYPES
       const { input } = args
       const options = {
@@ -17,7 +12,7 @@ export default {
         pageSize: input.pageSize ?? 16,
         ...(input.cursor && { cursor: input.cursor }),
       }
-      const spotSuggestions = await dataSources.foursquareAPI.getSpotSuggestions(options)
+      const spotSuggestions = await ctx.dataSources.foursquareAPI.getSpotSuggestions(options)
       return spotSuggestions
     },
   },
