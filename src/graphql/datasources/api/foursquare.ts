@@ -20,8 +20,7 @@ export default class FoursquareAPI extends RESTDataSource {
     return { body, nextCursorLink }
   }
 
-  getSpotSuggestions = async (spotSuggestionParams: SpotSuggestionParams) => {
-    const { coords, pageSize, cursor } = spotSuggestionParams
+  getSpotSuggestions = async ( { coords, pageSize, cursor }: SpotSuggestionParams) => {
     let cursorParam = ''
     if (cursor) {
       cursorParam = `&cursor=${cursor}`
