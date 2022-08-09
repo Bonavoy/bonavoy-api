@@ -1,5 +1,5 @@
 import { Request, Response, RESTDataSource } from 'apollo-datasource-rest'
-export interface VenueRecommendationParams {
+export interface SpotSuggestionParams {
   coords: { lat: number; lng: number }
   pageSize: number
   cursor?: string
@@ -20,8 +20,7 @@ export default class FoursquareAPI extends RESTDataSource {
     return { body, nextCursorLink }
   }
 
-  getVenueRecommendations = async (venueRecommendationParams: VenueRecommendationParams) => {
-    const { coords, pageSize, cursor } = venueRecommendationParams
+  getSpotSuggestions = async ( { coords, pageSize, cursor }: SpotSuggestionParams) => {
     let cursorParam = ''
     if (cursor) {
       cursorParam = `&cursor=${cursor}`
@@ -29,23 +28,25 @@ export default class FoursquareAPI extends RESTDataSource {
     const { body, nextCursorLink } = await this.get(
       `/places/search?ll=${coords.lat},${coords.lng}&limit=${pageSize}${cursorParam}`,
     )
-    const formattedVenues = this.format(body.results)
+    const formattedSpotSuggestions = this.format(body.results)
 
     return {
-      venues: await this.getVenuePhotos(formattedVenues),
+      spotSuggestions: await this.getSpotSuggestionPhotos(formattedSpotSuggestions),
       cursor: this.parseHeaderLink(nextCursorLink),
     }
   }
 
-  // mutates venues object
-  getVenuePhotos = async (venues: Array<any>) => {
-    const getVenuePhotoPromises = venues.map((venue) => this.getPhotoUrlComponents(venue.fsq_id))
-    const venuePhotos = await Promise.all(getVenuePhotoPromises)
-    return venues.map((venue, i) => {
+  // mutates spot suggestion object
+  getSpotSuggestionPhotos = async (spotSuggestions: Array<any>) => {
+    const spotSuggestionPhotoPromises = spotSuggestions.map((spotSuggestion) =>
+      this.getPhotoUrlComponents(spotSuggestion.fsq_id),
+    )
+    const spotSuggestionPhotos = await Promise.all(spotSuggestionPhotoPromises)
+    return spotSuggestions.map((spotSuggestion, i) => {
       return {
-        ...venue,
-        coords: { ...venue.coords },
-        ...venuePhotos[i],
+        ...spotSuggestion,
+        coords: { ...spotSuggestion.coords },
+        ...spotSuggestionPhotos[i],
       }
     })
   }
@@ -61,15 +62,15 @@ export default class FoursquareAPI extends RESTDataSource {
     return new URLSearchParams(formattedLink).get('cursor')
   }
 
-  format = (spotData: Array<any>) => {
-    return spotData.map((spot) => ({
-      fsq_id: spot.fsq_id,
-      name: spot.name,
+  format = (spotSuggestionData: Array<any>) => {
+    return spotSuggestionData.map((spotSuggestion) => ({
+      fsq_id: spotSuggestion.fsq_id,
+      name: spotSuggestion.name,
       coords: {
-        lng: spot.geocodes.main.longitude,
-        lat: spot.geocodes.main.latitude,
+        lng: spotSuggestion.geocodes.main.longitude,
+        lat: spotSuggestion.geocodes.main.latitude,
       },
-      category: spot.categories.at(0)?.name ?? '', // default to no name
+      category: spotSuggestion.categories.at(0)?.name ?? '', // default to no name
     }))
   }
 }
