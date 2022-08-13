@@ -31,7 +31,7 @@ export default {
       )
     },
     deletePlace: async (_: unknown, { placeId }: { placeId: string }, ctx: Context) => {
-      return !!(await ctx.dataSources.places.deletePlace(placeId))
+      return (await ctx.dataSources.places.deletePlace(placeId)).id
     },
     updatePlaceDates: async (
       _: unknown,

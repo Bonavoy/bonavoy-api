@@ -16,7 +16,7 @@ export default gql`
       firstNewOrder: Int!
       secondNewOrder: Int!
     ): [PlaceOrder!]!
-    deletePlace(placeId: ID!): Boolean!
+    deletePlace(placeId: ID!): ID!
     updatePlaceDates(placeId: ID!, startDate: DateTime!, endDate: DateTime!): PlaceDates!
   }
 
