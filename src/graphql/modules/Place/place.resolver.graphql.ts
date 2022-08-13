@@ -18,7 +18,7 @@ export default {
     createPlace: async (_: unknown, { place, tripId }: { place: Place; tripId: string }, ctx: Context) => {
       return await ctx.dataSources.places.createPlace(place, tripId)
     },
-    updateOrder: async (
+    updatePlacesOrder: async (
       _: unknown,
       args: { firstPlaceId: string; secondPlaceId: string; firstNewOrder: number; secondNewOrder: number },
       ctx: Context,

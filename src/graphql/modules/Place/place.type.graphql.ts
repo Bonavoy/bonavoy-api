@@ -10,14 +10,14 @@ export default gql`
   # mutations
   type Mutation {
     createPlace(place: PlaceInput!, tripId: ID!): Place!
-    updateOrder(
+    updatePlacesOrder(
       firstPlaceId: String!
       secondPlaceId: String!
       firstNewOrder: Int!
       secondNewOrder: Int!
     ): [PlaceOrder!]!
     deletePlace(placeId: ID!): Boolean!
-    updatePlaceDates(placeId: ID!, startDate: String!, endDate: String!): PlaceDates!
+    updatePlaceDates(placeId: ID!, startDate: DateTime!, endDate: DateTime!): PlaceDates!
   }
 
   #inputs
@@ -56,7 +56,7 @@ export default gql`
   }
 
   type PlaceDates {
-    startDate: String!
-    endDate: String!
+    startDate: DateTime!
+    endDate: DateTime!
   }
 `
