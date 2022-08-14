@@ -28,9 +28,7 @@ export default class TripsAPI extends DataSource {
     return await this.prisma.trip.create({
       data: {
         ...trip,
-        banner: (
-          await this.context?.dataSources.unsplashAPI.getTripBannerPhoto(trip.places[0].place_name)
-        ).urls.regular,
+        banner: (await this.context?.dataSources.unsplashAPI.getTripBannerPhoto(trip.places[0].country)).urls.regular,
         authors: {
           create: {
             userId: this.context?.auth.sub as string,

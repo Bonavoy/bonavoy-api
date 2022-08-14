@@ -16,17 +16,17 @@ export default gql`
 
   #types
   type LocationSuggestion {
-    center: [Float]
+    center: [Float]!
     id: ID!
     place_name: String!
     text: String!
-    context: [PlaceContext]!
+    context: [LocationContext]!
   }
 
-  type PlaceContext {
+  type LocationContext {
     id: String!
-    short_code: String!
-    wikidata: String!
+    short_code: String
+    wikidata: String
     text: String!
   }
 `

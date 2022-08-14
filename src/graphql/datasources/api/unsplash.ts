@@ -12,6 +12,8 @@ export default class UnsplashAPI extends RESTDataSource {
   }
 
   getTripBannerPhoto = async (query: string) => {
-    return (await this.get(`/search/photos?query=${query}&per_page=1&orientation=landscape`)).results[0]
+    return (await this.get(`/search/photos?query=${query}&orientation=landscape`)).results[
+      Math.random() * 10
+    ]
   }
 }

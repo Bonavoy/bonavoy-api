@@ -5,23 +5,23 @@ import { gql } from 'graphql-modules'
 export default gql`
   #queries
   type Query {
-    getTrip(tripId: ID): Trip
+    getTrip(tripId: ID!): Trip
     trips: [Trip]
   }
 
   #mutations
   type Mutation {
-    createTrip(trip: TripInput): Trip!
+    createTrip(trip: TripInput!): Trip!
     updateTripName(tripId: ID!, name: String!): String!
   }
 
   #inputs
   input TripInput {
-    name: String
-    places: [PlaceInput]
-    startDate: DateTime
-    endDate: DateTime
-    isPublic: Boolean
+    name: String!
+    places: [PlaceInput!]!
+    startDate: DateTime!
+    endDate: DateTime!
+    isPublic: Boolean!
   }
 
   #types
@@ -30,7 +30,7 @@ export default gql`
     name: String!
     isPublic: Boolean!
     authors: [AuthorsOnTrips!]!
-    places: [Place]
+    places: [Place!]!
     banner: String!
     startDate: DateTime!
     endDate: DateTime!

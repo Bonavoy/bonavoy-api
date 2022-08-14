@@ -39,8 +39,8 @@ export default gql`
     text: String!
     place_name: String!
     mapbox_id: String!
-    startDate: DateTime!
-    endDate: DateTime!
+    startDate: DateTime
+    endDate: DateTime
     order: Int!
     colour: String!
     country: String!
