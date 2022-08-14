@@ -13,7 +13,7 @@ export default class UnsplashAPI extends RESTDataSource {
 
   getTripBannerPhoto = async (query: string) => {
     return (await this.get(`/search/photos?query=${query}&orientation=landscape`)).results[
-      Math.random() * 10
+      Math.floor(Math.random() * 10)
     ]
   }
 }
