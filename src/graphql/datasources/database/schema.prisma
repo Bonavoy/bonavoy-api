@@ -36,27 +36,28 @@ model AuthorsOnTrips {
 model Trip {
   id        String           @id @default(uuid())
   name      String
-  isPublic  Boolean          @default(false)
-  authors   AuthorsOnTrips[]
-  places    Place[]
+  banner    String
   startDate DateTime
   endDate   DateTime
+  authors   AuthorsOnTrips[]
+  places    Place[]
+  isPublic  Boolean          @default(false)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 }
 
 model Place {
   id         String    @id @default(uuid())
-  text       String
-  place_name String
+  tripId     String
   mapbox_id  String
+  place_name String
+  text       String
   startDate  DateTime?
   endDate    DateTime?
-  colour     String
   order      Int
-  tripId     String
-  bbox       Float[]
+  colour     String
   center     Float[]
+  country    String
   trip       Trip      @relation(fields: [tripId], references: [id])
   dayPlans   DayPlan[]
   createdAt  DateTime  @default(now())

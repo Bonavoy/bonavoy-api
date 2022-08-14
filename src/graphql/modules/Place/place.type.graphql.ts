@@ -22,17 +22,15 @@ export default gql`
 
   #inputs
   input PlaceInput {
-    id: ID
     text: String!
     place_name: String!
     mapbox_id: String!
     startDate: DateTime
     endDate: DateTime
     order: Int!
-    bbox: [Float]
-    center: [Float]
-    colour: String
-    # dayPlans: [CreateDayPlanInput]
+    colour: String!
+    country: String!
+    center: [Float]!
   }
 
   # types
@@ -41,12 +39,12 @@ export default gql`
     text: String!
     place_name: String!
     mapbox_id: String!
-    startDate: DateTime
-    endDate: DateTime
+    startDate: DateTime!
+    endDate: DateTime!
     order: Int!
-    bbox: [Float]
-    center: [Float]
-    colour: String
+    colour: String!
+    country: String!
+    center: [Float]!
     dayPlans(date: DateTime): [DayPlan!]
   }
 

@@ -29,9 +29,10 @@ export default gql`
     id: ID!
     name: String!
     isPublic: Boolean!
-    authors: [AuthorsOnTrips!]
+    authors: [AuthorsOnTrips!]!
     places: [Place]
-    startDate: DateTime
-    endDate: DateTime
+    banner: String!
+    startDate: DateTime!
+    endDate: DateTime!
   }
 `

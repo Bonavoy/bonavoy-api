@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 //external apis
 import FoursquareAPI from './api/foursquare'
+import UnsplashAPI from './api/unsplash'
 
 //crud
 import UserAPI from './database/crud/user'
@@ -16,10 +17,11 @@ const prisma = new PrismaClient()
 export interface BonavoyDataSources {
   users: UserAPI
   trips: TripsAPI
-  foursquareAPI: FoursquareAPI
   dayPlans: DayPlanAPI
   places: PlaceAPI
   spots: SpotAPI
+  foursquareAPI: FoursquareAPI
+  unsplashAPI: UnsplashAPI
 }
 
 export default {
@@ -32,4 +34,5 @@ export default {
 
   //external
   foursquareAPI: new FoursquareAPI(),
+  unsplashAPI: new UnsplashAPI(),
 }
