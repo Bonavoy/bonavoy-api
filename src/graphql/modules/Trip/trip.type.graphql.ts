@@ -1,7 +1,5 @@
 import { gql } from 'graphql-modules'
 
-// trips: [Trip] add this to User type once trips resolvers is setup
-
 export default gql`
   #queries
   type Query {
@@ -13,6 +11,7 @@ export default gql`
   type Mutation {
     createTrip(trip: TripInput!): Trip!
     updateTripName(tripId: ID!, name: String!): String!
+    updatePlacesOrder(tripId: ID!, places: [PlaceInput!]!): [Place!]!
   }
 
   #inputs

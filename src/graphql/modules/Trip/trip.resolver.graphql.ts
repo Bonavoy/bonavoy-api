@@ -9,7 +9,7 @@ export default {
       return await ctx.dataSources.trips.findTrip(tripId)
     },
     trips: async (_: unknown, __: null, ctx: Context) => {
-      return await ctx.dataSources.trips.findManyTrips(ctx.auth.sub as string)
+      return await ctx.dataSources.trips.findTrips(ctx.auth.sub as string)
     },
   },
   Mutation: {
@@ -17,7 +17,10 @@ export default {
       return ctx.dataSources.trips.createTrip(trip)
     },
     updateTripName: async (_: unknown, { tripId, name }: { tripId: string; name: string }, ctx: Context) => {
-      return ctx.dataSources.trips.updateTripName(tripId, name)
+      return (await ctx.dataSources.trips.updateTripName(tripId, name)).name
+    },
+    updatePlacesOrder: async (_: unknown, { tripId, places }: { tripId: string; places: Place[] }, ctx: Context) => {
+      return (await ctx.dataSources.trips.updatePlaceOrder(tripId, places)).places
     },
   },
 }

@@ -54,7 +54,6 @@ model Place {
   text       String
   startDate  DateTime?
   endDate    DateTime?
-  order      Int
   colour     String
   center     Float[]
   country    String
