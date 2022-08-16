@@ -19,5 +19,18 @@ Run `yarn test` or `yarn test:watch`
 - Prod: http://api.bonavoy.com/graphql
 
 # Deployment
+Deployed using: https://cloud.google.com/community/tutorials/nginx-reverse-proxy-docker
+
+1. SSH into the server and `cd` into `bonavoy-api` directory
+2. `git pull` latest commit on main
+3. build image with `docker build -t bonavoy-api .`
+4. Run container with:
+```
+docker run -d \
+    --name bonavoy-api \
+    -e 'LETSENCRYPT_EMAIL=bonavoydevelopers@gmail.com' \
+    -e 'LETSENCRYPT_HOST=api.bonavoy.com' \
+    -e 'VIRTUAL_HOST=api.bonavoy.com' bonavoy-api:latest
+```
 
 `docker run -it -p <PORT>:4000 <CONTAINER_NAME>`
