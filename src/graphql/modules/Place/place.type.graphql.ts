@@ -10,14 +10,8 @@ export default gql`
   # mutations
   type Mutation {
     createPlace(place: PlaceInput!, tripId: ID!): Place!
-    updateOrder(
-      firstPlaceId: String!
-      secondPlaceId: String!
-      firstNewOrder: Int!
-      secondNewOrder: Int!
-    ): [PlaceOrder!]!
-    deletePlace(placeId: ID!): Boolean!
-    updatePlaceDates(placeId: ID!, startDate: String!, endDate: String!): PlaceDates!
+    deletePlace(placeId: ID!): ID!
+    updatePlaceDates(placeId: ID!, startDate: DateTime!, endDate: DateTime!): PlaceDates!
   }
 
   #inputs
@@ -28,11 +22,9 @@ export default gql`
     mapbox_id: String!
     startDate: DateTime
     endDate: DateTime
-    order: Int!
-    bbox: [Float]
-    center: [Float]
-    colour: String
-    # dayPlans: [CreateDayPlanInput]
+    colour: String!
+    country: String!
+    center: [Float]!
   }
 
   # types
@@ -43,20 +35,14 @@ export default gql`
     mapbox_id: String!
     startDate: DateTime
     endDate: DateTime
-    order: Int!
-    bbox: [Float]
-    center: [Float]
-    colour: String
+    colour: String!
+    country: String!
+    center: [Float]!
     dayPlans(date: DateTime): [DayPlan!]
   }
 
-  type PlaceOrder {
-    id: String!
-    order: Int
-  }
-
   type PlaceDates {
-    startDate: String!
-    endDate: String!
+    startDate: DateTime!
+    endDate: DateTime!
   }
 `

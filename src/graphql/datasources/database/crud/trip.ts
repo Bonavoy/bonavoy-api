@@ -28,6 +28,7 @@ export default class TripsAPI extends DataSource {
     return await this.prisma.trip.create({
       data: {
         ...trip,
+        banner: (await this.context?.dataSources.unsplashAPI.getTripBannerPhoto(trip.places[0].country)).urls.regular,
         authors: {
           create: {
             userId: this.context?.auth.sub as string,
@@ -43,7 +44,7 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  findManyTrips = async (userId: string) => {
+  findTrips = async (userId: string) => {
     return await this.prisma.trip.findMany({
       where: {
         authors: {
@@ -61,28 +62,41 @@ export default class TripsAPI extends DataSource {
         id: tripId,
       },
       include: {
-        places: {
-          orderBy: {
-            order: 'asc',
-          },
-        },
+        places: true,
       },
     })
   }
 
-  updateTripName = async (tripId: string, name: string) => {
-    return (
-      await this.prisma.trip.update({
-        where: {
-          id: tripId,
+  updateTripName = async (tripId: string, name: string): Promise<{ name: string }> => {
+    return await this.prisma.trip.update({
+      where: {
+        id: tripId,
+      },
+      data: {
+        name,
+      },
+      select: {
+        name: true,
+      },
+    })
+  }
+
+  updatePlaceOrder = async (tripId: string, place: Place[]): Promise<{ places: Place[] }> => {
+    return await this.prisma.trip.update({
+      where: {
+        id: tripId,
+      },
+      data: {
+        places: {
+          deleteMany: { id: { in: place.map((pl) => pl.id) } },
+          createMany: {
+            data: [...place],
+          },
         },
-        data: {
-          name,
-        },
-        select: {
-          name: true,
-        },
-      })
-    ).name
+      },
+      select: {
+        places: true,
+      },
+    })
   }
 }

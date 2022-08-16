@@ -32,9 +32,6 @@ export default class PlaceAPI extends DataSource {
 
   findPlacesByTrip = async (tripId: string): Promise<Place[]> => {
     return await this.prisma.place.findMany({
-      orderBy: {
-        order: 'asc',
-      },
       where: {
         tripId,
       },
@@ -76,43 +73,13 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  updatePlaceOrder = async (
-    firstPlaceId: string,
-    secondPlaceId: string,
-    firstNewOrder: number,
-    secondNewOrder: number,
-  ) => {
-    const firstPlace = this.prisma.place.update({
-      where: {
-        id: firstPlaceId,
-      },
-      data: {
-        order: firstNewOrder,
-      },
-      select: {
-        id: true,
-        order: true,
-      },
-    })
-    const secondPlace = this.prisma.place.update({
-      where: {
-        id: secondPlaceId,
-      },
-      data: {
-        order: secondNewOrder,
-      },
-      select: {
-        id: true,
-        order: true,
-      },
-    })
-    return await this.prisma.$transaction([firstPlace, secondPlace])
-  }
-
-  deletePlace = async (placeId: string) => {
+  deletePlace = async (placeId: string): Promise<{ id: string }> => {
     return await this.prisma.place.delete({
       where: {
         id: placeId,
+      },
+      select: {
+        id: true,
       },
     })
   }

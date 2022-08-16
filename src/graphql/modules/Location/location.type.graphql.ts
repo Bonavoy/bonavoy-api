@@ -16,19 +16,17 @@ export default gql`
 
   #types
   type LocationSuggestion {
-    bbox: [Float]
-    center: [Float]
-    geometry: Geometry!
+    center: [Float]!
     id: ID!
     place_name: String!
-    place_type: [String]!
-    relevance: Int!
     text: String!
-    type: String!
+    context: [LocationContext]!
   }
 
-  type Geometry {
-    type: String!
-    coordinates: [Float]!
+  type LocationContext {
+    id: String!
+    short_code: String
+    wikidata: String
+    text: String!
   }
 `
