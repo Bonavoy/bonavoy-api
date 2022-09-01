@@ -2,6 +2,7 @@ import { Request, Response, RESTDataSource } from 'apollo-datasource-rest'
 export interface SpotSuggestionParams {
   coords: { lat: number; lng: number }
   pageSize: number
+  filters?: string[]
   cursor?: string
 }
 export default class FoursquareAPI extends RESTDataSource {
@@ -16,17 +17,26 @@ export default class FoursquareAPI extends RESTDataSource {
 
   async didReceiveResponse(response: Response, _: Request): Promise<any> {
     const nextCursorLink = await response.headers.get('Link')
-    const body = await response.json()
-    return { body, nextCursorLink }
+    try {
+      const body = await response.json()
+      return { body, nextCursorLink }
+    } catch (err) {
+      return {
+        body: undefined,
+        error: 1,
+      }
+    }
   }
 
-  getSpotSuggestions = async ( { coords, pageSize, cursor }: SpotSuggestionParams) => {
+  getSpotSuggestions = async ({ coords, pageSize, cursor, filters }: SpotSuggestionParams) => {
     let cursorParam = ''
+    const categories = filters?.length ? `&categories=${filters.join(',')}` : ''
     if (cursor) {
       cursorParam = `&cursor=${cursor}`
     }
+
     const { body, nextCursorLink } = await this.get(
-      `/places/search?ll=${coords.lat},${coords.lng}&limit=${pageSize}${cursorParam}`,
+      `/places/search?ll=${coords.lat},${coords.lng}&limit=${pageSize}${cursorParam}${categories}`,
     )
     const formattedSpotSuggestions = this.format(body.results)
 
@@ -36,7 +46,6 @@ export default class FoursquareAPI extends RESTDataSource {
     }
   }
 
-  // mutates spot suggestion object
   getSpotSuggestionPhotos = async (spotSuggestions: Array<any>) => {
     const spotSuggestionPhotoPromises = spotSuggestions.map((spotSuggestion) =>
       this.getPhotoUrlComponents(spotSuggestion.fsq_id),
@@ -53,10 +62,19 @@ export default class FoursquareAPI extends RESTDataSource {
 
   getPhotoUrlComponents = async (fsq_id: string) => {
     const { body } = await this.get(`/places/${fsq_id}/photos`)
+    if (body === undefined) {
+      return {
+        prefix: '',
+        suffix: '',
+      }
+    }
     return { prefix: body.at(0)?.prefix, suffix: body.at(0)?.suffix }
   }
 
   parseHeaderLink = (headerLink: string) => {
+    if (!headerLink) {
+      return ''
+    }
     const link = headerLink.split(';')[0]
     const formattedLink = link.replace('<', '').replace('>', '').replace('%2C', ',')
     return new URLSearchParams(formattedLink).get('cursor')

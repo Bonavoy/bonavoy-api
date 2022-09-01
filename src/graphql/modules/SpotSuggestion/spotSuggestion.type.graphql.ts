@@ -13,6 +13,7 @@ export default gql`
     coords: CoordsInput!
     pageSize: Int!
     cursor: String
+    filters: [String]
   }
 
   input CoordsInput {
