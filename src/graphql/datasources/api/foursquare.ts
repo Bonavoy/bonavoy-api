@@ -1,10 +1,7 @@
 import { Request, Response, RESTDataSource } from 'apollo-datasource-rest'
-export interface SpotSuggestionParams {
-  coords: { lat: number; lng: number }
-  pageSize: number
-  filters?: string[]
-  cursor?: string
-}
+
+import { SearchSpotsInput, SpotSuggestionsInput } from '../../modules/SpotSuggestion/spotSuggestion.resolver.graphql'
+
 export default class FoursquareAPI extends RESTDataSource {
   constructor() {
     super()
@@ -16,8 +13,8 @@ export default class FoursquareAPI extends RESTDataSource {
   }
 
   async didReceiveResponse(response: Response, _: Request): Promise<any> {
-    const nextCursorLink = await response.headers.get('Link')
     try {
+      const nextCursorLink = response.headers.get('Link')
       const body = await response.json()
       return { body, nextCursorLink }
     } catch (err) {
@@ -28,7 +25,12 @@ export default class FoursquareAPI extends RESTDataSource {
     }
   }
 
-  getSpotSuggestions = async ({ coords, pageSize, cursor, filters }: SpotSuggestionParams) => {
+  searchSpots = async ({ coords, query, limit }: SearchSpotsInput) => {
+    const { body } = await this.get(`/places/search?query=${query}&ll=${coords.lat},${coords.lng}&limit=${limit}`)
+    return this.format(body.results)
+  }
+
+  getSpotSuggestions = async ({ coords, pageSize, cursor, filters }: SpotSuggestionsInput) => {
     let cursorParam = ''
     const categories = filters?.length ? `&categories=${filters.join(',')}` : ''
     if (cursor) {

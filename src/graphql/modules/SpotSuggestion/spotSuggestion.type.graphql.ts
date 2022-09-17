@@ -6,6 +6,7 @@ export default gql`
   #queries
   type Query {
     spotSuggestionPage(input: SpotSuggestionInputs): spotSuggestionPage
+    searchSpots(input: SearchSpotsInput): [SpotSuggestion]
   }
 
   # inputs
@@ -14,6 +15,12 @@ export default gql`
     pageSize: Int!
     cursor: String
     filters: [String]
+  }
+
+  input SearchSpotsInput {
+    query: String
+    coords: CoordsInput
+    limit: Int
   }
 
   input CoordsInput {

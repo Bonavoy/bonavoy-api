@@ -1,10 +1,32 @@
 //types
 import { Context } from '../../../types/auth'
-import { SpotSuggestionParams } from '../../datasources/api/foursquare'
+
+export interface Coords {
+  lat: number
+  lng: number
+}
+
+export interface SpotSuggestionsInput {
+  coords: Coords
+  pageSize: number
+  filters?: string[]
+  cursor?: string
+}
+
+export interface SearchSpotsInput {
+  query: string
+  coords: Coords
+  limit: number
+}
 
 export default {
   Query: {
-    spotSuggestionPage: async (_: unknown, args: { input: SpotSuggestionParams }, ctx: Context) => {
+    searchSpots: async (_: unknown, args: { input: SearchSpotsInput }, ctx: Context) => {
+      const { input } = args
+      const spotSearchResult = await ctx.dataSources.foursquareAPI.searchSpots(input)
+      return spotSearchResult
+    },
+    spotSuggestionPage: async (_: unknown, args: { input: SpotSuggestionsInput }, ctx: Context) => {
       //WRITE TYPES
       const { input } = args
       const options = {
