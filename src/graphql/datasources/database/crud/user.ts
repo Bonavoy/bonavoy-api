@@ -26,7 +26,7 @@ export default class UserAPI extends DataSource {
     this.cache = config.cache as KeyvAdapter
   }
 
-  createUser = async (user: Omit<User, 'createdAt' | 'updatedAt'>): Promise<User | null> => {
+  createUser = async (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User | null> => {
     try {
       return this.prisma.user.create({
         data: user,

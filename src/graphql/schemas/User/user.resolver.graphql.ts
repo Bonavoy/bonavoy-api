@@ -7,6 +7,7 @@ import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../..
 //types
 import { Context } from '../../../types/auth'
 import type { User } from '@prisma/client'
+import { UserInput } from '../../../generated/graphql'
 
 export default {
   Query: {
@@ -16,12 +17,15 @@ export default {
     },
   },
   Mutation: {
-    createUser: async (_: unknown, { input }: { input: Omit<User, 'createdAt' | 'updatedAt'> }, ctx: Context) => {
+    createUser: async (_: unknown, { input }: { input: UserInput }, ctx: Context) => {
       const newUser = await ctx.dataSources.users.createUser({
         ...input,
         password: bcrypt.hashSync(input.password, bcrypt.genSaltSync(10)),
+        avatar: null,
+        verified: false,
       })
 
+      console.log(input, newUser)
       return newUser
     },
 
