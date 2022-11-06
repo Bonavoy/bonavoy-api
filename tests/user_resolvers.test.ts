@@ -4,7 +4,7 @@ import { ApolloServer, ExpressContext } from 'apollo-server-express'
 import { createMockContext, createTestServer, PrismaMock } from './helpers'
 
 describe('Test User GQL Resolvers', () => {
-  describe('User test suite', () => {
+  describe('CreateUser test suite', () => {
     const createUserQuery = `
           mutation Mutation($input: UserInput) {
             createUser(input: $input) {
@@ -261,7 +261,7 @@ describe('Test User GQL Resolvers', () => {
     })
   })
 
-  describe('CreateUser test suite', () => {})
+  describe('User test suite', () => {})
 
   describe('Authencate test suite', () => {})
 
