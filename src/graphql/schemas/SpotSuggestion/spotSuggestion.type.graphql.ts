@@ -1,4 +1,4 @@
-import { gql } from 'graphql-modules'
+import { gql } from 'graphql-tag'
 
 // trips: [Trip] add this to User type once trips resolvers is setup
 

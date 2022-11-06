@@ -10,6 +10,7 @@
     "schema": "./src/graphql/datasources/database/schema.prisma"
   },
   "dependencies": {
+    "@graphql-tools/schema": "^9.0.8",
     "@keyv/redis": "^2.4.0",
     "@prisma/client": "^4.2.1",
     "apollo-datasource-rest": "^3.6.1",
@@ -21,10 +22,11 @@
     "express": "^4.18.1",
     "graphql": "^16.5.0",
     "graphql-middleware": "^6.1.32",
-    "graphql-modules": "^2.1.0",
     "graphql-shield": "^7.5.0",
+    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^8.5.1",
-    "keyv": "^4.3.3"
+    "keyv": "^4.3.3",
+    "lodash.mergewith": "^4.6.2"
   },
   "scripts": {
     "start": "NODE_ENV=production node ./build/server.js",
@@ -38,6 +40,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.8",
+    "@types/lodash.mergewith": "^4.6.7",
     "@types/node": "^18.7.3",
     "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/parser": "^5.33.0",
