@@ -1,10 +1,11 @@
 import 'dotenv/config'
 import express, { Request, Response } from 'express'
 import { ApolloServerPluginLandingPageDisabled } from 'apollo-server-core'
+import { makeExecutableSchema } from '@graphql-tools/schema'
 import cookieParser from 'cookie-parser'
 
 import { ApolloServer } from 'apollo-server-express'
-import { apolloApplication } from './graphql/modules'
+import rawSchema from './graphql'
 import { applyMiddleware } from 'graphql-middleware'
 
 //redis
@@ -28,10 +29,11 @@ const startServer = async () => {
 
   const isDevelopmentEnv = process.env.NODE_ENV === 'development'
 
+  const schema = makeExecutableSchema(rawSchema)
   //apollo
   const apolloServer = new ApolloServer({
-    schema: applyMiddleware(apolloApplication.schema, permissions),
-    executor: apolloApplication.createApolloExecutor(),
+    schema: schema,
+    // executor: apolloApplication.createApolloExecutor(),
     csrfPrevention: true,
     plugins: isDevelopmentEnv ? [] : [ApolloServerPluginLandingPageDisabled()],
     cache: new KeyvAdapter(new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}`)),

@@ -1,4 +1,5 @@
 import startServer from './src'
 
-//start server
+// start server
+// bruh what is this comment 💀^^
 startServer()
