@@ -2,7 +2,7 @@ import { DataSource, DataSourceConfig } from 'apollo-datasource'
 
 //types
 import { Context } from '../../../../types/auth'
-import type { PrismaClient, User } from '@prisma/client'
+import { Prisma, PrismaClient, User } from '@prisma/client'
 import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
 
 export default class UserAPI extends DataSource {
@@ -26,14 +26,18 @@ export default class UserAPI extends DataSource {
     this.cache = config.cache as KeyvAdapter
   }
 
-  createUser = async (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User | null> => {
+  createUser = async (user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> => {
     try {
-      return this.prisma.user.create({
+      return await this.prisma.user.create({
         data: user,
       })
     } catch (e) {
-      // if (e instanceof Prisma.PrismaClientKnownRequestError) return null;
-      return null
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === 'P2002') {
+          throw new Error('Email already exists')
+        }
+      }
+      throw new Error('Error Creating User')
     }
   }
 
