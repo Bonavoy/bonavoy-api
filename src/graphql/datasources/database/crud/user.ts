@@ -5,6 +5,12 @@ import { Context } from '../../../../types/auth'
 import type { PrismaClient, User } from '@prisma/client'
 import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
 
+interface FindUserQuery {
+  id?: string
+  email?: string
+  username?: string
+}
+
 export default class UserAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
@@ -60,8 +66,8 @@ export default class UserAPI extends DataSource {
     else return null
   }
 
-  // can be {id} | {username} | {email}
-  findUser = async (query: object): Promise<User | null> => {
+  findUser = async (query: FindUserQuery): Promise<User | null> => {
+    console.log(query)
     try {
       return this.prisma.user.findUnique({
         where: query,

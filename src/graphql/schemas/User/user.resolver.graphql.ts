@@ -2,19 +2,26 @@ import bcrypt from 'bcrypt'
 import 'dotenv/config'
 
 import { AuthenticationError } from 'apollo-server-express'
-import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../utils/auth'
+import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../auth/auth'
 
 //types
 import { Context } from '../../../types/auth'
 import type { User as DBUser } from '@prisma/client'
-import type { MutationCreateUserArgs, MutationAuthenticateArgs, User } from '../../../generated/graphql'
+import {
+  MutationCreateUserArgs,
+  MutationAuthenticateArgs,
+  User,
+  TripRole,
+  Resolvers,
+  AuthorsOnTripsEdge,
+} from '../../../generated/graphql'
 import { GraphQLError } from 'graphql'
 
-export default {
+const resolvers: Resolvers = {
   Query: {
     user: async (_parent: any, _args: any, ctx: Context): Promise<User> => {
       //get user from db
-      const user = await ctx.dataSources.users.findUser({ id: ctx.auth.sub })
+      const user = await ctx.dataSources.users.findUser({ id: ctx.auth.sub! })
       if (user == null) {
         throw new GraphQLError('Could not find user')
       }
@@ -27,8 +34,7 @@ export default {
         username: user.username,
         verified: user.verified,
         avatar: user.avatar,
-        authorsOnTrips: [],
-      }
+      } as any
     },
   },
   Mutation: {
@@ -65,15 +71,13 @@ export default {
         username: newUser.username,
         verified: newUser.verified,
         avatar: newUser.avatar,
-        authorsOnTrips: [],
-      }
+      } as any
     },
-
     authenticate: async (
       _parent: any,
       { username, password }: MutationAuthenticateArgs,
       ctx: Context,
-    ): Promise<Boolean> => {
+    ): Promise<boolean> => {
       //get user from db
       const dbUser: DBUser | null = await ctx.dataSources.users.findUser({ username })
 
@@ -122,7 +126,7 @@ export default {
         })
       })
     },
-    token: async (_parent: any, _args: any, ctx: Context): Promise<Boolean> => {
+    token: async (_parent: any, _args: any, ctx: Context): Promise<boolean> => {
       //using id and refreshtoken, we see if the session is valid on redis
       const validSession = await ctx.dataSources.users.findUserSession({
         id: ctx.auth.refresh.sub as string,
@@ -148,4 +152,44 @@ export default {
       return false
     },
   },
+  User: {
+    authorsOnTrips: async (user, args, ctx: Context) => {
+      const { limit, after } = args
+
+      const trips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
+
+      const tripEdges: AuthorsOnTripsEdge[] = trips.map((trip) => {
+        let tripRole = TripRole.Viewer
+        switch (trip.role) {
+          case TripRole.Author:
+            tripRole = TripRole.Author
+            break
+          case TripRole.Editor:
+            tripRole = TripRole.Editor
+            break
+          default:
+            tripRole = TripRole.Viewer
+        }
+
+        return {
+          node: {
+            id: trip.id,
+            role: tripRole,
+            trip: {} as any, // return any empty object to allow Trip resolver to handle
+          },
+        }
+      })
+
+      return {
+        edges: tripEdges,
+        totalCount: 1,
+        pageInfo: {
+          endCursor: '',
+          hasNextPage: true,
+        },
+      }
+    },
+  },
 }
+
+export default resolvers

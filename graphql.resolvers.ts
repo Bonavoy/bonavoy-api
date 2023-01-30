@@ -1,338 +1,5 @@
 import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import gql from 'graphql-tag';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
-/** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  DateTime: any;
-};
-
-export type AuthorsOnTrips = {
-  __typename?: 'AuthorsOnTrips';
-  id: Scalars['ID'];
-  role: TripRole;
-  trip: Trip;
-};
-
-export type AuthorsOnTripsConnection = {
-  __typename?: 'AuthorsOnTripsConnection';
-  edges: Array<AuthorsOnTripsEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
-};
-
-export type AuthorsOnTripsEdge = {
-  __typename?: 'AuthorsOnTripsEdge';
-  node: AuthorsOnTrips;
-};
-
-export type Coords = {
-  __typename?: 'Coords';
-  lat?: Maybe<Scalars['Float']>;
-  lng?: Maybe<Scalars['Float']>;
-};
-
-export type CoordsInput = {
-  lat?: InputMaybe<Scalars['Float']>;
-  lng?: InputMaybe<Scalars['Float']>;
-};
-
-export type CreateDayPlanInput = {
-  date?: InputMaybe<Scalars['DateTime']>;
-  order?: InputMaybe<Scalars['Int']>;
-  placeId?: InputMaybe<Scalars['ID']>;
-};
-
-export type DayPlan = {
-  __typename?: 'DayPlan';
-  date?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  order: Scalars['Int'];
-  spots?: Maybe<Array<Spot>>;
-};
-
-export type ExternalSpot = {
-  __typename?: 'ExternalSpot';
-  coords?: Maybe<Coords>;
-  fsq_id?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-};
-
-export type LocationContext = {
-  __typename?: 'LocationContext';
-  id: Scalars['String'];
-  short_code?: Maybe<Scalars['String']>;
-  text: Scalars['String'];
-  wikidata?: Maybe<Scalars['String']>;
-};
-
-export type LocationSuggestion = {
-  __typename?: 'LocationSuggestion';
-  center: Array<Maybe<Scalars['Float']>>;
-  context: Array<Maybe<LocationContext>>;
-  id: Scalars['ID'];
-  place_name: Scalars['String'];
-  text: Scalars['String'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  _empty?: Maybe<Scalars['String']>;
-  authenticate: Scalars['Boolean'];
-  createDayPlan?: Maybe<DayPlan>;
-  createPlace: Place;
-  createTrip: Trip;
-  createUser: User;
-  deletePlace: Scalars['ID'];
-  deleteSpot?: Maybe<Spot>;
-  spot?: Maybe<Spot>;
-  token: Scalars['Boolean'];
-  updatePlaceDates: PlaceDates;
-  updatePlacesOrder: Array<Place>;
-  updateTripName: Scalars['String'];
-};
-
-
-export type MutationAuthenticateArgs = {
-  password: Scalars['String'];
-  username: Scalars['String'];
-};
-
-
-export type MutationCreateDayPlanArgs = {
-  dayPlan?: InputMaybe<CreateDayPlanInput>;
-};
-
-
-export type MutationCreatePlaceArgs = {
-  place: PlaceInput;
-  tripId: Scalars['ID'];
-};
-
-
-export type MutationCreateTripArgs = {
-  trip: TripInput;
-};
-
-
-export type MutationCreateUserArgs = {
-  userInput: UserInput;
-};
-
-
-export type MutationDeletePlaceArgs = {
-  placeId: Scalars['ID'];
-};
-
-
-export type MutationDeleteSpotArgs = {
-  spotId?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type MutationSpotArgs = {
-  date?: InputMaybe<Scalars['DateTime']>;
-  placeId?: InputMaybe<Scalars['ID']>;
-  spot?: InputMaybe<SpotInput>;
-  tripId?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type MutationUpdatePlaceDatesArgs = {
-  endDate: Scalars['DateTime'];
-  placeId: Scalars['ID'];
-  startDate: Scalars['DateTime'];
-};
-
-
-export type MutationUpdatePlacesOrderArgs = {
-  places: Array<PlaceInput>;
-  tripId: Scalars['ID'];
-};
-
-
-export type MutationUpdateTripNameArgs = {
-  name: Scalars['String'];
-  tripId: Scalars['ID'];
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor: Scalars['ID'];
-  hasNextPage: Scalars['Boolean'];
-};
-
-export type Place = {
-  __typename?: 'Place';
-  center: Array<Maybe<Scalars['Float']>>;
-  colour: Scalars['String'];
-  country: Scalars['String'];
-  dayPlans?: Maybe<Array<DayPlan>>;
-  endDate?: Maybe<Scalars['DateTime']>;
-  id: Scalars['ID'];
-  mapbox_id: Scalars['String'];
-  place_name: Scalars['String'];
-  startDate?: Maybe<Scalars['DateTime']>;
-  text: Scalars['String'];
-};
-
-
-export type PlaceDayPlansArgs = {
-  date?: InputMaybe<Scalars['DateTime']>;
-};
-
-export type PlaceDates = {
-  __typename?: 'PlaceDates';
-  endDate: Scalars['DateTime'];
-  startDate: Scalars['DateTime'];
-};
-
-export type PlaceInput = {
-  center: Array<InputMaybe<Scalars['Float']>>;
-  colour: Scalars['String'];
-  country: Scalars['String'];
-  endDate?: InputMaybe<Scalars['DateTime']>;
-  id?: InputMaybe<Scalars['ID']>;
-  mapbox_id: Scalars['String'];
-  place_name: Scalars['String'];
-  startDate?: InputMaybe<Scalars['DateTime']>;
-  text: Scalars['String'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  _empty?: Maybe<Scalars['String']>;
-  findPlacesByTrip?: Maybe<Array<Maybe<Place>>>;
-  getDayPlanByDate?: Maybe<DayPlan>;
-  getLocationSuggestions: Array<LocationSuggestion>;
-  getPlaceByDate?: Maybe<Place>;
-  getTrip: Trip;
-  trips?: Maybe<Array<Maybe<Trip>>>;
-  user: User;
-};
-
-
-export type QueryFindPlacesByTripArgs = {
-  tripId?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type QueryGetDayPlanByDateArgs = {
-  date?: InputMaybe<Scalars['DateTime']>;
-  tripId?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type QueryGetLocationSuggestionsArgs = {
-  country: Array<InputMaybe<Scalars['String']>>;
-  proximity: Array<InputMaybe<Scalars['String']>>;
-  query: Scalars['String'];
-  types: Array<InputMaybe<Scalars['String']>>;
-};
-
-
-export type QueryGetPlaceByDateArgs = {
-  date?: InputMaybe<Scalars['DateTime']>;
-  tripId?: InputMaybe<Scalars['ID']>;
-};
-
-
-export type QueryGetTripArgs = {
-  tripId: Scalars['ID'];
-};
-
-export type Spot = {
-  __typename?: 'Spot';
-  dayPlanId: Scalars['ID'];
-  end?: Maybe<Scalars['DateTime']>;
-  fsq_id: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  order: Scalars['Int'];
-  start?: Maybe<Scalars['DateTime']>;
-};
-
-export type SpotInput = {
-  dayPlanId?: InputMaybe<Scalars['ID']>;
-  end?: InputMaybe<Scalars['DateTime']>;
-  fsq_id: Scalars['String'];
-  name?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Scalars['Int']>;
-  start?: InputMaybe<Scalars['DateTime']>;
-};
-
-export type SpotRecommendationInputs = {
-  coords?: InputMaybe<CoordsInput>;
-  filter?: InputMaybe<Scalars['String']>;
-  limit?: InputMaybe<Scalars['Int']>;
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  _empty?: Maybe<Scalars['String']>;
-};
-
-export type Trip = {
-  __typename?: 'Trip';
-  authors: Array<AuthorsOnTrips>;
-  banner: Scalars['String'];
-  endDate: Scalars['DateTime'];
-  id: Scalars['ID'];
-  isPublic: Scalars['Boolean'];
-  name: Scalars['String'];
-  places?: Maybe<Array<Place>>;
-  startDate: Scalars['DateTime'];
-};
-
-export type TripInput = {
-  endDate: Scalars['DateTime'];
-  isPublic: Scalars['Boolean'];
-  name: Scalars['String'];
-  places: Array<PlaceInput>;
-  startDate: Scalars['DateTime'];
-};
-
-export enum TripRole {
-  Author = 'AUTHOR',
-  Editor = 'EDITOR',
-  Viewer = 'VIEWER'
-}
-
-export type User = {
-  __typename?: 'User';
-  authorsOnTrips: AuthorsOnTripsConnection;
-  avatar?: Maybe<Scalars['String']>;
-  email: Scalars['String'];
-  firstname: Scalars['String'];
-  id: Scalars['ID'];
-  lastname: Scalars['String'];
-  username: Scalars['String'];
-  verified: Scalars['Boolean'];
-};
-
-
-export type UserAuthorsOnTripsArgs = {
-  after?: InputMaybe<Scalars['ID']>;
-  limit: Scalars['Int'];
-};
-
-export type UserInput = {
-  email: Scalars['String'];
-  firstname: Scalars['String'];
-  lastname: Scalars['String'];
-  password: Scalars['String'];
-  username: Scalars['String'];
-};
-
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -403,8 +70,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   AuthorsOnTrips: ResolverTypeWrapper<AuthorsOnTrips>;
-  AuthorsOnTripsConnection: ResolverTypeWrapper<AuthorsOnTripsConnection>;
-  AuthorsOnTripsEdge: ResolverTypeWrapper<AuthorsOnTripsEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Coords: ResolverTypeWrapper<Coords>;
   CoordsInput: CoordsInput;
@@ -418,7 +83,6 @@ export type ResolversTypes = {
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
-  PageInfo: ResolverTypeWrapper<PageInfo>;
   Place: ResolverTypeWrapper<Place>;
   PlaceDates: ResolverTypeWrapper<PlaceDates>;
   PlaceInput: PlaceInput;
@@ -438,8 +102,6 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   AuthorsOnTrips: AuthorsOnTrips;
-  AuthorsOnTripsConnection: AuthorsOnTripsConnection;
-  AuthorsOnTripsEdge: AuthorsOnTripsEdge;
   Boolean: Scalars['Boolean'];
   Coords: Coords;
   CoordsInput: CoordsInput;
@@ -453,7 +115,6 @@ export type ResolversParentTypes = {
   LocationContext: LocationContext;
   LocationSuggestion: LocationSuggestion;
   Mutation: {};
-  PageInfo: PageInfo;
   Place: Place;
   PlaceDates: PlaceDates;
   PlaceInput: PlaceInput;
@@ -473,18 +134,7 @@ export type AuthorsOnTripsResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AuthorsOnTripsConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthorsOnTripsConnection'] = ResolversParentTypes['AuthorsOnTripsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['AuthorsOnTripsEdge']>, ParentType, ContextType>;
-  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
-  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type AuthorsOnTripsEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthorsOnTripsEdge'] = ResolversParentTypes['AuthorsOnTripsEdge']> = {
-  node?: Resolver<ResolversTypes['AuthorsOnTrips'], ParentType, ContextType>;
+  tripId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -546,12 +196,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateTripName?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationUpdateTripNameArgs, 'name' | 'tripId'>>;
 };
 
-export type PageInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['PageInfo'] = ResolversParentTypes['PageInfo']> = {
-  endCursor?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type PlaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Place'] = ResolversParentTypes['Place']> = {
   center?: Resolver<Array<Maybe<ResolversTypes['Float']>>, ParentType, ContextType>;
   colour?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -611,7 +255,7 @@ export type TripResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  authorsOnTrips?: Resolver<ResolversTypes['AuthorsOnTripsConnection'], ParentType, ContextType, RequireFields<UserAuthorsOnTripsArgs, 'limit'>>;
+  authorsOnTrips?: Resolver<Array<ResolversTypes['AuthorsOnTrips']>, ParentType, ContextType>;
   avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -624,8 +268,6 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   AuthorsOnTrips?: AuthorsOnTripsResolvers<ContextType>;
-  AuthorsOnTripsConnection?: AuthorsOnTripsConnectionResolvers<ContextType>;
-  AuthorsOnTripsEdge?: AuthorsOnTripsEdgeResolvers<ContextType>;
   Coords?: CoordsResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayPlan?: DayPlanResolvers<ContextType>;
@@ -633,7 +275,6 @@ export type Resolvers<ContextType = any> = {
   LocationContext?: LocationContextResolvers<ContextType>;
   LocationSuggestion?: LocationSuggestionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  PageInfo?: PageInfoResolvers<ContextType>;
   Place?: PlaceResolvers<ContextType>;
   PlaceDates?: PlaceDatesResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

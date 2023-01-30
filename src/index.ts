@@ -13,7 +13,7 @@ import Keyv from 'keyv'
 import { KeyvAdapter } from './utils/classes/KeyvAdapter'
 
 //utils
-import { verifyAccessToken, verifyRefreshToken } from './utils/auth'
+import { verifyAccessToken, verifyRefreshToken } from './auth/auth'
 import dataSources from './graphql/datasources'
 import permissions from './graphql/permissions'
 
@@ -32,7 +32,7 @@ const startServer = async () => {
   const schema = makeExecutableSchema(rawSchema)
   //apollo
   const apolloServer = new ApolloServer({
-    schema: schema,
+    schema: applyMiddleware(schema, permissions),
     // executor: apolloApplication.createApolloExecutor(),
     csrfPrevention: true,
     plugins: isDevelopmentEnv ? [] : [ApolloServerPluginLandingPageDisabled()],

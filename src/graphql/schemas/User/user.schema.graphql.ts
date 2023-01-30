@@ -31,13 +31,27 @@ export default gql`
     lastname: String!
     avatar: String
     verified: Boolean!
-    authorsOnTrips: [AuthorsOnTrips!]!
+    authorsOnTrips(limit: Int!, after: ID): AuthorsOnTripsConnection!
+  }
+
+  type AuthorsOnTripsConnection {
+    edges: [AuthorsOnTripsEdge!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
+  }
+
+  type PageInfo {
+    endCursor: ID! # fetch after this id for next page
+    hasNextPage: Boolean!
+  }
+
+  type AuthorsOnTripsEdge {
+    node: AuthorsOnTrips!
   }
 
   type AuthorsOnTrips {
     id: ID!
     role: TripRole!
-    tripId: ID!
     trip: Trip!
   }
 
