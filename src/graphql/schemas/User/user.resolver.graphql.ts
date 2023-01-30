@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt'
 import 'dotenv/config'
 
-import { AuthenticationError } from 'apollo-server-express'
 import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../auth/auth'
 
 //types
@@ -82,7 +81,7 @@ const resolvers: Resolvers = {
       const dbUser: DBUser | null = await ctx.dataSources.users.findUser({ username })
 
       //if no user, throw error
-      if (!dbUser) throw new AuthenticationError('Invalid credentials')
+      if (!dbUser) throw new GraphQLError('Invalid credentials')
 
       //promise due to needing to wait for async cb by compare function
       return await new Promise((resolve) => {
@@ -122,7 +121,7 @@ const resolvers: Resolvers = {
             })
 
             resolve(true)
-          } else throw new AuthenticationError('Invalid credentials')
+          } else throw new GraphQLError('Invalid credentials')
         })
       })
     },

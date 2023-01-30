@@ -37,4 +37,4 @@ export default {
 
   //external
   unsplashAPI: new UnsplashAPI(),
-}
+} as BonavoyDataSources
