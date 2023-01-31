@@ -1,5 +1,5 @@
 import { GraphQLScalarType } from 'graphql'
-import { getISODateTime } from '../../../utils/date'
+import { getISODateTime } from '../../../../utils/date'
 
 // TODO: change the any types to something more specific
 export default {
@@ -7,9 +7,12 @@ export default {
     name: 'DateTime',
     description: 'DateTime custom scalar type that is timezone agnostic ie. relative to UTC',
     serialize(value: any) {
-      return getISODateTime(value)
+      const d = getISODateTime(value)
+      console.log('seraliozlike', d)
+      return d
     },
     parseValue(value: any) {
+      console.log('parwsd', new Date(value))
       return new Date(value)
     },
     parseLiteral(value: any) {

@@ -69,14 +69,13 @@ model DayPlan {
   order     Int
   placeId   String
   place     Place    @relation(fields: [placeId], references: [id])
-  spots     Spot[]
+  activities     Activity[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Spot {
+model Activity {
   id        String    @id @default(uuid())
-  fsq_id    String
   name      String
   order     Int
   startTime DateTime?

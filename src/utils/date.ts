@@ -12,5 +12,5 @@ export const getISODateTime = (date: Date) => {
   const formattedHours = String(date.getUTCHours()).padStart(2, '0')
   const formattedMinutes = String(date.getUTCMinutes()).padStart(2, '0')
   const formattedSeconds = String(date.getUTCSeconds()).padStart(2, '0')
-  return `${formattedYear}-${formattedMonth}-${formattedDate}T${formattedHours}:${formattedMinutes}:${formattedSeconds}`
+  return `${formattedYear}-${formattedMonth}-${formattedDate}T${formattedHours}:${formattedMinutes}:${formattedSeconds}Z`
 }

@@ -7,5 +7,6 @@ import Spot from './Spot'
 import Trip from './Trip'
 import User from './User'
 import AuthorsOnTrips from './AuthorsOnTrips'
+import DateTime from './scalars/DateTime'
 
-export default mergeRawSchemas(User, Trip, Spot, Place, Location, DayPlan, AuthorsOnTrips)
+export default mergeRawSchemas(User, Trip, Spot, Place, Location, DayPlan, AuthorsOnTrips, DateTime)

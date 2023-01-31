@@ -3,15 +3,15 @@ import { gql } from 'graphql-tag'
 export default gql`
   #queries
   type Query {
-    getTrip(tripId: ID!): Trip!
-    trips: [Trip]
+    trips: [Trip!]!
+    trip(tripId: ID!): Trip!
   }
 
   #mutations
   type Mutation {
     createTrip(trip: TripInput!): Trip!
-    updateTripName(tripId: ID!, name: String!): String!
-    updatePlacesOrder(tripId: ID!, places: [PlaceInput!]!): [Place!]!
+    updateTrip(updateTripInput: UpdateTripInput!): Trip!
+    deleteTrip(id: ID!): Boolean!
   }
 
   #inputs
@@ -21,6 +21,13 @@ export default gql`
     startDate: DateTime!
     endDate: DateTime!
     isPublic: Boolean!
+  }
+
+  input UpdateTripInput {
+    name: String
+    startDate: DateTime
+    endDate: DateTime
+    isPublic: Boolean
   }
 
   #types

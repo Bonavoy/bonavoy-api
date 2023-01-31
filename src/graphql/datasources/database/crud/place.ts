@@ -38,7 +38,7 @@ export default class PlaceAPI extends DataSource {
       include: {
         dayPlans: {
           include: {
-            spots: true,
+            activities: true,
           },
         },
       },
@@ -66,7 +66,7 @@ export default class PlaceAPI extends DataSource {
         // todo: only include if GraphQL query has asked for this field
         dayPlans: {
           include: {
-            spots: true,
+            activities: true,
           },
         },
       },

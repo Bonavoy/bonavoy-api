@@ -1,4 +1,4 @@
-import { Spot } from '@prisma/client'
+import { Activity } from '@prisma/client'
 import { differenceInDays, subDays } from 'date-fns'
 
 //types
@@ -10,7 +10,7 @@ export default {
     spot: async (
       _: unknown,
       args: {
-        spot: Spot
+        spot: Activity
         date: Date
         tripId: string
         placeId: string

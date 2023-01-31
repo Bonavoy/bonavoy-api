@@ -2,7 +2,7 @@ import { gql } from 'graphql-tag'
 
 import { mergeRawSchemas } from '../utils/mergeRawSchemas'
 import graphqlSchemas from './schemas'
-import graphqlScalars from './scalars'
+import graphqlScalars from './schemas/scalars/DateTime'
 
 const schema = mergeRawSchemas(
   {
