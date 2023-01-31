@@ -1,5 +1,5 @@
 // types and resolvers
-import typedefs from './user.type.graphql'
+import typedefs from './user.schema.graphql'
 import userResolver from './user.resolver.graphql'
 
 export default {

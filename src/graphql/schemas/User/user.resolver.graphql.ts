@@ -1,40 +1,87 @@
 import bcrypt from 'bcrypt'
 import 'dotenv/config'
 
-import { AuthenticationError } from 'apollo-server-express'
-import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../utils/auth'
+import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../auth/auth'
 
 //types
 import { Context } from '../../../types/auth'
-import type { User } from '@prisma/client'
-import { UserInput } from '../../../generated/graphql'
+import type { User as DBUser } from '@prisma/client'
+import {
+  MutationCreateUserArgs,
+  MutationAuthenticateArgs,
+  User,
+  TripRole,
+  Resolvers,
+  AuthorsOnTripsEdge,
+} from '../../../generated/graphql'
+import { GraphQLError } from 'graphql'
 
-export default {
+const resolvers: Resolvers = {
   Query: {
-    user: async (_: unknown, args: unknown, ctx: Context) => {
+    user: async (_parent: any, _args: any, ctx: Context): Promise<User> => {
       //get user from db
-      return await ctx.dataSources.users.findUser({ id: ctx.auth.sub })
+      const user = await ctx.dataSources.users.findUser({ id: ctx.auth.sub! })
+      if (user == null) {
+        throw new GraphQLError('Could not find user')
+      }
+
+      return {
+        id: user.id,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        username: user.username,
+        verified: user.verified,
+        avatar: user.avatar,
+      } as any
     },
   },
   Mutation: {
-    createUser: async (_: unknown, { input }: { input: UserInput }, ctx: Context) => {
+    createUser: async (_parent: any, { userInput }: MutationCreateUserArgs, ctx: Context): Promise<User> => {
+      const { email, firstname, lastname, password, username } = userInput
+
+      if (!(2 <= firstname.length && firstname.length <= 64)) {
+        throw new GraphQLError('Firstname needs to be between 2 and 64 characters long')
+      }
+
+      if (!(2 <= lastname.length && lastname.length <= 64)) {
+        throw new GraphQLError('Lastname needs to be between 2 and 64 characters long')
+      }
+
+      if (!(10 <= password.length && password.length <= 40)) {
+        throw new GraphQLError('Password needs to be between 10 and 40 characters long')
+      }
+
       const newUser = await ctx.dataSources.users.createUser({
-        ...input,
-        password: bcrypt.hashSync(input.password, bcrypt.genSaltSync(10)),
+        email,
+        firstname,
+        lastname,
+        username,
+        password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
         avatar: null,
         verified: false,
       })
 
-      console.log(input, newUser)
-      return newUser
+      return {
+        id: newUser.id,
+        email: newUser.email,
+        firstname: newUser.firstname,
+        lastname: newUser.lastname,
+        username: newUser.username,
+        verified: newUser.verified,
+        avatar: newUser.avatar,
+      } as any
     },
-
-    authenticate: async (_: unknown, { username, password }: { username: string; password: string }, ctx: Context) => {
+    authenticate: async (
+      _parent: any,
+      { username, password }: MutationAuthenticateArgs,
+      ctx: Context,
+    ): Promise<boolean> => {
       //get user from db
-      const dbUser: User | null = await ctx.dataSources.users.findUser({ username })
+      const dbUser: DBUser | null = await ctx.dataSources.users.findUser({ username })
 
       //if no user, throw error
-      if (!dbUser) throw new AuthenticationError('Invalid credentials')
+      if (!dbUser) throw new GraphQLError('Invalid credentials')
 
       //promise due to needing to wait for async cb by compare function
       return await new Promise((resolve) => {
@@ -74,11 +121,11 @@ export default {
             })
 
             resolve(true)
-          } else throw new AuthenticationError('Invalid credentials')
+          } else throw new GraphQLError('Invalid credentials')
         })
       })
     },
-    token: async (_parent: unknown, _args: unknown, ctx: Context) => {
+    token: async (_parent: any, _args: any, ctx: Context): Promise<boolean> => {
       //using id and refreshtoken, we see if the session is valid on redis
       const validSession = await ctx.dataSources.users.findUserSession({
         id: ctx.auth.refresh.sub as string,
@@ -104,4 +151,44 @@ export default {
       return false
     },
   },
+  User: {
+    authorsOnTrips: async (user, args, ctx: Context) => {
+      const { limit, after } = args
+
+      const trips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
+
+      const tripEdges: AuthorsOnTripsEdge[] = trips.map((trip) => {
+        let tripRole = TripRole.Viewer
+        switch (trip.role) {
+          case TripRole.Author:
+            tripRole = TripRole.Author
+            break
+          case TripRole.Editor:
+            tripRole = TripRole.Editor
+            break
+          default:
+            tripRole = TripRole.Viewer
+        }
+
+        return {
+          node: {
+            id: trip.id,
+            role: tripRole,
+            trip: {} as any, // return any empty object to allow Trip resolver to handle
+          },
+        }
+      })
+
+      return {
+        edges: tripEdges,
+        totalCount: 1,
+        pageInfo: {
+          endCursor: '',
+          hasNextPage: true,
+        },
+      }
+    },
+  },
 }
+
+export default resolvers

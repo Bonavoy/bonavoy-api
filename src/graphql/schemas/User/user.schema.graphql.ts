@@ -8,7 +8,7 @@ export default gql`
 
   #mutations
   type Mutation {
-    createUser(input: UserInput): User
+    createUser(userInput: UserInput!): User!
     authenticate(username: String!, password: String!): Boolean!
     token: Boolean!
   }
@@ -29,16 +29,29 @@ export default gql`
     username: String!
     firstname: String!
     lastname: String!
-    password: String!
     avatar: String
     verified: Boolean!
-    authorsOnTrips: [AuthorsOnTrips]
+    authorsOnTrips(limit: Int!, after: ID): AuthorsOnTripsConnection!
+  }
+
+  type AuthorsOnTripsConnection {
+    edges: [AuthorsOnTripsEdge!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
+  }
+
+  type PageInfo {
+    endCursor: ID! # fetch after this id for next page
+    hasNextPage: Boolean!
+  }
+
+  type AuthorsOnTripsEdge {
+    node: AuthorsOnTrips!
   }
 
   type AuthorsOnTrips {
     id: ID!
     role: TripRole!
-    tripId: ID!
     trip: Trip!
   }
 
