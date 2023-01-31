@@ -3,6 +3,7 @@ import type { PrismaClient, Place } from '@prisma/client'
 
 import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
+import { DBPlace } from '../../types'
 
 export default class PlaceAPI extends DataSource {
   prisma: PrismaClient
@@ -23,7 +24,7 @@ export default class PlaceAPI extends DataSource {
     this.context = config.context
   }
 
-  findPlaceById = async (placeId: string): Promise<Place | null> => {
+  findPlace = async (placeId: string): Promise<Place | null> => {
     return await this.prisma.place.findUnique({
       where: {
         id: placeId,
@@ -111,11 +112,18 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  createPlace = async (place: Omit<Place, 'tripId'>, tripId: string) => {
+  createPlace = async (tripId: string, place: DBPlace) => {
     return await this.prisma.place.create({
       data: {
         tripId,
-        ...place,
+        mapbox_id: place.mapbox_id,
+        place_name: place.place_name,
+        text: place.text,
+        startDate: place.startDate,
+        endDate: place.endDate,
+        colour: place.colour,
+        center: place.center,
+        country: place.country,
       },
     })
   }

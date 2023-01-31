@@ -3,20 +3,19 @@ import { gql } from 'graphql-tag'
 export default gql`
   # queries
   type Query {
-    findPlacesByTrip(tripId: ID): [Place]
-    getPlaceByDate(tripId: ID, date: DateTime): Place
+    places(tripId: ID!): [Place!]!
+    place(id: ID!): Place!
   }
 
   # mutations
   type Mutation {
-    createPlace(place: PlaceInput!, tripId: ID!): Place!
+    createPlace(tripId: ID!, place: PlaceInput!): Place!
     deletePlace(placeId: ID!): ID!
-    updatePlaceDates(placeId: ID!, startDate: DateTime!, endDate: DateTime!): PlaceDates!
+    updatePlace(place: UpdatePlaceInput!): Place!
   }
 
   #inputs
   input PlaceInput {
-    id: ID
     text: String!
     place_name: String!
     mapbox_id: String!
@@ -24,7 +23,18 @@ export default gql`
     endDate: DateTime
     colour: String!
     country: String!
-    center: [Float]!
+    center: [Float!]!
+  }
+
+  input UpdatePlaceInput {
+    text: String
+    place_name: String
+    mapbox_id: String
+    startDate: DateTime
+    endDate: DateTime
+    colour: String
+    country: String
+    center: [Float!]
   }
 
   # types
@@ -37,7 +47,7 @@ export default gql`
     endDate: DateTime
     colour: String!
     country: String!
-    center: [Float]!
+    center: [Float!]!
     dayPlans(date: DateTime): [DayPlan!]
   }
 
