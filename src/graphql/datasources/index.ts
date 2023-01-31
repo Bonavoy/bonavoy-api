@@ -2,7 +2,6 @@
 import { PrismaClient } from '@prisma/client'
 
 //external apis
-import FoursquareAPI from './api/foursquare'
 import UnsplashAPI from './api/unsplash'
 
 //crud
@@ -22,7 +21,6 @@ export interface BonavoyDataSources {
   dayPlans: DayPlanAPI
   places: PlaceAPI
   activity: ActivityAPI
-  foursquareAPI: FoursquareAPI
   unsplashAPI: UnsplashAPI
 }
 
