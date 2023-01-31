@@ -35,7 +35,8 @@ const resolvers: Resolvers = {
         username: user.username,
         verified: user.verified,
         avatar: user.avatar,
-      } as any
+        authorsOnTrips: [] as any, // let root resolver handle
+      }
     },
   },
   Mutation: {
@@ -167,6 +168,7 @@ const resolvers: Resolvers = {
       const { limit, after } = args
 
       const authorsOnTrips = await ctx.dataSources.authors.findAuthorsPaginated(user.id, limit, after)
+      // TODO: get total count, hasNextPage
 
       const authorsOnTripsEdges: AuthorsOnTripsEdge[] = authorsOnTrips.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
@@ -184,7 +186,7 @@ const resolvers: Resolvers = {
         return {
           node: {
             id: authorOnTrip.id,
-            user: {} as any,
+            user: {} as any, // let root resolver handle
             role: tripRole,
             trip: {} as any, // return any empty object to allow Trip resolver to handle
             tripId: authorOnTrip.tripId, // return so the authorsOnTrips root resolver has access
@@ -196,7 +198,7 @@ const resolvers: Resolvers = {
         edges: authorsOnTripsEdges,
         totalCount: 1,
         pageInfo: {
-          endCursor: '',
+          endCursor: authorsOnTrips[authorsOnTrips.length - 1].id,
           hasNextPage: true,
         },
       }
