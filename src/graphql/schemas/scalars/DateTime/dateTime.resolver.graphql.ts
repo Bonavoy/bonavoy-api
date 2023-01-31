@@ -1,5 +1,5 @@
 import { GraphQLScalarType } from 'graphql'
-import { getISODateTime } from '../../../utils/date'
+import { getISODateTime } from '../../../../utils/date'
 
 // TODO: change the any types to something more specific
 export default {

@@ -11,3 +11,29 @@ export interface DBUser {
 }
 
 export interface DBAuthorsOnTrips {}
+
+export interface DBTrip {
+  id?: string
+  name: string
+  banner: string
+  startDate: Date
+  endDate: Date
+  isPublic: boolean
+  places: DBPlaces[]
+}
+
+export interface DBPlaces {
+  id?: string
+  tripId?: string
+  mapbox_id: string
+  place_name: string
+  text: string
+  startDate: Date | null
+  endDate: Date | null
+  colour: string
+  center: number[]
+  country: string
+  dayPlans: DBDayPlans[]
+}
+
+export interface DBDayPlans {}

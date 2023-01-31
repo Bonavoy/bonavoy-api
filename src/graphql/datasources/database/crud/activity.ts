@@ -2,10 +2,10 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, Spot } from '@prisma/client'
+import type { PrismaClient, Activity } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 
-export default class SpotAPI extends DataSource {
+export default class ActivityAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
 
@@ -24,8 +24,8 @@ export default class SpotAPI extends DataSource {
     this.context = config.context
   }
 
-  findHighestOrderSpot = async (dayPlanId: string) => {
-    return await this.prisma.spot.aggregate({
+  findHighestOrderActivity = async (dayPlanId: string) => {
+    return await this.prisma.activity.aggregate({
       where: {
         dayPlanId,
       },
@@ -35,16 +35,16 @@ export default class SpotAPI extends DataSource {
     })
   }
 
-  addSpotToDayPlan = async (spot: Spot) => {
-    return await this.prisma.spot.create({
+  addActivityToDayPlan = async (activity: Activity) => {
+    return await this.prisma.activity.create({
       data: {
-        ...spot,
+        ...activity,
       },
     })
   }
 
-  deleteSpot = async (id: string) => {
-    return await this.prisma.spot.delete({
+  deleteActivity = async (id: string) => {
+    return await this.prisma.activity.delete({
       where: {
         id,
       },

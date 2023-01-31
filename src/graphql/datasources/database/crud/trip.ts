@@ -2,8 +2,10 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { Place, PrismaClient, Trip } from '@prisma/client'
+import type { Place, Prisma, PrismaClient, Trip } from '@prisma/client'
 import { Context } from '../../../../types/auth'
+import { DBAuthorsOnTrips, DBTrip } from '../../types'
+import DataLoader from 'dataloader'
 
 export default class TripsAPI extends DataSource {
   prisma: PrismaClient
@@ -24,21 +26,30 @@ export default class TripsAPI extends DataSource {
     this.context = config.context
   }
 
-  createTrip = async (trip: Trip & { places: Place[] }) => {
+  createTrip = async (userId: string, trip: DBTrip) => {
     return await this.prisma.trip.create({
       data: {
-        ...trip,
-        banner: (await this.context?.dataSources.unsplashAPI.getTripBannerPhoto(trip.places[0].country)).urls.regular,
+        name: trip.name,
+        banner: '',
+        startDate: trip.startDate,
+        endDate: trip.endDate,
         authors: {
           create: {
-            userId: this.context?.auth.sub as string,
+            userId: userId,
             role: 'AUTHOR',
           },
         },
         places: {
-          createMany: {
-            data: trip.places,
-          },
+          create: trip.places.map((place) => ({
+            mapbox_id: place.mapbox_id,
+            place_name: place.place_name,
+            text: place.text,
+            startDate: place.startDate,
+            endDate: place.endDate,
+            colour: place.colour,
+            center: place.center,
+            country: place.country,
+          })),
         },
       },
     })
@@ -56,15 +67,27 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  findTrip = async (tripId: string) => {
-    return await this.prisma.trip.findUnique({
+  private batchTrips = new DataLoader<string, Trip | null | undefined>(async (ids) => {
+    const tripIds = ids.map((tripId) => String(tripId))
+    const trips = await this.prisma.trip.findMany({
       where: {
-        id: tripId,
-      },
-      include: {
-        places: true,
+        id: {
+          in: tripIds,
+        },
       },
     })
+
+    const tripMap = new Map<string, Trip>()
+
+    for (const trip of trips) {
+      tripMap.set(trip.id, trip)
+    }
+
+    return tripIds.map((id) => tripMap.get(id))
+  })
+
+  findTrip = async (id: string): Promise<Trip | null | undefined> => {
+    return this.batchTrips.load(id)
   }
 
   updateTripName = async (tripId: string, name: string): Promise<{ name: string }> => {

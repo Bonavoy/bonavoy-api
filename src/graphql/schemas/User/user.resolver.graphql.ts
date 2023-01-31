@@ -13,8 +13,10 @@ import {
   TripRole,
   Resolvers,
   AuthorsOnTripsEdge,
+  AuthorsOnTripsConnection,
 } from '../../../generated/graphql'
 import { GraphQLError } from 'graphql'
+import { isValidEmail } from '../../../utils/validators'
 
 const resolvers: Resolvers = {
   Query: {
@@ -33,12 +35,22 @@ const resolvers: Resolvers = {
         username: user.username,
         verified: user.verified,
         avatar: user.avatar,
-      } as any
+        authorsOnTrips: [] as any, // let root resolver handle
+      }
     },
   },
   Mutation: {
     createUser: async (_parent: any, { userInput }: MutationCreateUserArgs, ctx: Context): Promise<User> => {
       const { email, firstname, lastname, password, username } = userInput
+
+      if (!isValidEmail(email)) {
+        throw new GraphQLError('Email is not valid')
+      }
+
+      if (!(2 <= username.length && username.length <= 64)) {
+        // TODO: check for bad characters like &, !, @ ...
+        throw new GraphQLError('Username needs to be between 2 and 64 characters long')
+      }
 
       if (!(2 <= firstname.length && firstname.length <= 64)) {
         throw new GraphQLError('Firstname needs to be between 2 and 64 characters long')
@@ -152,14 +164,15 @@ const resolvers: Resolvers = {
     },
   },
   User: {
-    authorsOnTrips: async (user, args, ctx: Context) => {
+    authorsOnTrips: async (user, args, ctx: Context): Promise<AuthorsOnTripsConnection> => {
       const { limit, after } = args
 
-      const trips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
+      const authorsOnTrips = await ctx.dataSources.authors.findAuthorsPaginated(user.id, limit, after)
+      // TODO: get total count, hasNextPage
 
-      const tripEdges: AuthorsOnTripsEdge[] = trips.map((trip) => {
+      const authorsOnTripsEdges: AuthorsOnTripsEdge[] = authorsOnTrips.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
-        switch (trip.role) {
+        switch (authorOnTrip.role) {
           case TripRole.Author:
             tripRole = TripRole.Author
             break
@@ -172,18 +185,20 @@ const resolvers: Resolvers = {
 
         return {
           node: {
-            id: trip.id,
+            id: authorOnTrip.id,
+            user: {} as any, // let root resolver handle
             role: tripRole,
             trip: {} as any, // return any empty object to allow Trip resolver to handle
+            tripId: authorOnTrip.tripId, // return so the authorsOnTrips root resolver has access
           },
         }
       })
 
       return {
-        edges: tripEdges,
+        edges: authorsOnTripsEdges,
         totalCount: 1,
         pageInfo: {
-          endCursor: '',
+          endCursor: authorsOnTrips[authorsOnTrips.length - 1].id,
           hasNextPage: true,
         },
       }
