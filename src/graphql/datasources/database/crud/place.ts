@@ -2,6 +2,7 @@ import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, Place } from '@prisma/client'
 
 import { Context } from '../../../../types/auth'
+import DataLoader from 'dataloader'
 
 export default class PlaceAPI extends DataSource {
   prisma: PrismaClient
@@ -28,6 +29,32 @@ export default class PlaceAPI extends DataSource {
         id: placeId,
       },
     })
+  }
+
+  private batchPlaceLists = new DataLoader<string, Place[]>(async (ids) => {
+    const tripIds = ids.map((tripId) => String(tripId))
+    const places = await this.prisma.place.findMany({
+      where: {
+        tripId: {
+          in: tripIds,
+        },
+      },
+    })
+    const placeListMap = new Map<string, Place[]>()
+
+    for (const place of places) {
+      if (placeListMap.has(place.tripId)) {
+        placeListMap.get(place.tripId)?.push(place)
+      } else {
+        placeListMap.set(place.tripId, [place])
+      }
+    }
+
+    return tripIds.map((tripId) => placeListMap.get(tripId) || [])
+  })
+
+  findPlaces = async (tripId: string): Promise<Place[]> => {
+    return this.batchPlaceLists.load(tripId)
   }
 
   findPlacesByTrip = async (tripId: string): Promise<Place[]> => {
