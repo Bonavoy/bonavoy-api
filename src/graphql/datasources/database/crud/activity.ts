@@ -24,7 +24,7 @@ export default class ActivityAPI extends DataSource {
     this.context = config.context
   }
 
-  findHighestOrderSpot = async (dayPlanId: string) => {
+  findHighestOrderActivity = async (dayPlanId: string) => {
     return await this.prisma.activity.aggregate({
       where: {
         dayPlanId,
@@ -35,7 +35,7 @@ export default class ActivityAPI extends DataSource {
     })
   }
 
-  addSpotToDayPlan = async (activity: Activity) => {
+  addActivityToDayPlan = async (activity: Activity) => {
     return await this.prisma.activity.create({
       data: {
         ...activity,
@@ -43,7 +43,7 @@ export default class ActivityAPI extends DataSource {
     })
   }
 
-  deleteSpot = async (id: string) => {
+  deleteActivity = async (id: string) => {
     return await this.prisma.activity.delete({
       where: {
         id,
