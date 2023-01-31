@@ -16,6 +16,7 @@ import {
   AuthorsOnTripsConnection,
 } from '../../../generated/graphql'
 import { GraphQLError } from 'graphql'
+import { isValidEmail } from '../../../utils/validators'
 
 const resolvers: Resolvers = {
   Query: {
@@ -40,6 +41,15 @@ const resolvers: Resolvers = {
   Mutation: {
     createUser: async (_parent: any, { userInput }: MutationCreateUserArgs, ctx: Context): Promise<User> => {
       const { email, firstname, lastname, password, username } = userInput
+
+      if (!isValidEmail(email)) {
+        throw new GraphQLError('Email is not valid')
+      }
+
+      if (!(2 <= username.length && username.length <= 64)) {
+        // TODO: check for bad characters like &, !, @ ...
+        throw new GraphQLError('Username needs to be between 2 and 64 characters long')
+      }
 
       if (!(2 <= firstname.length && firstname.length <= 64)) {
         throw new GraphQLError('Firstname needs to be between 2 and 64 characters long')
