@@ -9,7 +9,6 @@ import UserAPI from '../src/graphql/datasources/database/crud/user'
 import TripsAPI from '../src/graphql/datasources/database/crud/trip'
 import DayPlanAPI from '../src/graphql/datasources/database/crud/dayPlan'
 import PlaceAPI from '../src/graphql/datasources/database/crud/place'
-import FoursquareAPI from '../src/graphql/datasources/api/foursquare'
 import UnsplashAPI from '../src/graphql/datasources/api/unsplash'
 import ActivityAPI from '../src/graphql/datasources/database/crud/activity'
 
