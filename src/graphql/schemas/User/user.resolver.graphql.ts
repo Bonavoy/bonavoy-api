@@ -13,6 +13,7 @@ import {
   TripRole,
   Resolvers,
   AuthorsOnTripsEdge,
+  AuthorsOnTripsConnection,
 } from '../../../generated/graphql'
 import { GraphQLError } from 'graphql'
 
@@ -152,14 +153,14 @@ const resolvers: Resolvers = {
     },
   },
   User: {
-    authorsOnTrips: async (user, args, ctx: Context) => {
+    authorsOnTrips: async (user, args, ctx: Context): Promise<AuthorsOnTripsConnection> => {
       const { limit, after } = args
 
-      const trips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
+      const authorsOnTrips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
 
-      const tripEdges: AuthorsOnTripsEdge[] = trips.map((trip) => {
+      const authorsOnTripsEdges: AuthorsOnTripsEdge[] = authorsOnTrips.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
-        switch (trip.role) {
+        switch (authorOnTrip.role) {
           case TripRole.Author:
             tripRole = TripRole.Author
             break
@@ -172,15 +173,16 @@ const resolvers: Resolvers = {
 
         return {
           node: {
-            id: trip.id,
+            id: authorOnTrip.id,
             role: tripRole,
             trip: {} as any, // return any empty object to allow Trip resolver to handle
+            tripId: authorOnTrip.tripId, // return so the authorsOnTrips root resolver has access
           },
         }
       })
 
       return {
-        edges: tripEdges,
+        edges: authorsOnTripsEdges,
         totalCount: 1,
         pageInfo: {
           endCursor: '',

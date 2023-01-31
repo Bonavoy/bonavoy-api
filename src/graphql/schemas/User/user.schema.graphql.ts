@@ -48,16 +48,4 @@ export default gql`
   type AuthorsOnTripsEdge {
     node: AuthorsOnTrips!
   }
-
-  type AuthorsOnTrips {
-    id: ID!
-    role: TripRole!
-    trip: Trip!
-  }
-
-  enum TripRole {
-    AUTHOR
-    EDITOR
-    VIEWER
-  }
 `
