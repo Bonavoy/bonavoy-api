@@ -289,7 +289,7 @@ export type Trip = {
   id: Scalars['ID'];
   isPublic: Scalars['Boolean'];
   name: Scalars['String'];
-  places?: Maybe<Array<Place>>;
+  places: Array<Place>;
   startDate: Scalars['DateTime'];
 };
 
@@ -605,7 +605,7 @@ export type TripResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  places?: Resolver<Maybe<Array<ResolversTypes['Place']>>, ParentType, ContextType>;
+  places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType>;
   startDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

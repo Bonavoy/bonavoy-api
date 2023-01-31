@@ -4,6 +4,7 @@ import { DataSource } from 'apollo-datasource'
 import type { DataSourceConfig } from 'apollo-datasource'
 import type { Place, PrismaClient, Trip } from '@prisma/client'
 import { Context } from '../../../../types/auth'
+import { DBAuthorsOnTrips } from '../../types'
 
 export default class TripsAPI extends DataSource {
   prisma: PrismaClient
@@ -56,13 +57,10 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  findTrip = async (tripId: string) => {
+  findTrip = async (tripId: string): Promise<Trip | null> => {
     return await this.prisma.trip.findUnique({
       where: {
         id: tripId,
-      },
-      include: {
-        places: true,
       },
     })
   }

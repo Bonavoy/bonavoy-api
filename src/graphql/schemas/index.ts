@@ -6,5 +6,6 @@ import Place from './Place'
 import Spot from './Spot'
 import Trip from './Trip'
 import User from './User'
+import AuthorsOnTrips from './AuthorsOnTrips'
 
-export default mergeRawSchemas(User, Trip, Spot, Place, Location, DayPlan)
+export default mergeRawSchemas(User, Trip, Spot, Place, Location, DayPlan, AuthorsOnTrips)
