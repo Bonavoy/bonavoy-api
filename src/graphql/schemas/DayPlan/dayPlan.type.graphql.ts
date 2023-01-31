@@ -25,6 +25,6 @@ export default gql`
     id: ID!
     date: DateTime
     order: Int!
-    spots: [Spot!]
+    activity: [Activity!]!
   }
 `

@@ -16,6 +16,25 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Activity = {
+  __typename?: 'Activity';
+  dayPlanId: Scalars['ID'];
+  end?: Maybe<Scalars['DateTime']>;
+  fsq_id: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  order: Scalars['Int'];
+  start?: Maybe<Scalars['DateTime']>;
+};
+
+export type ActivityInput = {
+  dayPlanId: Scalars['ID'];
+  end?: InputMaybe<Scalars['DateTime']>;
+  name: Scalars['String'];
+  order: Scalars['Int'];
+  start?: InputMaybe<Scalars['DateTime']>;
+};
+
 export type AuthorsOnTrips = {
   __typename?: 'AuthorsOnTrips';
   id: Scalars['ID'];
@@ -35,17 +54,6 @@ export type AuthorsOnTripsEdge = {
   node: AuthorsOnTrips;
 };
 
-export type Coords = {
-  __typename?: 'Coords';
-  lat?: Maybe<Scalars['Float']>;
-  lng?: Maybe<Scalars['Float']>;
-};
-
-export type CoordsInput = {
-  lat?: InputMaybe<Scalars['Float']>;
-  lng?: InputMaybe<Scalars['Float']>;
-};
-
 export type CreateDayPlanInput = {
   date?: InputMaybe<Scalars['DateTime']>;
   order?: InputMaybe<Scalars['Int']>;
@@ -54,17 +62,10 @@ export type CreateDayPlanInput = {
 
 export type DayPlan = {
   __typename?: 'DayPlan';
+  activity: Array<Activity>;
   date?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   order: Scalars['Int'];
-  spots?: Maybe<Array<Spot>>;
-};
-
-export type ExternalSpot = {
-  __typename?: 'ExternalSpot';
-  coords?: Maybe<Coords>;
-  fsq_id?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
 };
 
 export type LocationContext = {
@@ -88,15 +89,16 @@ export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
   authenticate: Scalars['Boolean'];
+  createActivity: Activity;
   createDayPlan?: Maybe<DayPlan>;
   createPlace: Place;
   createTrip: Trip;
   createUser: User;
+  deleteActivity: Activity;
   deletePlace: Scalars['ID'];
-  deleteSpot?: Maybe<Spot>;
   deleteTrip: Scalars['Boolean'];
-  spot?: Maybe<Spot>;
   token: Scalars['Boolean'];
+  updateActivity: Activity;
   updatePlaceDates: PlaceDates;
   updateTrip: Trip;
 };
@@ -105,6 +107,11 @@ export type Mutation = {
 export type MutationAuthenticateArgs = {
   password: Scalars['String'];
   username: Scalars['String'];
+};
+
+
+export type MutationCreateActivityArgs = {
+  activity: ActivityInput;
 };
 
 
@@ -129,13 +136,13 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationDeletePlaceArgs = {
-  placeId: Scalars['ID'];
+export type MutationDeleteActivityArgs = {
+  id: Scalars['ID'];
 };
 
 
-export type MutationDeleteSpotArgs = {
-  spotId?: InputMaybe<Scalars['ID']>;
+export type MutationDeletePlaceArgs = {
+  placeId: Scalars['ID'];
 };
 
 
@@ -144,11 +151,8 @@ export type MutationDeleteTripArgs = {
 };
 
 
-export type MutationSpotArgs = {
-  date?: InputMaybe<Scalars['DateTime']>;
-  placeId?: InputMaybe<Scalars['ID']>;
-  spot?: InputMaybe<SpotInput>;
-  tripId?: InputMaybe<Scalars['ID']>;
+export type MutationUpdateActivityArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -246,32 +250,6 @@ export type QueryGetPlaceByDateArgs = {
 
 export type QueryTripArgs = {
   tripId: Scalars['ID'];
-};
-
-export type Spot = {
-  __typename?: 'Spot';
-  dayPlanId: Scalars['ID'];
-  end?: Maybe<Scalars['DateTime']>;
-  fsq_id: Scalars['String'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-  order: Scalars['Int'];
-  start?: Maybe<Scalars['DateTime']>;
-};
-
-export type SpotInput = {
-  dayPlanId?: InputMaybe<Scalars['ID']>;
-  end?: InputMaybe<Scalars['DateTime']>;
-  fsq_id: Scalars['String'];
-  name?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<Scalars['Int']>;
-  start?: InputMaybe<Scalars['DateTime']>;
-};
-
-export type SpotRecommendationInputs = {
-  coords?: InputMaybe<CoordsInput>;
-  filter?: InputMaybe<Scalars['String']>;
-  limit?: InputMaybe<Scalars['Int']>;
 };
 
 export type Subscription = {
@@ -407,16 +385,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  Activity: ResolverTypeWrapper<Activity>;
+  ActivityInput: ActivityInput;
   AuthorsOnTrips: ResolverTypeWrapper<AuthorsOnTrips>;
   AuthorsOnTripsConnection: ResolverTypeWrapper<AuthorsOnTripsConnection>;
   AuthorsOnTripsEdge: ResolverTypeWrapper<AuthorsOnTripsEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Coords: ResolverTypeWrapper<Coords>;
-  CoordsInput: CoordsInput;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DayPlan: ResolverTypeWrapper<DayPlan>;
-  ExternalSpot: ResolverTypeWrapper<ExternalSpot>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -428,9 +405,6 @@ export type ResolversTypes = {
   PlaceDates: ResolverTypeWrapper<PlaceDates>;
   PlaceInput: PlaceInput;
   Query: ResolverTypeWrapper<{}>;
-  Spot: ResolverTypeWrapper<Spot>;
-  SpotInput: SpotInput;
-  SpotRecommendationInputs: SpotRecommendationInputs;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   Trip: ResolverTypeWrapper<Trip>;
@@ -443,16 +417,15 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  Activity: Activity;
+  ActivityInput: ActivityInput;
   AuthorsOnTrips: AuthorsOnTrips;
   AuthorsOnTripsConnection: AuthorsOnTripsConnection;
   AuthorsOnTripsEdge: AuthorsOnTripsEdge;
   Boolean: Scalars['Boolean'];
-  Coords: Coords;
-  CoordsInput: CoordsInput;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: Scalars['DateTime'];
   DayPlan: DayPlan;
-  ExternalSpot: ExternalSpot;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
   Int: Scalars['Int'];
@@ -464,9 +437,6 @@ export type ResolversParentTypes = {
   PlaceDates: PlaceDates;
   PlaceInput: PlaceInput;
   Query: {};
-  Spot: Spot;
-  SpotInput: SpotInput;
-  SpotRecommendationInputs: SpotRecommendationInputs;
   String: Scalars['String'];
   Subscription: {};
   Trip: Trip;
@@ -474,6 +444,17 @@ export type ResolversParentTypes = {
   UpdateTripInput: UpdateTripInput;
   User: User;
   UserInput: UserInput;
+};
+
+export type ActivityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Activity'] = ResolversParentTypes['Activity']> = {
+  dayPlanId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  end?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  fsq_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  start?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AuthorsOnTripsResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthorsOnTrips'] = ResolversParentTypes['AuthorsOnTrips']> = {
@@ -495,28 +476,15 @@ export type AuthorsOnTripsEdgeResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CoordsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coords'] = ResolversParentTypes['Coords']> = {
-  lat?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  lng?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
 export type DayPlanResolvers<ContextType = any, ParentType extends ResolversParentTypes['DayPlan'] = ResolversParentTypes['DayPlan']> = {
+  activity?: Resolver<Array<ResolversTypes['Activity']>, ParentType, ContextType>;
   date?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  spots?: Resolver<Maybe<Array<ResolversTypes['Spot']>>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ExternalSpotResolvers<ContextType = any, ParentType extends ResolversParentTypes['ExternalSpot'] = ResolversParentTypes['ExternalSpot']> = {
-  coords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
-  fsq_id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -540,15 +508,16 @@ export type LocationSuggestionResolvers<ContextType = any, ParentType extends Re
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   authenticate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationAuthenticateArgs, 'password' | 'username'>>;
+  createActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'activity'>>;
   createDayPlan?: Resolver<Maybe<ResolversTypes['DayPlan']>, ParentType, ContextType, Partial<MutationCreateDayPlanArgs>>;
   createPlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationCreatePlaceArgs, 'place' | 'tripId'>>;
   createTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationCreateTripArgs, 'trip'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
+  deleteActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
-  deleteSpot?: Resolver<Maybe<ResolversTypes['Spot']>, ParentType, ContextType, Partial<MutationDeleteSpotArgs>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
-  spot?: Resolver<Maybe<ResolversTypes['Spot']>, ParentType, ContextType, Partial<MutationSpotArgs>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id'>>;
   updatePlaceDates?: Resolver<ResolversTypes['PlaceDates'], ParentType, ContextType, RequireFields<MutationUpdatePlaceDatesArgs, 'endDate' | 'placeId' | 'startDate'>>;
   updateTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationUpdateTripArgs, 'updateTripInput'>>;
 };
@@ -590,17 +559,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
-export type SpotResolvers<ContextType = any, ParentType extends ResolversParentTypes['Spot'] = ResolversParentTypes['Spot']> = {
-  dayPlanId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  end?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  fsq_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  start?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
 };
@@ -630,13 +588,12 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Activity?: ActivityResolvers<ContextType>;
   AuthorsOnTrips?: AuthorsOnTripsResolvers<ContextType>;
   AuthorsOnTripsConnection?: AuthorsOnTripsConnectionResolvers<ContextType>;
   AuthorsOnTripsEdge?: AuthorsOnTripsEdgeResolvers<ContextType>;
-  Coords?: CoordsResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayPlan?: DayPlanResolvers<ContextType>;
-  ExternalSpot?: ExternalSpotResolvers<ContextType>;
   LocationContext?: LocationContextResolvers<ContextType>;
   LocationSuggestion?: LocationSuggestionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -644,7 +601,6 @@ export type Resolvers<ContextType = any> = {
   Place?: PlaceResolvers<ContextType>;
   PlaceDates?: PlaceDatesResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  Spot?: SpotResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Trip?: TripResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

@@ -1,13 +1,5 @@
 import { GraphQLError } from 'graphql'
-import {
-  MutationCreateUserArgs,
-  MutationAuthenticateArgs,
-  User,
-  TripRole,
-  Resolvers,
-  AuthorsOnTripsEdge,
-  Trip,
-} from '../../../generated/graphql'
+import { Resolvers, Trip } from '../../../generated/graphql'
 import { Context } from '../../../types/auth'
 
 const authorsOnTripsResolver: Resolvers = {

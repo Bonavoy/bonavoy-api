@@ -5,7 +5,7 @@ import type { DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, Activity } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 
-export default class SpotAPI extends DataSource {
+export default class ActivityAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
 
@@ -35,10 +35,10 @@ export default class SpotAPI extends DataSource {
     })
   }
 
-  addSpotToDayPlan = async (spot: Activity) => {
+  addSpotToDayPlan = async (activity: Activity) => {
     return await this.prisma.activity.create({
       data: {
-        ...spot,
+        ...activity,
       },
     })
   }
