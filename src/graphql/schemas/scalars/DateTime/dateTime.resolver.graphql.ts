@@ -7,12 +7,9 @@ export default {
     name: 'DateTime',
     description: 'DateTime custom scalar type that is timezone agnostic ie. relative to UTC',
     serialize(value: any) {
-      const d = getISODateTime(value)
-      console.log('seraliozlike', d)
-      return d
+      return getISODateTime(value)
     },
     parseValue(value: any) {
-      console.log('parwsd', new Date(value))
       return new Date(value)
     },
     parseLiteral(value: any) {

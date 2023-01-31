@@ -5,6 +5,7 @@ import type { DataSourceConfig } from 'apollo-datasource'
 import type { Place, Prisma, PrismaClient, Trip } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 import { DBAuthorsOnTrips, DBTrip } from '../../types'
+import DataLoader from 'dataloader'
 
 export default class TripsAPI extends DataSource {
   prisma: PrismaClient
@@ -66,12 +67,27 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  findTrip = async (tripId: string): Promise<Trip | null> => {
-    return await this.prisma.trip.findUnique({
+  private batchTrips = new DataLoader(async (ids) => {
+    const tripIds = ids.map((tripId) => String(tripId))
+    const trips = await this.prisma.trip.findMany({
       where: {
-        id: tripId,
+        id: {
+          in: tripIds,
+        },
       },
     })
+
+    let tripMap = new Map<string, Trip>()
+
+    for (const trip of trips) {
+      tripMap.set(trip.id, trip)
+    }
+
+    return tripIds.map((id) => tripMap.get(id))
+  })
+
+  findTrip = async (id: string): Promise<Trip | null | undefined> => {
+    return this.batchTrips.load(id)
   }
 
   updateTripName = async (tripId: string, name: string): Promise<{ name: string }> => {
