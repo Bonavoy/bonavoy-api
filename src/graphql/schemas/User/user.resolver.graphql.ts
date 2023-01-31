@@ -166,7 +166,7 @@ const resolvers: Resolvers = {
     authorsOnTrips: async (user, args, ctx: Context): Promise<AuthorsOnTripsConnection> => {
       const { limit, after } = args
 
-      const authorsOnTrips = await ctx.dataSources.authors.findAuthors(user.id, limit, after)
+      const authorsOnTrips = await ctx.dataSources.authors.findAuthorsPaginated(user.id, limit, after)
 
       const authorsOnTripsEdges: AuthorsOnTripsEdge[] = authorsOnTrips.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
@@ -184,6 +184,7 @@ const resolvers: Resolvers = {
         return {
           node: {
             id: authorOnTrip.id,
+            user: {} as any,
             role: tripRole,
             trip: {} as any, // return any empty object to allow Trip resolver to handle
             tripId: authorOnTrip.tripId, // return so the authorsOnTrips root resolver has access

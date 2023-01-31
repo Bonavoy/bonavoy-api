@@ -4,6 +4,7 @@ import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import { Context } from '../../../../types/auth'
 import type { PrismaClient, User } from '@prisma/client'
 import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
+import DataLoader from 'dataloader'
 
 interface FindUserQuery {
   id?: string
@@ -66,8 +67,29 @@ export default class UserAPI extends DataSource {
     else return null
   }
 
+  private batchUsers = new DataLoader<string, User | null>(async (ids) => {
+    const userIds = ids.map((id) => String(id))
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: {
+          in: userIds,
+        },
+      },
+    })
+    const userMap = new Map<string, User>()
+
+    for (const user of users) {
+      userMap.set(user.id, user)
+    }
+
+    return userIds.map((id) => userMap.get(id) || null)
+  })
+
   findUser = async (query: FindUserQuery): Promise<User | null> => {
-    console.log(query)
+    if (query.id) {
+      return this.batchUsers.load(query.id)
+    }
+
     try {
       return this.prisma.user.findUnique({
         where: query,

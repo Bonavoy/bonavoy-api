@@ -40,6 +40,7 @@ export type AuthorsOnTrips = {
   id: Scalars['ID'];
   role: TripRole;
   trip: Trip;
+  user: User;
 };
 
 export type AuthorsOnTripsConnection = {
@@ -461,6 +462,7 @@ export type AuthorsOnTripsResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

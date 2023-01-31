@@ -67,7 +67,7 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  private batchTrips = new DataLoader(async (ids) => {
+  private batchTrips = new DataLoader<string, Trip | null | undefined>(async (ids) => {
     const tripIds = ids.map((tripId) => String(tripId))
     const trips = await this.prisma.trip.findMany({
       where: {
@@ -77,7 +77,7 @@ export default class TripsAPI extends DataSource {
       },
     })
 
-    let tripMap = new Map<string, Trip>()
+    const tripMap = new Map<string, Trip>()
 
     for (const trip of trips) {
       tripMap.set(trip.id, trip)

@@ -1,6 +1,7 @@
 import { Place, Prisma } from '@prisma/client'
 import { GraphQLError } from 'graphql'
-import { MutationCreateTripArgs, QueryTripArgs, Resolvers, Trip } from '../../../generated/graphql'
+import { any } from 'jest-mock-extended'
+import { MutationCreateTripArgs, QueryTripArgs, Resolvers, Trip, TripRole } from '../../../generated/graphql'
 
 //types
 import { Context } from '../../../types/auth'
@@ -57,7 +58,7 @@ const resolvers: Resolvers = {
             colour: place.colour,
             center: place.center.map((coord_component) => coord_component as number),
             country: place.country,
-            dayPlans: [],
+            dayPlans: [], // empty for now since we don't pass day plans with trip creation, could change
           }
         }),
       }
@@ -69,8 +70,8 @@ const resolvers: Resolvers = {
         startDate: newTrip.startDate,
         endDate: newTrip.endDate,
         isPublic: newTrip.isPublic,
-        places: [],
-        authors: [],
+        places: [], // let trip places resolver resolve
+        authors: [], // let trip authors resolver resolve
       }
     },
     updateTrip: async (_parent, { updateTripInput }, ctx: Context) => {
@@ -82,8 +83,30 @@ const resolvers: Resolvers = {
     },
   },
   Trip: {
-    authors: async () => {
-      return []
+    authors: async (parent, _args, ctx: Context) => {
+      const authorsOnTrips = await ctx.dataSources.authors.findAuthors(parent.id)
+      return authorsOnTrips?.map((authorOnTrip) => {
+        let tripRole = TripRole.Viewer
+
+        switch (authorOnTrip.role) {
+          case TripRole.Author:
+            tripRole = TripRole.Author
+            break
+          case TripRole.Editor:
+            tripRole = TripRole.Editor
+            break
+          default:
+            tripRole = TripRole.Viewer
+        }
+
+        return {
+          id: authorOnTrip.id,
+          user: {} as any,
+          role: tripRole,
+          trip: {} as any,
+          userId: authorOnTrip.userId, // return so can be passed to authors on trips resolver
+        }
+      })
     },
     places: async () => {
       return []
