@@ -8,8 +8,21 @@ import { Context } from '../../../types/auth'
 // TODO: query and interpolate names of Foursquare places into activity data so we don't get sued OMEGALUL
 const resolvers: Resolvers = {
   Mutation: {
-    createActivity: async (_parent, { activity }, ctx: Context) => {
-      return {} as any
+    createActivity: async (_parent, { dayPlanId, activity }, ctx: Context) => {
+      const newActivity = await ctx.dataSources.activity.createActivity(dayPlanId, {
+        name: activity.name,
+        startTime: activity.start,
+        endTime: activity.end,
+        order: activity.order,
+      })
+
+      return {
+        id: newActivity.id,
+        name: newActivity.name,
+        start: newActivity.startTime,
+        end: newActivity.endTime,
+        order: activity.order,
+      }
     },
     updateActivity: async () => {
       return {} as any

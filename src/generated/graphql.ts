@@ -18,9 +18,7 @@ export type Scalars = {
 
 export type Activity = {
   __typename?: 'Activity';
-  dayPlanId: Scalars['ID'];
   end?: Maybe<Scalars['DateTime']>;
-  fsq_id: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   order: Scalars['Int'];
@@ -28,7 +26,6 @@ export type Activity = {
 };
 
 export type ActivityInput = {
-  dayPlanId: Scalars['ID'];
   end?: InputMaybe<Scalars['DateTime']>;
   name: Scalars['String'];
   order: Scalars['Int'];
@@ -114,6 +111,7 @@ export type MutationAuthenticateArgs = {
 
 export type MutationCreateActivityArgs = {
   activity: ActivityInput;
+  dayPlanId: Scalars['ID'];
 };
 
 
@@ -477,9 +475,7 @@ export type ResolversParentTypes = {
 };
 
 export type ActivityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Activity'] = ResolversParentTypes['Activity']> = {
-  dayPlanId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   end?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  fsq_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -539,7 +535,7 @@ export type LocationSuggestionResolvers<ContextType = any, ParentType extends Re
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   authenticate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationAuthenticateArgs, 'password' | 'username'>>;
-  createActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'activity'>>;
+  createActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'activity' | 'dayPlanId'>>;
   createDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationCreateDayPlanArgs, 'dayPlan' | 'placeId'>>;
   createPlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationCreatePlaceArgs, 'place' | 'tripId'>>;
   createTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationCreateTripArgs, 'trip'>>;

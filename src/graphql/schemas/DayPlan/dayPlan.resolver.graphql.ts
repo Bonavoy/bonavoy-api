@@ -41,7 +41,14 @@ export const resolvers: Resolvers = {
   DayPlan: {
     activities: async (parent, _args, ctx: Context) => {
       const dayPlanId = parent.id
-      return {} as any
+      const activities = await ctx.dataSources.activity.findActivities(dayPlanId)
+      return activities.map((activity) => ({
+        id: activity.id,
+        start: activity.startTime,
+        end: activity.endTime,
+        name: activity.name,
+        order: activity.order,
+      }))
     },
   },
 }

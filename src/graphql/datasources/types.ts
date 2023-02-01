@@ -44,3 +44,13 @@ export interface DBDayPlan {
   createdAt?: Date
   updatedAt?: Date
 }
+
+export interface DBActivity {
+  id?: string
+  name: string
+  order: number
+  startTime?: Date
+  endTime?: Date
+  createdAt?: Date
+  updatedAt?: Date
+}

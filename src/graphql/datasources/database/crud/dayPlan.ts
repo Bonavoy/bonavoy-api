@@ -81,8 +81,6 @@ export default class DayPlanAPI extends DataSource {
       }
     }
 
-    console.log(dayPlanListMap)
-
     return placeIds.map((placeId) => dayPlanListMap.get(placeId) || [])
   })
 
