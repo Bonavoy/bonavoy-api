@@ -48,7 +48,7 @@ export default gql`
     colour: String!
     country: String!
     center: [Float!]!
-    dayPlans(date: DateTime): [DayPlan!]
+    dayPlans: [DayPlan!]!
   }
 
   type PlaceDates {

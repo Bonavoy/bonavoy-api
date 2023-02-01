@@ -81,6 +81,7 @@ export const resolvers: Resolvers = {
   Place: {
     dayPlans: async (parent, _args, ctx: Context) => {
       const dayPlans = await ctx.dataSources.dayPlans.findDayPlans(parent.id)
+
       return dayPlans.map((dayPlan) => ({
         id: dayPlan.id,
         date: dayPlan.date,

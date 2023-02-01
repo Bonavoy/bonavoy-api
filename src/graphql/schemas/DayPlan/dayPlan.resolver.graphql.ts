@@ -1,35 +1,49 @@
-//types
-import { DayPlan } from '@prisma/client'
-import { TokenDecoded } from '../../../types/auth'
-import { BonavoyDataSources } from '../../datasources'
-
 // TODO: WRITE TYPES
-export default {
+
+import { Context } from '../../../types/auth'
+import { Resolvers } from '../../../generated/graphql'
+
+export const resolvers: Resolvers = {
   Query: {
-    getDayPlanByDate: async (
-      _: unknown,
-      args: { tripId: string; date: Date },
-      {
-        ctx,
-        req,
-        res,
-        dataSources,
-      }: { ctx: TokenDecoded; req: Request; res: Response; dataSources: BonavoyDataSources },
-    ) => {
-      const { tripId, date } = args
-      return await dataSources.dayPlans.findDayPlan({ date, tripId })
+    dayPlans: async (_parent, { placeId }, ctx: Context) => {
+      const dayPlans = await ctx.dataSources.dayPlans.findDayPlans(placeId)
+      return dayPlans.map((dayPlan) => ({
+        id: dayPlan.id,
+        date: dayPlan.date,
+        order: dayPlan.order,
+        activities: [], // let this be resolved
+      }))
+    },
+    dayPlan: async (_parent, { id }, ctx: Context) => {
+      return {} as any
     },
   },
   Mutation: {
-    createDayPlan: async (
-      _: unknown,
-      args: {
-        dayPlan: DayPlan
-      },
-      { dataSources }: { dataSources: BonavoyDataSources },
-    ) => {
-      const { dayPlan } = args
-      return await dataSources.dayPlans.createDayPlan(dayPlan)
+    createDayPlan: async (_parent, { placeId, dayPlan }, ctx: Context) => {
+      const newDayPlan = await ctx.dataSources.dayPlans.createDayPlan(placeId, {
+        order: dayPlan.order,
+        date: dayPlan.date,
+      })
+      return {
+        id: newDayPlan.id,
+        date: dayPlan.date,
+        order: dayPlan.order,
+        activities: [], // let this be resolved
+      }
+    },
+    updateDayPlan: async () => {
+      return {} as any
+    },
+    deleteDayPlan: async () => {
+      return {} as any
+    },
+  },
+  DayPlan: {
+    activities: async (parent, _args, ctx: Context) => {
+      const dayPlanId = parent.id
+      return {} as any
     },
   },
 }
+
+export default resolvers

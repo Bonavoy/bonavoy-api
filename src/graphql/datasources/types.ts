@@ -33,7 +33,14 @@ export interface DBPlace {
   colour: string
   center: number[]
   country: string
-  dayPlans: DBDayPlans[]
+  dayPlans: DBDayPlan[]
 }
 
-export interface DBDayPlans {}
+export interface DBDayPlan {
+  id?: string
+  date: Date
+  order: number
+  placeId?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
