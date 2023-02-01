@@ -5,19 +5,26 @@ import { gql } from 'graphql-tag'
 export default gql`
   # queries
   type Query {
-    getDayPlanByDate(tripId: ID, date: DateTime): DayPlan
+    dayPlans(placeId: ID!): [DayPlan!]!
+    dayPlan(id: ID!): DayPlan!
   }
 
   # mutations
   type Mutation {
-    createDayPlan(dayPlan: CreateDayPlanInput): DayPlan
+    createDayPlan(placeId: ID!, dayPlan: CreateDayPlanInput!): DayPlan!
+    updateDayPlan(id: ID!, updateDayPlan: UpdateDayPlanInput!): DayPlan!
+    deleteDayPlan(id: ID!): ID!
   }
 
   # input
   input CreateDayPlanInput {
+    order: Int!
+    date: DateTime
+  }
+
+  input UpdateDayPlanInput {
     date: DateTime
     order: Int
-    placeId: ID
   }
 
   # types
@@ -25,6 +32,6 @@ export default gql`
     id: ID!
     date: DateTime
     order: Int!
-    activity: [Activity!]!
+    activities: [Activity!]!
   }
 `

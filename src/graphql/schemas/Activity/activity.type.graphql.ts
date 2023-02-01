@@ -5,7 +5,7 @@ import { gql } from 'graphql-tag'
 export default gql`
   # mutations
   type Mutation {
-    createActivity(activity: ActivityInput!): Activity!
+    createActivity(dayPlanId: ID!, activity: ActivityInput!): Activity!
     updateActivity(id: ID!): Activity!
     deleteActivity(id: ID!): Activity!
   }
@@ -16,17 +16,14 @@ export default gql`
     name: String!
     start: DateTime
     end: DateTime
-    dayPlanId: ID!
   }
 
   #types
   type Activity {
     id: ID!
-    fsq_id: String!
     name: String!
     order: Int!
     start: DateTime
     end: DateTime
-    dayPlanId: ID!
   }
 `

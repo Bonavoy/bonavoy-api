@@ -19,10 +19,10 @@ export interface DBTrip {
   startDate: Date
   endDate: Date
   isPublic: boolean
-  places: DBPlaces[]
+  places: DBPlace[]
 }
 
-export interface DBPlaces {
+export interface DBPlace {
   id?: string
   tripId?: string
   mapbox_id: string
@@ -33,7 +33,24 @@ export interface DBPlaces {
   colour: string
   center: number[]
   country: string
-  dayPlans: DBDayPlans[]
+  dayPlans: DBDayPlan[]
 }
 
-export interface DBDayPlans {}
+export interface DBDayPlan {
+  id?: string
+  date: Date
+  order: number
+  placeId?: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export interface DBActivity {
+  id?: string
+  name: string
+  order: number
+  startTime?: Date
+  endTime?: Date
+  createdAt?: Date
+  updatedAt?: Date
+}

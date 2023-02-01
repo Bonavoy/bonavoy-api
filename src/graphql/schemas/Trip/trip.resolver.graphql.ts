@@ -108,8 +108,23 @@ const resolvers: Resolvers = {
         }
       })
     },
-    places: async () => {
-      return []
+    places: async (parent, _args, ctx: Context) => {
+      const places = await ctx.dataSources.places.findPlaces(parent.id)
+
+      return places?.map((place) => {
+        return {
+          id: place.id,
+          mapbox_id: place.mapbox_id,
+          place_name: place.place_name,
+          center: place.center,
+          colour: place.colour,
+          country: place.country,
+          startDate: place.startDate,
+          endDate: place.endDate,
+          text: place.text,
+          dayPlans: {} as any, // let this be resolved
+        }
+      })
     },
   },
 }
