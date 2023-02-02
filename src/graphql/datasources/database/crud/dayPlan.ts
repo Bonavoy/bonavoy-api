@@ -2,7 +2,7 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, DayPlan } from '@prisma/client'
+import type { PrismaClient, DayPlan, Prisma } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
 import { DBDayPlan } from '../../types'
@@ -76,6 +76,18 @@ export default class DayPlanAPI extends DataSource {
         placeId,
         order: dayPlan.order,
         date: dayPlan.date,
+      },
+    })
+  }
+
+  updateDayPlan = async (id: string, dayPlan: Prisma.DayPlanUpdateInput): Promise<DayPlan> => {
+    return await this.prisma.dayPlan.update({
+      where: {
+        id,
+      },
+      data: {
+        date: dayPlan.date,
+        order: dayPlan.order,
       },
     })
   }

@@ -42,8 +42,17 @@ export const resolvers: Resolvers = {
         activities: [], // let this be resolved
       }
     },
-    updateDayPlan: async () => {
-      return {} as any
+    updateDayPlan: async (_parent, { id, updateDayPlan }, ctx: Context) => {
+      const newDayPlan = await ctx.dataSources.dayPlans.updateDayPlan(id, {
+        order: updateDayPlan.order || undefined,
+        date: updateDayPlan.date || undefined,
+      })
+      return {
+        id: newDayPlan.id,
+        order: newDayPlan.order,
+        date: newDayPlan.date,
+        activities: [], // let this be resolved
+      }
     },
     deleteDayPlan: async (_parent, { id }, ctx: Context) => {
       const deletedDayPlan = await ctx.dataSources.dayPlans.deleteDayPlan(id)
