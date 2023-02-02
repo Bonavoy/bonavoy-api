@@ -101,13 +101,10 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  deletePlace = async (placeId: string): Promise<{ id: string }> => {
+  deletePlace = async (placeId: string): Promise<Place> => {
     return await this.prisma.place.delete({
       where: {
         id: placeId,
-      },
-      select: {
-        id: true,
       },
     })
   }

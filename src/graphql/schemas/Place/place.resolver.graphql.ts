@@ -71,8 +71,9 @@ export const resolvers: Resolvers = {
         dayPlans: [],
       }
     },
-    deletePlace: async () => {
-      return {} as any
+    deletePlace: async (_parent, { placeId }, ctx: Context) => {
+      const dbPlace = await ctx.dataSources.places.deletePlace(placeId)
+      return dbPlace.id
     },
     updatePlace: async () => {
       return {} as any
