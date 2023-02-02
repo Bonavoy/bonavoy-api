@@ -57,7 +57,7 @@ model Place {
   colour     String
   center     Float[]
   country    String
-  trip       Trip      @relation(fields: [tripId], references: [id])
+  trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
   dayPlans   DayPlan[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -68,7 +68,7 @@ model DayPlan {
   date      DateTime
   order     Int
   placeId   String
-  place     Place    @relation(fields: [placeId], references: [id])
+  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
   activities     Activity[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,7 +81,7 @@ model Activity {
   startTime DateTime?
   endTime   DateTime?
   dayPlanId String
-  dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id])
+  dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
