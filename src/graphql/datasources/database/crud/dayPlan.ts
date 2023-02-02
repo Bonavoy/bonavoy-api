@@ -7,18 +7,6 @@ import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
 import { DBDayPlan } from '../../types'
 
-export interface CreateDayPlan {
-  date: Date
-  order: number
-  placeId: string
-}
-
-export interface FindDayPlanFilters {
-  date: Date
-  tripId?: string
-  placeId?: string
-}
-
 export default class DayPlanAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
@@ -45,17 +33,10 @@ export default class DayPlanAPI extends DataSource {
    * @param date
    * @returns
    */
-  findDayPlan = async ({ date, tripId, placeId }: FindDayPlanFilters): Promise<DayPlan | null> => {
-    return await this.prisma.dayPlan.findFirst({
+  findDayPlan = async (id: string): Promise<DayPlan | null> => {
+    return await this.prisma.dayPlan.findUnique({
       where: {
-        place: {
-          ...(tripId && { tripId }),
-          ...(placeId && { placeId }),
-        },
-        date,
-      },
-      include: {
-        activities: true,
+        id,
       },
     })
   }

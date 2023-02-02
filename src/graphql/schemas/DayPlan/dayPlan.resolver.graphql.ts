@@ -2,6 +2,7 @@
 
 import { Context } from '../../../types/auth'
 import { Resolvers } from '../../../generated/graphql'
+import { GraphQLError } from 'graphql'
 
 export const resolvers: Resolvers = {
   Query: {
@@ -15,7 +16,17 @@ export const resolvers: Resolvers = {
       }))
     },
     dayPlan: async (_parent, { id }, ctx: Context) => {
-      return {} as any
+      const dayPlan = await ctx.dataSources.dayPlans.findDayPlan(id)
+      if (!dayPlan) {
+        throw new GraphQLError(`Could not find dayplan with id ${id}`)
+      }
+
+      return {
+        id: dayPlan.id,
+        date: dayPlan.date,
+        order: dayPlan.order,
+        activities: [], // let this be resolved
+      }
     },
   },
   Mutation: {
