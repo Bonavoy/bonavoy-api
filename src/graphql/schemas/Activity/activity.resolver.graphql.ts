@@ -1,5 +1,3 @@
-import { Activity } from '@prisma/client'
-import { differenceInDays, subDays } from 'date-fns'
 import { Resolvers } from '../../../generated/graphql'
 
 //types
@@ -33,7 +31,8 @@ const resolvers: Resolvers = {
       // become an issue later) but for now deleting a activity
       // doesn't change any ordering since we are just appending
       //  and deleting activitys
-      return (await ctx.dataSources.activity.deleteActivity(id)) as any
+      const deletedActivity = await ctx.dataSources.activity.deleteActivity(id)
+      return deletedActivity.id
     },
   },
 }

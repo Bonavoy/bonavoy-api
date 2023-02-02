@@ -967,8 +967,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Activity",
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               }
             },

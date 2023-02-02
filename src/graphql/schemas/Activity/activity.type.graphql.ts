@@ -7,7 +7,7 @@ export default gql`
   type Mutation {
     createActivity(dayPlanId: ID!, activity: ActivityInput!): Activity!
     updateActivity(id: ID!): Activity!
-    deleteActivity(id: ID!): Activity!
+    deleteActivity(id: ID!): ID!
   }
 
   #inputs
