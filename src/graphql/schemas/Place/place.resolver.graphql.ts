@@ -46,6 +46,23 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     createPlace: async (_parent, { tripId, place }, ctx: Context) => {
+      // TODO: validate color
+      if (place.center?.length != 2) {
+        throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
+      }
+
+      if (place.place_name && (place.place_name?.length < 3 || 30 < place.place_name?.length)) {
+        throw new GraphQLError('Length of place name needs to be between 3 and 30')
+      }
+
+      if (place.country && (place.country?.length < 3 || 30 < place.country?.length)) {
+        throw new GraphQLError('Length of country needs to be between 3 and 30')
+      }
+
+      if (place.text && 512 < place.text?.length) {
+        throw new GraphQLError('Length of text cannot be longer than 512 characters')
+      }
+
       const dbPlace = await ctx.dataSources.places.createPlace(tripId, {
         tripId: tripId,
         mapbox_id: place.mapbox_id,
