@@ -48,7 +48,7 @@ const resolvers: Resolvers = {
         edges: tripEdges,
         totalCount: tripCount,
         pageInfo: {
-          endCursor: tripEdges[tripEdges.length - 1].node.id,
+          endCursor: trips[trips.length - 1]?.id || '',
           hasNextPage: true, // TODO
         },
       }

@@ -64,6 +64,7 @@ export default class TripsAPI extends DataSource {
           },
         },
       },
+      skip: after ? 1 : 0, // skip cursor
       cursor: after ? { id: after } : undefined,
       orderBy: {
         createdAt: 'desc',

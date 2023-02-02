@@ -13,12 +13,22 @@ export default class AuthorsAPI extends DataSource {
     this.prisma = prisma
   }
 
-  findAuthorsPaginated = async (userId: string, limit: number, after?: string | null): Promise<AuthorsOnTrips[]> => {
-    return await this.prisma.authorsOnTrips.findMany({
+  authorsOnTripsCount = async (userId: string) => {
+    return await this.prisma.authorsOnTrips.count({
       where: {
         userId,
       },
+    })
+  }
+
+  findAuthorsPaginated = async (userId: string, limit: number, after?: string | null): Promise<AuthorsOnTrips[]> => {
+    return await this.prisma.authorsOnTrips.findMany({
+      skip: after ? 1 : 0, // skip cursor
       take: limit,
+      cursor: after ? { id: after } : undefined,
+      where: {
+        userId,
+      },
     })
   }
 
