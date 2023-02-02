@@ -159,6 +159,7 @@ export type MutationDeleteTripArgs = {
 
 export type MutationUpdateActivityArgs = {
   id: Scalars['ID'];
+  updateActivityInput: UpdateActivityInput;
 };
 
 
@@ -309,6 +310,13 @@ export enum TripRole {
   Viewer = 'VIEWER'
 }
 
+export type UpdateActivityInput = {
+  end?: InputMaybe<Scalars['DateTime']>;
+  name?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
+  start?: InputMaybe<Scalars['DateTime']>;
+};
+
 export type UpdateDayPlanInput = {
   date?: InputMaybe<Scalars['DateTime']>;
   order?: InputMaybe<Scalars['Int']>;
@@ -454,6 +462,7 @@ export type ResolversTypes = {
   TripEdge: ResolverTypeWrapper<TripEdge>;
   TripInput: TripInput;
   TripRole: TripRole;
+  UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
   UpdateTripInput: UpdateTripInput;
@@ -489,6 +498,7 @@ export type ResolversParentTypes = {
   TripConnection: TripConnection;
   TripEdge: TripEdge;
   TripInput: TripInput;
+  UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
   UpdateTripInput: UpdateTripInput;
@@ -567,7 +577,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id'>>;
+  updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
   updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'place'>>;
   updateTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationUpdateTripArgs, 'updateTripInput'>>;
