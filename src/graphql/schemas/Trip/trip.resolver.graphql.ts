@@ -25,18 +25,33 @@ const resolvers: Resolvers = {
         places: [], // let places resolver handle
       }
     },
-    trips: async (_parent, _args, ctx: Context) => {
-      const trips = await ctx.dataSources.trips.findTrips(ctx.auth.sub!)
-      return trips.map((trip) => ({
-        id: trip.id,
-        name: trip.name,
-        banner: trip.banner,
-        endDate: trip.endDate,
-        startDate: trip.startDate,
-        isPublic: trip.isPublic,
-        authors: {} as any, // let Authors resolver handle
-        places: [], // let places resolver handle
-      }))
+    trips: async (_parent, { after, limit }, ctx: Context) => {
+      const trips = await ctx.dataSources.trips.findTrips(ctx.auth.sub!, limit, after)
+      const tripCount = await ctx.dataSources.trips.countUserTrips(ctx.auth.sub!)
+
+      const tripEdges = trips.map((trip) => {
+        return {
+          node: {
+            id: trip.id,
+            name: trip.name,
+            banner: trip.banner,
+            endDate: trip.endDate,
+            startDate: trip.startDate,
+            isPublic: trip.isPublic,
+            authors: {} as any, // let Authors resolver handle
+            places: [], // let places resolver handle
+          },
+        }
+      })
+
+      return {
+        edges: tripEdges,
+        totalCount: tripCount,
+        pageInfo: {
+          endCursor: tripEdges[tripEdges.length - 1].node.id,
+          hasNextPage: true, // TODO
+        },
+      }
     },
   },
   Mutation: {

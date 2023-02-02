@@ -55,8 +55,25 @@ export default class TripsAPI extends DataSource {
     })
   }
 
-  findTrips = async (userId: string) => {
+  findTrips = async (userId: string, limit: number, after?: string | undefined | null) => {
     return await this.prisma.trip.findMany({
+      where: {
+        authors: {
+          some: {
+            userId,
+          },
+        },
+      },
+      cursor: after ? { id: after } : undefined,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: limit,
+    })
+  }
+
+  countUserTrips = async (userId: string) => {
+    return await this.prisma.trip.count({
       where: {
         authors: {
           some: {
