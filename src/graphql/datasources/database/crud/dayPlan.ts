@@ -98,4 +98,12 @@ export default class DayPlanAPI extends DataSource {
       },
     })
   }
+
+  deleteDayPlan = async (id: string) => {
+    return await this.prisma.dayPlan.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }

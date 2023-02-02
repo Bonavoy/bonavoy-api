@@ -34,8 +34,9 @@ export const resolvers: Resolvers = {
     updateDayPlan: async () => {
       return {} as any
     },
-    deleteDayPlan: async () => {
-      return {} as any
+    deleteDayPlan: async (_parent, { id }, ctx: Context) => {
+      const deletedDayPlan = await ctx.dataSources.dayPlans.deleteDayPlan(id)
+      return deletedDayPlan.id
     },
   },
   DayPlan: {
