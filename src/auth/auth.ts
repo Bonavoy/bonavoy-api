@@ -3,7 +3,7 @@ import jwt, { Algorithm, VerifyErrors } from 'jsonwebtoken'
 import 'dotenv/config'
 
 //types
-import { TokenPayload, TokenDecoded, RefreshDecoded } from '../types/auth'
+import { TokenPayload, TokenDecoded, RefreshDecoded } from '@bonavoy/types/auth'
 import { User } from '@prisma/client'
 
 const secret = fs.readFileSync('secret.key', 'utf-8')

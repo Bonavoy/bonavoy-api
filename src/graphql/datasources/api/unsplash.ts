@@ -1,4 +1,4 @@
-import { Request, Response, RESTDataSource, RequestOptions } from 'apollo-datasource-rest'
+import { RESTDataSource, RequestOptions } from 'apollo-datasource-rest'
 
 export default class UnsplashAPI extends RESTDataSource {
   constructor() {

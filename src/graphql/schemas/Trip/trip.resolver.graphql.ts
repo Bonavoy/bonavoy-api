@@ -1,11 +1,9 @@
-import { Place, Prisma } from '@prisma/client'
 import { GraphQLError } from 'graphql'
-import { any } from 'jest-mock-extended'
-import { MutationCreateTripArgs, QueryTripArgs, Resolvers, Trip, TripRole } from '../../../generated/graphql'
+import { MutationCreateTripArgs, QueryTripArgs, Resolvers, Trip, TripRole } from '@bonavoy/generated/graphql'
 
 //types
-import { Context } from '../../../types/auth'
-import { DBTrip } from '../../datasources/types'
+import { Context } from '@bonavoy/types/auth'
+import { DBTrip } from '@bonavoy/graphql/datasources/types'
 
 const resolvers: Resolvers = {
   Query: {

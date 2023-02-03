@@ -1,16 +1,11 @@
-import { makeExecutableSchema } from '@graphql-tools/schema'
-import { ApolloServer } from '@apollo/server'
-
-import schema from '../src/graphql'
-
 import { PrismaClient } from '@prisma/client'
 import { mockDeep, DeepMockProxy } from 'jest-mock-extended'
-import UserAPI from '../src/graphql/datasources/database/crud/user'
-import TripsAPI from '../src/graphql/datasources/database/crud/trip'
-import DayPlanAPI from '../src/graphql/datasources/database/crud/dayPlan'
-import PlaceAPI from '../src/graphql/datasources/database/crud/place'
-import UnsplashAPI from '../src/graphql/datasources/api/unsplash'
-import ActivityAPI from '../src/graphql/datasources/database/crud/activity'
+import UserAPI from '@bonavoy/graphql/datasources/database/crud/user'
+import TripsAPI from '@bonavoy/graphql/datasources/database/crud/trip'
+import DayPlanAPI from '@bonavoy/graphql/datasources/database/crud/dayPlan'
+import PlaceAPI from '@bonavoy/graphql/datasources/database/crud/place'
+import UnsplashAPI from '@bonavoy/graphql/datasources/api/unsplash'
+import ActivityAPI from '@bonavoy/graphql/datasources/database/crud/activity'
 
 export type PrismaMock = {
   prisma: DeepMockProxy<PrismaClient>
@@ -32,7 +27,6 @@ export function createTestServer(prismaMock: PrismaMock) {
     activity: new ActivityAPI(prismaMock),
 
     //external
-    foursquareAPI: new FoursquareAPI(),
     unsplashAPI: new UnsplashAPI(),
   }
   // return new ApolloServer({ schema: makeExecutableSchema(schema), dataSources: () => mockedDatasources}) TODO: Fix

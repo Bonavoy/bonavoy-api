@@ -2,7 +2,7 @@ import { AuthorsOnTrips, PrismaClient } from '@prisma/client'
 import { DataSource } from 'apollo-datasource'
 import DataLoader from 'dataloader'
 
-import { Context } from '../../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 
 export default class AuthorsAPI extends DataSource {
   prisma: PrismaClient

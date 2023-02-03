@@ -3,9 +3,9 @@ import { DataSource } from 'apollo-datasource'
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, Activity, Prisma } from '@prisma/client'
-import { Context } from '../../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 import DataLoader from 'dataloader'
-import { DBActivity } from '../../types'
+import { DBActivity } from '@bonavoy/graphql/datasources/types'
 
 export default class ActivityAPI extends DataSource {
   prisma: PrismaClient

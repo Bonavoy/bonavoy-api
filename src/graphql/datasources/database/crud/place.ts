@@ -1,9 +1,9 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, Place, Prisma } from '@prisma/client'
 
-import { Context } from '../../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 import DataLoader from 'dataloader'
-import { DBPlace } from '../../types'
+import { DBPlace } from '@bonavoy/graphql/datasources/types'
 
 export default class PlaceAPI extends DataSource {
   prisma: PrismaClient

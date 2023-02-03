@@ -1,9 +1,9 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource'
 
 //types
-import { Context } from '../../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 import type { PrismaClient, User } from '@prisma/client'
-import type { KeyvAdapter } from '../../../../utils/classes/KeyvAdapter'
+import type { KeyvAdapter } from '@bonavoy/utils/classes/KeyvAdapter'
 import DataLoader from 'dataloader'
 
 interface FindUserQuery {

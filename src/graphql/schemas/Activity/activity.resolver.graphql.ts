@@ -1,8 +1,8 @@
 import { GraphQLError } from 'graphql'
-import { Resolvers } from '../../../generated/graphql'
+import { Resolvers } from '@bonavoy/generated/graphql'
 
 //types
-import { Context } from '../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 
 // TODO: query and interpolate names of Foursquare places into activity data so we don't get sued OMEGALUL
 const resolvers: Resolvers = {
