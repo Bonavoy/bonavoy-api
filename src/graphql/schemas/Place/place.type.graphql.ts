@@ -11,7 +11,7 @@ export default gql`
   type Mutation {
     createPlace(tripId: ID!, place: PlaceInput!): Place!
     deletePlace(placeId: ID!): ID!
-    updatePlace(place: UpdatePlaceInput!): Place!
+    updatePlace(id: ID!, place: UpdatePlaceInput!): Place!
   }
 
   #inputs

@@ -2,7 +2,7 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, Activity } from '@prisma/client'
+import type { PrismaClient, Activity, Prisma } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
 import { DBActivity } from '../../types'
@@ -66,21 +66,16 @@ export default class ActivityAPI extends DataSource {
     return this.batchActivityLists.load(dayPlanId)
   }
 
-  findHighestOrderActivity = async (dayPlanId: string) => {
-    return await this.prisma.activity.aggregate({
+  updateActivity = async (id: string, activity: Prisma.ActivityUpdateInput) => {
+    return await this.prisma.activity.update({
       where: {
-        dayPlanId,
+        id,
       },
-      _max: {
-        order: true,
-      },
-    })
-  }
-
-  addActivityToDayPlan = async (activity: Activity) => {
-    return await this.prisma.activity.create({
       data: {
-        ...activity,
+        name: activity.name,
+        order: activity.order,
+        startTime: activity.startTime,
+        endTime: activity.endTime,
       },
     })
   }

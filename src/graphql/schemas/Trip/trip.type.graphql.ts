@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag'
 export default gql`
   #queries
   type Query {
-    trips: [Trip!]!
+    trips(limit: Int!, after: ID): TripConnection!
     trip(tripId: ID!): Trip!
   }
 
@@ -31,6 +31,21 @@ export default gql`
   }
 
   #types
+  type TripConnection {
+    edges: [TripEdge!]!
+    totalCount: Int!
+    pageInfo: PageInfo!
+  }
+
+  type TripEdge {
+    node: Trip!
+  }
+
+  type PageInfo {
+    endCursor: ID! # fetch after this id for next page
+    hasNextPage: Boolean!
+  }
+
   type Trip {
     id: ID!
     name: String!

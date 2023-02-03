@@ -2,22 +2,10 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, DayPlan } from '@prisma/client'
+import type { PrismaClient, DayPlan, Prisma } from '@prisma/client'
 import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
 import { DBDayPlan } from '../../types'
-
-export interface CreateDayPlan {
-  date: Date
-  order: number
-  placeId: string
-}
-
-export interface FindDayPlanFilters {
-  date: Date
-  tripId?: string
-  placeId?: string
-}
 
 export default class DayPlanAPI extends DataSource {
   prisma: PrismaClient
@@ -45,17 +33,10 @@ export default class DayPlanAPI extends DataSource {
    * @param date
    * @returns
    */
-  findDayPlan = async ({ date, tripId, placeId }: FindDayPlanFilters): Promise<DayPlan | null> => {
-    return await this.prisma.dayPlan.findFirst({
+  findDayPlan = async (id: string): Promise<DayPlan | null> => {
+    return await this.prisma.dayPlan.findUnique({
       where: {
-        place: {
-          ...(tripId && { tripId }),
-          ...(placeId && { placeId }),
-        },
-        date,
-      },
-      include: {
-        activities: true,
+        id,
       },
     })
   }
@@ -95,6 +76,26 @@ export default class DayPlanAPI extends DataSource {
         placeId,
         order: dayPlan.order,
         date: dayPlan.date,
+      },
+    })
+  }
+
+  updateDayPlan = async (id: string, dayPlan: Prisma.DayPlanUpdateInput): Promise<DayPlan> => {
+    return await this.prisma.dayPlan.update({
+      where: {
+        id,
+      },
+      data: {
+        date: dayPlan.date,
+        order: dayPlan.order,
+      },
+    })
+  }
+
+  deleteDayPlan = async (id: string) => {
+    return await this.prisma.dayPlan.delete({
+      where: {
+        id,
       },
     })
   }

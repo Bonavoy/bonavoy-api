@@ -91,7 +91,7 @@ export type Mutation = {
   createPlace: Place;
   createTrip: Trip;
   createUser: User;
-  deleteActivity: Activity;
+  deleteActivity: Scalars['ID'];
   deleteDayPlan: Scalars['ID'];
   deletePlace: Scalars['ID'];
   deleteTrip: Scalars['Boolean'];
@@ -159,6 +159,7 @@ export type MutationDeleteTripArgs = {
 
 export type MutationUpdateActivityArgs = {
   id: Scalars['ID'];
+  updateActivityInput: UpdateActivityInput;
 };
 
 
@@ -169,6 +170,7 @@ export type MutationUpdateDayPlanArgs = {
 
 
 export type MutationUpdatePlaceArgs = {
+  id: Scalars['ID'];
   place: UpdatePlaceInput;
 };
 
@@ -223,7 +225,7 @@ export type Query = {
   place: Place;
   places: Array<Place>;
   trip: Trip;
-  trips: Array<Trip>;
+  trips: TripConnection;
   user: User;
 };
 
@@ -260,6 +262,12 @@ export type QueryTripArgs = {
   tripId: Scalars['ID'];
 };
 
+
+export type QueryTripsArgs = {
+  after?: InputMaybe<Scalars['ID']>;
+  limit: Scalars['Int'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
@@ -277,6 +285,18 @@ export type Trip = {
   startDate: Scalars['DateTime'];
 };
 
+export type TripConnection = {
+  __typename?: 'TripConnection';
+  edges: Array<TripEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type TripEdge = {
+  __typename?: 'TripEdge';
+  node: Trip;
+};
+
 export type TripInput = {
   endDate: Scalars['DateTime'];
   isPublic: Scalars['Boolean'];
@@ -290,6 +310,13 @@ export enum TripRole {
   Editor = 'EDITOR',
   Viewer = 'VIEWER'
 }
+
+export type UpdateActivityInput = {
+  end?: InputMaybe<Scalars['DateTime']>;
+  name?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<Scalars['Int']>;
+  start?: InputMaybe<Scalars['DateTime']>;
+};
 
 export type UpdateDayPlanInput = {
   date?: InputMaybe<Scalars['DateTime']>;
@@ -432,8 +459,11 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   Trip: ResolverTypeWrapper<Trip>;
+  TripConnection: ResolverTypeWrapper<TripConnection>;
+  TripEdge: ResolverTypeWrapper<TripEdge>;
   TripInput: TripInput;
   TripRole: TripRole;
+  UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
   UpdateTripInput: UpdateTripInput;
@@ -466,7 +496,10 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Subscription: {};
   Trip: Trip;
+  TripConnection: TripConnection;
+  TripEdge: TripEdge;
   TripInput: TripInput;
+  UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
   UpdateTripInput: UpdateTripInput;
@@ -540,14 +573,14 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createPlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationCreatePlaceArgs, 'place' | 'tripId'>>;
   createTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationCreateTripArgs, 'trip'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
-  deleteActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
+  deleteActivity?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deleteDayPlan?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteDayPlanArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id'>>;
+  updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
-  updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'place'>>;
+  updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'id' | 'place'>>;
   updateTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationUpdateTripArgs, 'updateTripInput'>>;
 };
 
@@ -585,7 +618,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<QueryTripArgs, 'tripId'>>;
-  trips?: Resolver<Array<ResolversTypes['Trip']>, ParentType, ContextType>;
+  trips?: Resolver<ResolversTypes['TripConnection'], ParentType, ContextType, RequireFields<QueryTripsArgs, 'limit'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
@@ -602,6 +635,18 @@ export type TripResolvers<ContextType = any, ParentType extends ResolversParentT
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType>;
   startDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TripConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TripConnection'] = ResolversParentTypes['TripConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TripEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TripEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['TripEdge'] = ResolversParentTypes['TripEdge']> = {
+  node?: Resolver<ResolversTypes['Trip'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -633,6 +678,8 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Trip?: TripResolvers<ContextType>;
+  TripConnection?: TripConnectionResolvers<ContextType>;
+  TripEdge?: TripEdgeResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

@@ -6,14 +6,21 @@ export default gql`
   # mutations
   type Mutation {
     createActivity(dayPlanId: ID!, activity: ActivityInput!): Activity!
-    updateActivity(id: ID!): Activity!
-    deleteActivity(id: ID!): Activity!
+    updateActivity(id: ID!, updateActivityInput: UpdateActivityInput!): Activity!
+    deleteActivity(id: ID!): ID!
   }
 
   #inputs
   input ActivityInput {
     order: Int!
     name: String!
+    start: DateTime
+    end: DateTime
+  }
+
+  input UpdateActivityInput {
+    name: String
+    order: Int
     start: DateTime
     end: DateTime
   }

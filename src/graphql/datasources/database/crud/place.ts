@@ -1,5 +1,5 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, Place } from '@prisma/client'
+import type { PrismaClient, Place, Prisma } from '@prisma/client'
 
 import { Context } from '../../../../types/auth'
 import DataLoader from 'dataloader'
@@ -101,13 +101,10 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  deletePlace = async (placeId: string): Promise<{ id: string }> => {
+  deletePlace = async (placeId: string): Promise<Place> => {
     return await this.prisma.place.delete({
       where: {
         id: placeId,
-      },
-      select: {
-        id: true,
       },
     })
   }
@@ -128,18 +125,20 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  updatePlaceDates = async (placeId: string, startDate: Date, endDate: Date) => {
+  updatePlace = async (id: string, place: Prisma.PlaceUpdateInput) => {
     return await this.prisma.place.update({
       where: {
-        id: placeId,
+        id,
       },
       data: {
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-      },
-      select: {
-        startDate: true,
-        endDate: true,
+        place_name: place.place_name,
+        mapbox_id: place.mapbox_id,
+        text: place.text,
+        startDate: place.startDate,
+        endDate: place.endDate,
+        colour: place.colour,
+        center: place.center,
+        country: place.country,
       },
     })
   }

@@ -168,7 +168,8 @@ const resolvers: Resolvers = {
       const { limit, after } = args
 
       const authorsOnTrips = await ctx.dataSources.authors.findAuthorsPaginated(user.id, limit, after)
-      // TODO: get total count, hasNextPage
+      const authorsOnTripsCount = await ctx.dataSources.authors.authorsOnTripsCount(user.id)
+      // TODO: hasNextPage
 
       const authorsOnTripsEdges: AuthorsOnTripsEdge[] = authorsOnTrips.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
@@ -196,9 +197,9 @@ const resolvers: Resolvers = {
 
       return {
         edges: authorsOnTripsEdges,
-        totalCount: 1,
+        totalCount: authorsOnTripsCount,
         pageInfo: {
-          endCursor: authorsOnTrips[authorsOnTrips.length - 1].id,
+          endCursor: authorsOnTrips[authorsOnTrips.length - 1]?.id || '',
           hasNextPage: true,
         },
       }

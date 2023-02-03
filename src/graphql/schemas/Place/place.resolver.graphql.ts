@@ -46,6 +46,23 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     createPlace: async (_parent, { tripId, place }, ctx: Context) => {
+      // TODO: validate color
+      if (place.center?.length != 2) {
+        throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
+      }
+
+      if (place.place_name && (place.place_name?.length < 3 || 30 < place.place_name?.length)) {
+        throw new GraphQLError('Length of place name needs to be between 3 and 30')
+      }
+
+      if (place.country && (place.country?.length < 3 || 30 < place.country?.length)) {
+        throw new GraphQLError('Length of country needs to be between 3 and 30')
+      }
+
+      if (place.text && 512 < place.text?.length) {
+        throw new GraphQLError('Length of text cannot be longer than 512 characters')
+      }
+
       const dbPlace = await ctx.dataSources.places.createPlace(tripId, {
         tripId: tripId,
         mapbox_id: place.mapbox_id,
@@ -71,11 +88,50 @@ export const resolvers: Resolvers = {
         dayPlans: [],
       }
     },
-    deletePlace: async () => {
-      return {} as any
+    deletePlace: async (_parent, { placeId }, ctx: Context) => {
+      const dbPlace = await ctx.dataSources.places.deletePlace(placeId)
+      return dbPlace.id
     },
-    updatePlace: async () => {
-      return {} as any
+    updatePlace: async (_parent, { id, place }, ctx: Context) => {
+      // TODO: validate color
+      if (place.center?.length != 2) {
+        throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
+      }
+
+      if (place.place_name && (place.place_name?.length < 3 || 30 < place.place_name?.length)) {
+        throw new GraphQLError('Length of place name needs to be between 3 and 30')
+      }
+
+      if (place.country && (place.country?.length < 3 || 30 < place.country?.length)) {
+        throw new GraphQLError('Length of country needs to be between 3 and 30')
+      }
+
+      if (place.text && 512 < place.text?.length) {
+        throw new GraphQLError('Length of text cannot be longer than 512 characters')
+      }
+
+      const updatedPlace = await ctx.dataSources.places.updatePlace(id, {
+        place_name: place.place_name || undefined,
+        mapbox_id: place.mapbox_id || undefined,
+        text: place.text || undefined,
+        startDate: place.startDate,
+        endDate: place.endDate,
+        colour: place.colour || undefined,
+        center: place.center || undefined,
+        country: place.country || undefined,
+      })
+      return {
+        id: updatedPlace.id,
+        place_name: updatedPlace.place_name,
+        mapbox_id: updatedPlace.mapbox_id,
+        text: updatedPlace.text,
+        startDate: updatedPlace.startDate,
+        endDate: updatedPlace.endDate,
+        colour: updatedPlace.colour,
+        center: updatedPlace.center,
+        country: updatedPlace.country,
+        dayPlans: [],
+      }
     },
   },
   Place: {

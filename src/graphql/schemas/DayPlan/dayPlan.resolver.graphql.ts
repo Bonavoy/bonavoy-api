@@ -2,6 +2,7 @@
 
 import { Context } from '../../../types/auth'
 import { Resolvers } from '../../../generated/graphql'
+import { GraphQLError } from 'graphql'
 
 export const resolvers: Resolvers = {
   Query: {
@@ -15,7 +16,17 @@ export const resolvers: Resolvers = {
       }))
     },
     dayPlan: async (_parent, { id }, ctx: Context) => {
-      return {} as any
+      const dayPlan = await ctx.dataSources.dayPlans.findDayPlan(id)
+      if (!dayPlan) {
+        throw new GraphQLError(`Could not find dayplan with id ${id}`)
+      }
+
+      return {
+        id: dayPlan.id,
+        date: dayPlan.date,
+        order: dayPlan.order,
+        activities: [], // let this be resolved
+      }
     },
   },
   Mutation: {
@@ -31,11 +42,21 @@ export const resolvers: Resolvers = {
         activities: [], // let this be resolved
       }
     },
-    updateDayPlan: async () => {
-      return {} as any
+    updateDayPlan: async (_parent, { id, updateDayPlan }, ctx: Context) => {
+      const newDayPlan = await ctx.dataSources.dayPlans.updateDayPlan(id, {
+        order: updateDayPlan.order || undefined,
+        date: updateDayPlan.date || undefined,
+      })
+      return {
+        id: newDayPlan.id,
+        order: newDayPlan.order,
+        date: newDayPlan.date,
+        activities: [], // let this be resolved
+      }
     },
-    deleteDayPlan: async () => {
-      return {} as any
+    deleteDayPlan: async (_parent, { id }, ctx: Context) => {
+      const deletedDayPlan = await ctx.dataSources.dayPlans.deleteDayPlan(id)
+      return deletedDayPlan.id
     },
   },
   DayPlan: {

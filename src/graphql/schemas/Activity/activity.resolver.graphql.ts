@@ -1,5 +1,4 @@
-import { Activity } from '@prisma/client'
-import { differenceInDays, subDays } from 'date-fns'
+import { GraphQLError } from 'graphql'
 import { Resolvers } from '../../../generated/graphql'
 
 //types
@@ -24,8 +23,23 @@ const resolvers: Resolvers = {
         order: activity.order,
       }
     },
-    updateActivity: async () => {
-      return {} as any
+    updateActivity: async (_parent, { id, updateActivityInput }, ctx: Context) => {
+      if (updateActivityInput.name?.length && updateActivityInput.name?.length <= 2) {
+        throw new GraphQLError('Activity name is too short')
+      }
+      const updatedActivity = await ctx.dataSources.activity.updateActivity(id, {
+        name: updateActivityInput.name || undefined, // undefined means don't update
+        order: updateActivityInput.order || undefined, // ^^
+        startTime: updateActivityInput.start,
+        endTime: updateActivityInput.end,
+      })
+      return {
+        id: updatedActivity.id,
+        name: updatedActivity.name,
+        order: updatedActivity.order,
+        startTime: updatedActivity.startTime,
+        endTime: updatedActivity.endTime,
+      }
     },
     deleteActivity: async (_parent, { id }, ctx: Context) => {
       // Note: when deleting a activity, we don't need to reassign
@@ -33,7 +47,8 @@ const resolvers: Resolvers = {
       // become an issue later) but for now deleting a activity
       // doesn't change any ordering since we are just appending
       //  and deleting activitys
-      return (await ctx.dataSources.activity.deleteActivity(id)) as any
+      const deletedActivity = await ctx.dataSources.activity.deleteActivity(id)
+      return deletedActivity.id
     },
   },
 }
