@@ -1,6 +1,6 @@
 import { GraphQLError } from 'graphql'
-import { Resolvers, Trip } from '../../../generated/graphql'
-import { Context } from '../../../types/auth'
+import { Resolvers, Trip } from '@bonavoy/generated/graphql'
+import { Context } from '@bonavoy/types/auth'
 
 const authorsOnTripsResolver: Resolvers = {
   AuthorsOnTrips: {

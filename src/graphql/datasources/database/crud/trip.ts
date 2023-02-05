@@ -2,9 +2,9 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { Place, Prisma, PrismaClient, Trip } from '@prisma/client'
-import { Context } from '../../../../types/auth'
-import { DBAuthorsOnTrips, DBTrip } from '../../types'
+import type { Place, PrismaClient, Trip } from '@prisma/client'
+import { Context } from '@bonavoy/types/auth'
+import { DBTrip } from '@bonavoy/graphql/datasources/types'
 import DataLoader from 'dataloader'
 
 export default class TripsAPI extends DataSource {

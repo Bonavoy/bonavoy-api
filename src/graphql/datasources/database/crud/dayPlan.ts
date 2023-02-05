@@ -3,9 +3,9 @@ import { DataSource } from 'apollo-datasource'
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
 import type { PrismaClient, DayPlan, Prisma } from '@prisma/client'
-import { Context } from '../../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 import DataLoader from 'dataloader'
-import { DBDayPlan } from '../../types'
+import { DBDayPlan } from '@bonavoy/graphql/datasources/types'
 
 export default class DayPlanAPI extends DataSource {
   prisma: PrismaClient

@@ -1,5 +1,5 @@
 //modules
-import { mergeRawSchemas } from '../../utils/mergeRawSchemas'
+import { mergeRawSchemas } from '@bonavoy/utils/mergeRawSchemas'
 import DayPlan from './DayPlan'
 import Location from './Location'
 import Place from './Place'

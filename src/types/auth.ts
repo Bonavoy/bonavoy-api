@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { BonavoyDataSources } from '../graphql/datasources'
+import { BonavoyDataSources } from '@bonavoy/graphql/datasources'
 
 export interface Context {
   auth: AuthContext

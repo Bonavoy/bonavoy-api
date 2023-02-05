@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt'
 import 'dotenv/config'
 
-import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '../../../auth/auth'
+import { signAccessToken, signRefreshToken, tokenPayloadBuilder } from '@bonavoy/auth/auth'
 
 //types
-import { Context } from '../../../types/auth'
+import { Context } from '@bonavoy/types/auth'
 import type { User as DBUser } from '@prisma/client'
 import {
   MutationCreateUserArgs,
@@ -14,9 +14,9 @@ import {
   Resolvers,
   AuthorsOnTripsEdge,
   AuthorsOnTripsConnection,
-} from '../../../generated/graphql'
+} from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
-import { isValidEmail } from '../../../utils/validators'
+import { isValidEmail } from '@bonavoy/utils/validators'
 
 const resolvers: Resolvers = {
   Query: {

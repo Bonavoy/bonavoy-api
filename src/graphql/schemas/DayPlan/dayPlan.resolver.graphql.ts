@@ -1,7 +1,7 @@
 // TODO: WRITE TYPES
 
-import { Context } from '../../../types/auth'
-import { Resolvers } from '../../../generated/graphql'
+import { Context } from '@bonavoy/types/auth'
+import { Resolvers } from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
 
 export const resolvers: Resolvers = {
