@@ -58,9 +58,22 @@ model Place {
   center     Float[]
   country    String
   trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  transportation Transportation[]
   dayPlans   DayPlan[]
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+}
+
+model Transportation {
+  id String @id @default(uuid())
+  type TransportationType
+  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId String
+  departure_location String
+  departure_time DateTime
+  arrival_location String
+  arrival_time DateTime
+  details String @db.VarChar(300)
 }
 
 model DayPlan {
@@ -90,4 +103,10 @@ enum TripRole {
   AUTHOR
   EDITOR
   VIEWER
+}
+
+enum TransportationType {
+  CAR
+  PLANE
+  BUS
 }
