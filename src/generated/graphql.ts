@@ -217,6 +217,7 @@ export type Place = {
   place_name: Scalars['String'];
   startDate?: Maybe<Scalars['DateTime']>;
   text: Scalars['String'];
+  transportation: Array<Transportation>;
 };
 
 export type PlaceDates = {
@@ -661,6 +662,7 @@ export type PlaceResolvers<ContextType = any, ParentType extends ResolversParent
   place_name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

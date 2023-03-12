@@ -135,7 +135,8 @@ const resolvers: Resolvers = {
           startDate: place.startDate,
           endDate: place.endDate,
           text: place.text,
-          dayPlans: {} as any, // let this be resolved
+          dayPlans: {} as any, // let this be resolved,
+          transportation: [],
         }
       })
     },

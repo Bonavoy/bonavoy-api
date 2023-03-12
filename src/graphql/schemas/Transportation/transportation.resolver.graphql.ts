@@ -5,7 +5,32 @@ import { GraphQLError } from 'graphql'
 
 // TODO: WRITE TYPES
 export const resolvers: Resolvers = {
-  Query: {},
+  Query: {
+    transportation: async (_parent, { placeId }, ctx: Context) => {
+      const transportations = await ctx.dataSources.transportation.find(placeId)
+
+      return transportations.map((transportation) => {
+        let transportationType = TransportationType.Car
+        switch (transportation.type) {
+          case TransportationType.Plane:
+            transportationType = TransportationType.Plane
+            break
+          case TransportationType.Bus:
+            transportationType = TransportationType.Bus
+            break
+        }
+        return {
+          id: transportation.id,
+          departure_location: transportation.departure_location,
+          departure_time: transportation.departure_time,
+          arrival_location: transportation.arrival_location,
+          arrival_time: transportation.arrival_time,
+          details: transportation.details,
+          type: transportationType,
+        }
+      })
+    },
+  },
   Mutation: {
     addTransportation: async (_parent, { placeId, transportation }, ctx: Context) => {
       const newTransportation = await ctx.dataSources.transportation.create(placeId, {

@@ -28,4 +28,32 @@ export default class TransportationAPI extends DataSource {
       },
     })
   }
+
+  find = async (placeId: string) => {
+    return this.batchTransportationLists.load(placeId)
+  }
+
+  batchTransportationLists = new DataLoader(async (ids) => {
+    const placeIds = ids.map((placeId) => String(placeId))
+
+    const transportations = await this.prisma.transportation.findMany({
+      where: {
+        placeId: {
+          in: placeIds,
+        },
+      },
+    })
+
+    const transportationListMap = new Map<string, Transportation[]>()
+
+    for (const transportation of transportations) {
+      if (transportationListMap.has(transportation.placeId)) {
+        transportationListMap.get(transportation.placeId)?.push(transportation)
+      } else {
+        transportationListMap.set(transportation.placeId, [transportation])
+      }
+    }
+
+    return placeIds.map((placeId) => transportationListMap.get(placeId) || [])
+  })
 }
