@@ -54,3 +54,21 @@ export interface DBActivity {
   createdAt?: Date
   updatedAt?: Date
 }
+
+export interface DBTransportation {
+  id?: string
+  type: TransportationType
+  departure_location: string
+  departure_time: Date | null
+  arrival_location: string
+  arrival_time: Date | null
+  details: string
+  createdAt?: Date
+  updatedAt?: Date
+}
+
+export enum TransportationType {
+  Bus = 'BUS',
+  Car = 'CAR',
+  Plane = 'PLANE',
+}

@@ -85,6 +85,7 @@ export type LocationSuggestion = {
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
+  addTransportation: Transportation;
   authenticate: Scalars['Boolean'];
   createActivity: Activity;
   createDayPlan: DayPlan;
@@ -94,12 +95,20 @@ export type Mutation = {
   deleteActivity: Scalars['ID'];
   deleteDayPlan: Scalars['ID'];
   deletePlace: Scalars['ID'];
+  deleteTransportation: Transportation;
   deleteTrip: Scalars['Boolean'];
   token: Scalars['Boolean'];
   updateActivity: Activity;
   updateDayPlan: DayPlan;
   updatePlace: Place;
+  updateTransportation: Transportation;
   updateTrip: Trip;
+};
+
+
+export type MutationAddTransportationArgs = {
+  placeId: Scalars['ID'];
+  transportation: TransportationInput;
 };
 
 
@@ -152,6 +161,11 @@ export type MutationDeletePlaceArgs = {
 };
 
 
+export type MutationDeleteTransportationArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeleteTripArgs = {
   id: Scalars['ID'];
 };
@@ -172,6 +186,12 @@ export type MutationUpdateDayPlanArgs = {
 export type MutationUpdatePlaceArgs = {
   id: Scalars['ID'];
   place: UpdatePlaceInput;
+};
+
+
+export type MutationUpdateTransportationArgs = {
+  id: Scalars['ID'];
+  transportation: TransportationInput;
 };
 
 
@@ -224,6 +244,7 @@ export type Query = {
   getLocationSuggestions: Array<LocationSuggestion>;
   place: Place;
   places: Array<Place>;
+  transportation: Array<Transportation>;
   trip: Trip;
   trips: TripConnection;
   user: User;
@@ -258,6 +279,11 @@ export type QueryPlacesArgs = {
 };
 
 
+export type QueryTransportationArgs = {
+  placeId: Scalars['ID'];
+};
+
+
 export type QueryTripArgs = {
   tripId: Scalars['ID'];
 };
@@ -272,6 +298,32 @@ export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
 };
+
+export type Transportation = {
+  __typename?: 'Transportation';
+  arrival_location: Scalars['String'];
+  arrival_time?: Maybe<Scalars['DateTime']>;
+  departure_location: Scalars['String'];
+  departure_time?: Maybe<Scalars['DateTime']>;
+  details: Scalars['String'];
+  id: Scalars['ID'];
+  type: TransportationType;
+};
+
+export type TransportationInput = {
+  arrival_location: Scalars['String'];
+  arrival_time?: InputMaybe<Scalars['DateTime']>;
+  departure_location: Scalars['String'];
+  departure_time?: InputMaybe<Scalars['DateTime']>;
+  details: Scalars['String'];
+  type: TransportationType;
+};
+
+export enum TransportationType {
+  Bus = 'BUS',
+  Car = 'CAR',
+  Plane = 'PLANE'
+}
 
 export type Trip = {
   __typename?: 'Trip';
@@ -458,6 +510,9 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
+  Transportation: ResolverTypeWrapper<Transportation>;
+  TransportationInput: TransportationInput;
+  TransportationType: TransportationType;
   Trip: ResolverTypeWrapper<Trip>;
   TripConnection: ResolverTypeWrapper<TripConnection>;
   TripEdge: ResolverTypeWrapper<TripEdge>;
@@ -495,6 +550,8 @@ export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String'];
   Subscription: {};
+  Transportation: Transportation;
+  TransportationInput: TransportationInput;
   Trip: Trip;
   TripConnection: TripConnection;
   TripEdge: TripEdge;
@@ -567,6 +624,7 @@ export type LocationSuggestionResolvers<ContextType = any, ParentType extends Re
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  addTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationAddTransportationArgs, 'placeId' | 'transportation'>>;
   authenticate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationAuthenticateArgs, 'password' | 'username'>>;
   createActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationCreateActivityArgs, 'activity' | 'dayPlanId'>>;
   createDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationCreateDayPlanArgs, 'dayPlan' | 'placeId'>>;
@@ -576,11 +634,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteActivity?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deleteDayPlan?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteDayPlanArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
+  deleteTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
   updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'id' | 'place'>>;
+  updateTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationUpdateTransportationArgs, 'id' | 'transportation'>>;
   updateTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationUpdateTripArgs, 'updateTripInput'>>;
 };
 
@@ -617,6 +677,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'country' | 'proximity' | 'query' | 'types'>>;
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
+  transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<QueryTripArgs, 'tripId'>>;
   trips?: Resolver<ResolversTypes['TripConnection'], ParentType, ContextType, RequireFields<QueryTripsArgs, 'limit'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -624,6 +685,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
+};
+
+export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {
+  arrival_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  arrival_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  departure_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  departure_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  details?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['TransportationType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type TripResolvers<ContextType = any, ParentType extends ResolversParentTypes['Trip'] = ResolversParentTypes['Trip']> = {
@@ -677,6 +749,7 @@ export type Resolvers<ContextType = any> = {
   PlaceDates?: PlaceDatesResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
+  Transportation?: TransportationResolvers<ContextType>;
   Trip?: TripResolvers<ContextType>;
   TripConnection?: TripConnectionResolvers<ContextType>;
   TripEdge?: TripEdgeResolvers<ContextType>;

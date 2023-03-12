@@ -70,9 +70,9 @@ model Transportation {
   place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
   placeId String
   departure_location String
-  departure_time DateTime
+  departure_time DateTime?
   arrival_location String
-  arrival_time DateTime
+  arrival_time DateTime?
   details String @db.VarChar(300)
 }
 

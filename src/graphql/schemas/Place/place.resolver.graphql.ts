@@ -145,6 +145,9 @@ export const resolvers: Resolvers = {
         activities: [], // let this be resolved
       }))
     },
+    // transportation: async (parent, _args, ctx: Context) => {
+    //   return []
+    // }
   },
 }
 
