@@ -1,6 +1,6 @@
 // types
 import { Context } from '@bonavoy/types/auth'
-import { Resolvers } from '@bonavoy/generated/graphql'
+import { Resolvers, TransportationType } from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
 
 // TODO: WRITE TYPES
@@ -20,6 +20,7 @@ export const resolvers: Resolvers = {
           endDate: place.endDate,
           text: place.text,
           dayPlans: {} as any, // let this be resolved
+          transportation: [],
         }
       })
     },
@@ -41,6 +42,7 @@ export const resolvers: Resolvers = {
         endDate: place.endDate,
         text: place.text,
         dayPlans: [], // let this be resolved
+        transportation: [],
       }
     },
   },
@@ -86,6 +88,7 @@ export const resolvers: Resolvers = {
         mapbox_id: dbPlace.mapbox_id,
         place_name: dbPlace.place_name,
         dayPlans: [],
+        transportation: [],
       }
     },
     deletePlace: async (_parent, { placeId }, ctx: Context) => {
@@ -131,6 +134,7 @@ export const resolvers: Resolvers = {
         center: updatedPlace.center,
         country: updatedPlace.country,
         dayPlans: [],
+        transportation: [],
       }
     },
   },
@@ -144,6 +148,30 @@ export const resolvers: Resolvers = {
         order: dayPlan.order,
         activities: [], // let this be resolved
       }))
+    },
+    transportation: async (parent, _args, ctx: Context) => {
+      const transportations = await ctx.dataSources.transportation.find(parent.id)
+
+      return transportations.map((transportation) => {
+        let transportationType = TransportationType.Car
+        switch (transportation.type) {
+          case TransportationType.Plane:
+            transportationType = TransportationType.Plane
+            break
+          case TransportationType.Bus:
+            transportationType = TransportationType.Bus
+            break
+        }
+        return {
+          id: transportation.id,
+          departure_location: transportation.departure_location,
+          departure_time: transportation.departure_time,
+          arrival_location: transportation.arrival_location,
+          arrival_time: transportation.arrival_time,
+          details: transportation.details,
+          type: transportationType,
+        }
+      })
     },
   },
 }
