@@ -8,10 +8,32 @@ import { DBPlace } from '@bonavoy/graphql/datasources/types'
 export default class PlaceAPI extends DataSource {
   prisma: PrismaClient
   context: Context | undefined
+  private placeListLoader: DataLoader<string, Place[]>
 
   constructor({ prisma }: { prisma: PrismaClient }) {
     super()
     this.prisma = prisma
+    this.placeListLoader = new DataLoader<string, Place[]>(async (ids) => {
+      const tripIds = ids.map((tripId) => String(tripId))
+      const places = await this.prisma.place.findMany({
+        where: {
+          tripId: {
+            in: tripIds,
+          },
+        },
+      })
+      const placeListMap = new Map<string, Place[]>()
+
+      for (const place of places) {
+        if (placeListMap.has(place.tripId)) {
+          placeListMap.get(place.tripId)?.push(place)
+        } else {
+          placeListMap.set(place.tripId, [place])
+        }
+      }
+
+      return tripIds.map((tripId) => placeListMap.get(tripId) || [])
+    })
   }
 
   /**
@@ -32,30 +54,8 @@ export default class PlaceAPI extends DataSource {
     })
   }
 
-  private batchPlaceLists = new DataLoader<string, Place[]>(async (ids) => {
-    const tripIds = ids.map((tripId) => String(tripId))
-    const places = await this.prisma.place.findMany({
-      where: {
-        tripId: {
-          in: tripIds,
-        },
-      },
-    })
-    const placeListMap = new Map<string, Place[]>()
-
-    for (const place of places) {
-      if (placeListMap.has(place.tripId)) {
-        placeListMap.get(place.tripId)?.push(place)
-      } else {
-        placeListMap.set(place.tripId, [place])
-      }
-    }
-
-    return tripIds.map((tripId) => placeListMap.get(tripId) || [])
-  })
-
   findPlaces = async (tripId: string): Promise<Place[]> => {
-    return this.batchPlaceLists.load(tripId)
+    return this.placeListLoader.load(tripId)
   }
 
   findPlacesByTrip = async (tripId: string): Promise<Place[]> => {
@@ -110,18 +110,28 @@ export default class PlaceAPI extends DataSource {
   }
 
   createPlace = async (tripId: string, place: DBPlace) => {
-    return await this.prisma.place.create({
-      data: {
-        tripId,
-        mapbox_id: place.mapbox_id,
-        place_name: place.place_name,
-        text: place.text,
-        startDate: place.startDate,
-        endDate: place.endDate,
-        colour: place.colour,
-        center: place.center,
-        country: place.country,
-      },
+    this.placeListLoader.clear(tripId)
+    return this.prisma.$transaction(async (tx) => {
+      const placeCount = await tx.place.count({
+        where: {
+          tripId,
+        },
+      })
+
+      return await this.prisma.place.create({
+        data: {
+          tripId,
+          mapbox_id: place.mapbox_id,
+          place_name: place.place_name,
+          text: place.text,
+          startDate: place.startDate,
+          endDate: place.endDate,
+          colour: place.colour,
+          center: place.center,
+          country: place.country,
+          order: placeCount,
+        },
+      })
     })
   }
 

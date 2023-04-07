@@ -1,38 +1,27 @@
-import axios from 'axios'
+import { Resolvers } from '@bonavoy/generated/graphql'
+import { Context } from '@bonavoy/types/auth'
 
-export default {
+interface LocationSuggestion {
+  place_name: string
+  text: string
+  center: number[]
+}
+
+const locationResolver: Resolvers = {
   Query: {
-    getLocationSuggestions: async (
-      _: unknown,
-      {
-        query,
-        types,
-        country,
-        proximity,
-      }: {
-        query: string
-        types: string[]
-        country: string[]
-        proximity: number[]
-      },
-    ) => {
-      try {
-        // set query params
-        const config = {
-          params: {
-            access_token: process.env.MAPBOX_ACCESS_TOKEN,
-            types: types.join(','),
-            country: country.join(','),
-            proximity: proximity.join(','),
-          },
-        }
-
-        return (await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json`, config)).data
-          .features
-      } catch (err) {
-        console.log(err)
-      }
+    getLocationSuggestions: async (_parent, { query }, ctx: Context) => {
+      const locationSuggestions = await ctx.dataSources.mapboxAPI.getLocationSuggestions(query)
+      const parsedLocations = locationSuggestions.map((location: LocationSuggestion) => ({
+        name: location.place_name,
+        text: location.text,
+        center: {
+          lng: location.center[0],
+          lat: location.center[1],
+        },
+      }))
+      return parsedLocations
     },
   },
-  Mutation: {},
 }
+
+export default locationResolver
