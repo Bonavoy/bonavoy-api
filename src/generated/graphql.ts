@@ -52,6 +52,12 @@ export type AuthorsOnTripsEdge = {
   node: AuthorsOnTrips;
 };
 
+export type Coords = {
+  __typename?: 'Coords';
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
+};
+
 export type CreateDayPlanInput = {
   date?: InputMaybe<Scalars['DateTime']>;
   order: Scalars['Int'];
@@ -65,6 +71,11 @@ export type DayPlan = {
   order: Scalars['Int'];
 };
 
+export type InputCoords = {
+  lat: Scalars['Float'];
+  lng: Scalars['Float'];
+};
+
 export type LocationContext = {
   __typename?: 'LocationContext';
   id: Scalars['String'];
@@ -75,10 +86,8 @@ export type LocationContext = {
 
 export type LocationSuggestion = {
   __typename?: 'LocationSuggestion';
-  center: Array<Maybe<Scalars['Float']>>;
-  context: Array<Maybe<LocationContext>>;
-  id: Scalars['ID'];
-  place_name: Scalars['String'];
+  center: Coords;
+  name: Scalars['String'];
   text: Scalars['String'];
 };
 
@@ -191,7 +200,7 @@ export type MutationUpdatePlaceArgs = {
 
 export type MutationUpdateTransportationArgs = {
   id: Scalars['ID'];
-  transportation: TransportationInput;
+  transportation: UpdateTransportationInput;
 };
 
 
@@ -263,10 +272,7 @@ export type QueryDayPlansArgs = {
 
 
 export type QueryGetLocationSuggestionsArgs = {
-  country: Array<InputMaybe<Scalars['String']>>;
-  proximity: Array<InputMaybe<Scalars['String']>>;
   query: Scalars['String'];
-  types: Array<InputMaybe<Scalars['String']>>;
 };
 
 
@@ -302,18 +308,23 @@ export type Subscription = {
 
 export type Transportation = {
   __typename?: 'Transportation';
+  arrivalCoords?: Maybe<Coords>;
   arrival_location: Scalars['String'];
   arrival_time?: Maybe<Scalars['DateTime']>;
+  departureCoords?: Maybe<Coords>;
   departure_location: Scalars['String'];
   departure_time?: Maybe<Scalars['DateTime']>;
   details: Scalars['String'];
   id: Scalars['ID'];
+  order: Scalars['Int'];
   type: TransportationType;
 };
 
 export type TransportationInput = {
+  arrivalCoords?: InputMaybe<InputCoords>;
   arrival_location: Scalars['String'];
   arrival_time?: InputMaybe<Scalars['DateTime']>;
+  departureCoords?: InputMaybe<InputCoords>;
   departure_location: Scalars['String'];
   departure_time?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
@@ -385,6 +396,17 @@ export type UpdatePlaceInput = {
   place_name?: InputMaybe<Scalars['String']>;
   startDate?: InputMaybe<Scalars['DateTime']>;
   text?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateTransportationInput = {
+  arrivalCoords?: InputMaybe<InputCoords>;
+  arrival_location?: InputMaybe<Scalars['String']>;
+  arrival_time?: InputMaybe<Scalars['DateTime']>;
+  departureCoords?: InputMaybe<InputCoords>;
+  departure_location?: InputMaybe<Scalars['String']>;
+  departure_time?: InputMaybe<Scalars['DateTime']>;
+  details?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<TransportationType>;
 };
 
 export type UpdateTripInput = {
@@ -495,11 +517,13 @@ export type ResolversTypes = {
   AuthorsOnTripsConnection: ResolverTypeWrapper<AuthorsOnTripsConnection>;
   AuthorsOnTripsEdge: ResolverTypeWrapper<AuthorsOnTripsEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Coords: ResolverTypeWrapper<Coords>;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DayPlan: ResolverTypeWrapper<DayPlan>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  InputCoords: InputCoords;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
@@ -522,6 +546,7 @@ export type ResolversTypes = {
   UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
+  UpdateTransportationInput: UpdateTransportationInput;
   UpdateTripInput: UpdateTripInput;
   User: ResolverTypeWrapper<User>;
   UserInput: UserInput;
@@ -535,11 +560,13 @@ export type ResolversParentTypes = {
   AuthorsOnTripsConnection: AuthorsOnTripsConnection;
   AuthorsOnTripsEdge: AuthorsOnTripsEdge;
   Boolean: Scalars['Boolean'];
+  Coords: Coords;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: Scalars['DateTime'];
   DayPlan: DayPlan;
   Float: Scalars['Float'];
   ID: Scalars['ID'];
+  InputCoords: InputCoords;
   Int: Scalars['Int'];
   LocationContext: LocationContext;
   LocationSuggestion: LocationSuggestion;
@@ -560,6 +587,7 @@ export type ResolversParentTypes = {
   UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
+  UpdateTransportationInput: UpdateTransportationInput;
   UpdateTripInput: UpdateTripInput;
   User: User;
   UserInput: UserInput;
@@ -594,6 +622,12 @@ export type AuthorsOnTripsEdgeResolvers<ContextType = any, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CoordsResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coords'] = ResolversParentTypes['Coords']> = {
+  lat?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  lng?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -615,10 +649,8 @@ export type LocationContextResolvers<ContextType = any, ParentType extends Resol
 };
 
 export type LocationSuggestionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationSuggestion'] = ResolversParentTypes['LocationSuggestion']> = {
-  center?: Resolver<Array<Maybe<ResolversTypes['Float']>>, ParentType, ContextType>;
-  context?: Resolver<Array<Maybe<ResolversTypes['LocationContext']>>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  place_name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  center?: Resolver<ResolversTypes['Coords'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -676,7 +708,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
-  getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'country' | 'proximity' | 'query' | 'types'>>;
+  getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
@@ -690,12 +722,15 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
 };
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {
+  arrivalCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
   arrival_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   arrival_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  departureCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
   departure_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   departure_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   details?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TransportationType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -741,6 +776,7 @@ export type Resolvers<ContextType = any> = {
   AuthorsOnTrips?: AuthorsOnTripsResolvers<ContextType>;
   AuthorsOnTripsConnection?: AuthorsOnTripsConnectionResolvers<ContextType>;
   AuthorsOnTripsEdge?: AuthorsOnTripsEdgeResolvers<ContextType>;
+  Coords?: CoordsResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayPlan?: DayPlanResolvers<ContextType>;
   LocationContext?: LocationContextResolvers<ContextType>;

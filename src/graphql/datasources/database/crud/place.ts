@@ -111,18 +111,27 @@ export default class PlaceAPI extends DataSource {
 
   createPlace = async (tripId: string, place: DBPlace) => {
     this.placeListLoader.clear(tripId)
-    return await this.prisma.place.create({
-      data: {
-        tripId,
-        mapbox_id: place.mapbox_id,
-        place_name: place.place_name,
-        text: place.text,
-        startDate: place.startDate,
-        endDate: place.endDate,
-        colour: place.colour,
-        center: place.center,
-        country: place.country,
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const placeCount = await tx.place.count({
+        where: {
+          tripId,
+        },
+      })
+
+      return await this.prisma.place.create({
+        data: {
+          tripId,
+          mapbox_id: place.mapbox_id,
+          place_name: place.place_name,
+          text: place.text,
+          startDate: place.startDate,
+          endDate: place.endDate,
+          colour: place.colour,
+          center: place.center,
+          country: place.country,
+          order: placeCount,
+        },
+      })
     })
   }
 

@@ -10,4 +10,15 @@ import AuthorsOnTrips from './AuthorsOnTrips'
 import DateTime from './scalars/DateTime'
 import Transportation from './Transportation'
 
-export default mergeRawSchemas(User, Trip, Activity, Place, Location, DayPlan, AuthorsOnTrips, DateTime, Transportation)
+export default mergeRawSchemas(
+  User,
+  Trip,
+  Activity,
+  Place,
+  Location,
+  DayPlan,
+  AuthorsOnTrips,
+  DateTime,
+  Transportation,
+  Location,
+)

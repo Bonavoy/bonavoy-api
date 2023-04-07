@@ -4,23 +4,20 @@ export default gql`
   #queries
   type Query {
     getLocationSuggestions(
-      query: String!
-      types: [String]!
-      country: [String]!
-      proximity: [String]!
-    ): [LocationSuggestion!]!
+      query: String! # types: [String!]! # country: [String!]!
+    ): # proximity: [String!]!
+    [LocationSuggestion!]!
   }
 
-  #mutations
+  # mutations
   # type Mutation {}
 
   #types
   type LocationSuggestion {
-    center: [Float]!
-    id: ID!
-    place_name: String!
+    name: String!
     text: String!
-    context: [LocationContext]!
+    center: Coords!
+    # context: [LocationContext!]!
   }
 
   type LocationContext {

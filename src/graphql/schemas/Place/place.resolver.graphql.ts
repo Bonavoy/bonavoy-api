@@ -8,7 +8,7 @@ export const resolvers: Resolvers = {
   Query: {
     places: async (_parent, { tripId }, ctx: Context) => {
       const places = await ctx.dataSources.places.findPlaces(tripId)
-      return places.map((place) => {
+      const placesList = places.map((place) => {
         return {
           id: place.id,
           mapbox_id: place.mapbox_id,
@@ -21,8 +21,12 @@ export const resolvers: Resolvers = {
           text: place.text,
           dayPlans: {} as any, // let this be resolved
           transportation: [],
+          order: place.order,
         }
       })
+      placesList.sort((a, b) => a.order - b.order)
+
+      return placesList
     },
     place: async (_parent, { id }, ctx: Context) => {
       const place = await ctx.dataSources.places.findPlace(id)
@@ -152,7 +156,7 @@ export const resolvers: Resolvers = {
     transportation: async (parent, _args, ctx: Context) => {
       const transportations = await ctx.dataSources.transportation.find(parent.id)
 
-      return transportations.map((transportation) => {
+      const transportationList = await transportations.map((transportation) => {
         let transportationType = TransportationType.Car
         switch (transportation.type) {
           case TransportationType.Plane:
@@ -170,8 +174,12 @@ export const resolvers: Resolvers = {
           arrival_time: transportation.arrival_time,
           details: transportation.details,
           type: transportationType,
+          order: transportation.order,
         }
       })
+      transportationList.sort((a, b) => a.order - b.order)
+
+      return transportationList
     },
   },
 }

@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 //external apis
 import UnsplashAPI from './api/unsplash'
+import MapboxAPI from './api/mapbox'
 
 //crud
 import UserAPI from './database/crud/user'
@@ -24,6 +25,7 @@ export interface BonavoyDataSources {
   activity: ActivityAPI
   unsplashAPI: UnsplashAPI
   transportation: TransportationAPI
+  mapboxAPI: MapboxAPI
 }
 
 export default {
@@ -38,4 +40,5 @@ export default {
 
   //external
   unsplashAPI: new UnsplashAPI(),
+  mapboxAPI: new MapboxAPI(),
 } as BonavoyDataSources

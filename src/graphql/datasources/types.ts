@@ -65,6 +65,10 @@ export interface DBTransportation {
   details: string
   createdAt?: Date
   updatedAt?: Date
+  arrivalLat?: number
+  arrivalLng?: number
+  departureLat?: number
+  departureLng?: number
 }
 
 export enum TransportationType {

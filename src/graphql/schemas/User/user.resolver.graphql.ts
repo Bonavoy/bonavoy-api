@@ -91,7 +91,6 @@ const resolvers: Resolvers = {
     ): Promise<boolean> => {
       //get user from db
       const dbUser: DBUser | null = await ctx.dataSources.users.findUser({ username })
-
       //if no user, throw error
       if (!dbUser) throw new GraphQLError('Invalid credentials')
 

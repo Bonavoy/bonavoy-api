@@ -10,7 +10,7 @@ export default gql`
   # mutations
   type Mutation {
     addTransportation(placeId: ID!, transportation: TransportationInput!): Transportation!
-    updateTransportation(id: ID!, transportation: TransportationInput!): Transportation!
+    updateTransportation(id: ID!, transportation: UpdateTransportationInput!): Transportation!
     deleteTransportation(id: ID!): Transportation!
   }
 
@@ -22,6 +22,26 @@ export default gql`
     arrival_location: String!
     arrival_time: DateTime
     details: String!
+    arrivalCoords: InputCoords
+    departureCoords: InputCoords
+    # order TODO
+  }
+
+  input UpdateTransportationInput {
+    type: TransportationType
+    departure_location: String
+    departure_time: DateTime
+    arrival_location: String
+    arrival_time: DateTime
+    details: String
+    arrivalCoords: InputCoords
+    departureCoords: InputCoords
+    # order TODO
+  }
+
+  input InputCoords {
+    lat: Float!
+    lng: Float!
   }
 
   # types
@@ -33,6 +53,14 @@ export default gql`
     arrival_location: String!
     arrival_time: DateTime
     details: String!
+    order: Int!
+    arrivalCoords: Coords
+    departureCoords: Coords
+  }
+
+  type Coords {
+    lat: Float!
+    lng: Float!
   }
 
   enum TransportationType {
