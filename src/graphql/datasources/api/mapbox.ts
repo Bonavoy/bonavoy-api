@@ -1,4 +1,5 @@
 import { RESTDataSource } from '@apollo/datasource-rest'
+import { InputCoords } from '@bonavoy/generated/graphql'
 
 export default class MapboxAPI extends RESTDataSource {
   private accessToken: string
@@ -15,5 +16,13 @@ export default class MapboxAPI extends RESTDataSource {
     )
 
     return JSON.parse(locationSuggestions).features // WHY IS THIS A STRING
+  }
+
+  getRoute = async (coords: InputCoords[]) => {
+    const coordList = coords.map((coord) => `${coord.lng},${coord.lat}`)
+    const coordString = coordList.join(';')
+    return await this.get(
+      `/directions/v5/mapbox/driving/${coordString}?access_token=${this.accessToken}&geometries=geojson`,
+    )
   }
 }

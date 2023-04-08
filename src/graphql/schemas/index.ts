@@ -9,6 +9,7 @@ import User from './User'
 import AuthorsOnTrips from './AuthorsOnTrips'
 import DateTime from './scalars/DateTime'
 import Transportation from './Transportation'
+import Route from './Route'
 
 export default mergeRawSchemas(
   User,
@@ -21,4 +22,5 @@ export default mergeRawSchemas(
   DateTime,
   Transportation,
   Location,
+  Route,
 )

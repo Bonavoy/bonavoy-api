@@ -254,6 +254,7 @@ export type Query = {
   getLocationSuggestions: Array<LocationSuggestion>;
   place: Place;
   places: Array<Place>;
+  routeSegments: Array<Array<Array<Scalars['Float']>>>;
   transportation: Array<Transportation>;
   trip: Trip;
   trips: TripConnection;
@@ -283,6 +284,11 @@ export type QueryPlaceArgs = {
 
 export type QueryPlacesArgs = {
   tripId: Scalars['ID'];
+};
+
+
+export type QueryRouteSegmentsArgs = {
+  segmentWaypoints: Array<Array<InputCoords>>;
 };
 
 
@@ -711,6 +717,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
+  routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;
   transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<QueryTripArgs, 'tripId'>>;
   trips?: Resolver<ResolversTypes['TripConnection'], ParentType, ContextType, RequireFields<QueryTripsArgs, 'limit'>>;

@@ -166,6 +166,22 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
+
+        let departureCoords
+        if (transportation.departureLat && transportation.departureLng) {
+          departureCoords = {
+            lng: transportation.departureLng?.toNumber(),
+            lat: transportation.departureLat?.toNumber(),
+          }
+        }
+
+        let arrivalCoords
+        if (transportation.arrivalLat && transportation.arrivalLng) {
+          arrivalCoords = {
+            lng: transportation.arrivalLng?.toNumber(),
+            lat: transportation.arrivalLat?.toNumber(),
+          }
+        }
         return {
           id: transportation.id,
           departure_location: transportation.departure_location,
@@ -175,6 +191,8 @@ export const resolvers: Resolvers = {
           details: transportation.details,
           type: transportationType,
           order: transportation.order,
+          departureCoords,
+          arrivalCoords,
         }
       })
       transportationList.sort((a, b) => a.order - b.order)
