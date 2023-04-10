@@ -1,7 +1,9 @@
 // types
 import { Context } from '@bonavoy/types/auth'
-import { Resolvers, TransportationType } from '@bonavoy/generated/graphql'
+import { Resolvers, Transportation, TransportationType } from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
+import { transportationPubSub } from '@bonavoy/kafka'
+import { KafkaMessage } from 'kafkajs'
 
 // TODO: WRITE TYPES
 export const resolvers: Resolvers = {
@@ -23,16 +25,16 @@ export const resolvers: Resolvers = {
         let departureCoords
         if (transportation.departureLat && transportation.departureLng) {
           departureCoords = {
-            lng: transportation.departureLng?.toNumber(),
-            lat: transportation.departureLat?.toNumber(),
+            lng: transportation.departureLng,
+            lat: transportation.departureLat,
           }
         }
 
         let arrivalCoords
         if (transportation.arrivalLat && transportation.arrivalLng) {
           arrivalCoords = {
-            lng: transportation.arrivalLng?.toNumber(),
-            lat: transportation.arrivalLat?.toNumber(),
+            lng: transportation.arrivalLng,
+            lat: transportation.arrivalLat,
           }
         }
 
@@ -79,16 +81,16 @@ export const resolvers: Resolvers = {
       let departureCoords
       if (newTransportation.departureLat && newTransportation.departureLng) {
         departureCoords = {
-          lng: newTransportation.departureLng?.toNumber(),
-          lat: newTransportation.departureLat?.toNumber(),
+          lng: newTransportation.departureLng,
+          lat: newTransportation.departureLat,
         }
       }
 
       let arrivalCoords
       if (newTransportation.arrivalLat && newTransportation.arrivalLng) {
         arrivalCoords = {
-          lng: newTransportation.arrivalLng?.toNumber(),
-          lat: newTransportation.arrivalLat?.toNumber(),
+          lng: newTransportation.arrivalLng,
+          lat: newTransportation.arrivalLat,
         }
       }
 
@@ -131,16 +133,16 @@ export const resolvers: Resolvers = {
       let departureCoords
       if (updatedTransportation.departureLat && updatedTransportation.departureLng) {
         departureCoords = {
-          lng: updatedTransportation.departureLng?.toNumber(),
-          lat: updatedTransportation.departureLat?.toNumber(),
+          lng: updatedTransportation.departureLng,
+          lat: updatedTransportation.departureLat,
         }
       }
 
       let arrivalCoords
       if (updatedTransportation.arrivalLat && updatedTransportation.arrivalLng) {
         arrivalCoords = {
-          lng: updatedTransportation.arrivalLng?.toNumber(),
-          lat: updatedTransportation.arrivalLat?.toNumber(),
+          lng: updatedTransportation.arrivalLng,
+          lat: updatedTransportation.arrivalLat,
         }
       }
 
@@ -156,6 +158,61 @@ export const resolvers: Resolvers = {
         departureCoords,
         arrivalCoords,
       }
+    },
+  },
+  Subscription: {
+    transportation: {
+      subscribe: async (_, args) =>
+        (await transportationPubSub).asyncIterator<Transportation>([
+          'bonavoy_db_replication_stream_Transportation',
+        ]) as any, // typecast is hacky but oh well
+      resolve: (payload: KafkaMessage) => {
+        // transform the Kafka event to the expected subscription payload
+        console.log('oh boy')
+        const payloadString = payload.value ? payload.value.toString() : ''
+
+        const transportationMsg = JSON.parse(payloadString)
+
+        console.log(transportationMsg)
+        let transportationType = TransportationType.Car
+        switch (transportationMsg.type) {
+          case TransportationType.Plane:
+            transportationType = TransportationType.Plane
+            break
+          case TransportationType.Bus:
+            transportationType = TransportationType.Bus
+            break
+        }
+
+        let departureCoords
+        if (transportationMsg.departureLat && transportationMsg.departureLng) {
+          departureCoords = {
+            lng: transportationMsg.departureLng,
+            lat: transportationMsg.departureLat,
+          }
+        }
+
+        let arrivalCoords
+        if (transportationMsg.arrivalLat && transportationMsg.arrivalLng) {
+          arrivalCoords = {
+            lng: transportationMsg.arrivalLng,
+            lat: transportationMsg.arrivalLat,
+          }
+        }
+
+        return {
+          id: transportationMsg.id,
+          departure_location: transportationMsg.departure_location,
+          departure_time: transportationMsg.departure_time,
+          arrival_location: transportationMsg.arrival_location,
+          arrival_time: transportationMsg.arrival_time,
+          details: transportationMsg.details,
+          type: transportationType,
+          order: transportationMsg.order,
+          departureCoords,
+          arrivalCoords,
+        }
+      },
     },
   },
 }

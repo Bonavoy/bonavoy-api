@@ -12,9 +12,10 @@
   "dependencies": {
     "@apollo/datasource-rest": "^5.0.2",
     "@apollo/server": "^4.3.2",
-    "@graphql-tools/schema": "^9.0.14",
+    "@graphql-tools/schema": "^9.0.17",
     "@keyv/redis": "^2.5.4",
     "@prisma/client": "^4.9.0",
+    "@supabase/supabase-js": "^2.17.0",
     "@types/jest": "^29.4.0",
     "apollo-datasource-rest": "^3.7.0",
     "axios": "^1.2.6",
@@ -29,9 +30,11 @@
     "graphql-middleware": "^6.1.33",
     "graphql-shield": "^7.6.5",
     "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.12.1",
     "jsonwebtoken": "^9.0.0",
     "keyv": "^4.5.2",
-    "lodash.mergewith": "^4.6.2"
+    "lodash.mergewith": "^4.6.2",
+    "ws": "^8.13.0"
   },
   "scripts": {
     "start": "NODE_ENV=production node ./build/server.js",

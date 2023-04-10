@@ -14,6 +14,10 @@ export default gql`
     deleteTransportation(id: ID!): Transportation!
   }
 
+  type Subscription {
+    transportation(placeId: ID!): Transportation!
+  }
+
   # inputs
   input TransportationInput {
     type: TransportationType!

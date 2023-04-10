@@ -310,6 +310,12 @@ export type QueryTripsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
+  transportation: Transportation;
+};
+
+
+export type SubscriptionTransportationArgs = {
+  placeId: Scalars['ID'];
 };
 
 export type Transportation = {
@@ -726,6 +732,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
+  transportation?: SubscriptionResolver<ResolversTypes['Transportation'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeId'>>;
 };
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {

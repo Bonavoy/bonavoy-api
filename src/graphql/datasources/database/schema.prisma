@@ -76,10 +76,10 @@ model Transportation {
   arrival_time DateTime?
   details String @db.VarChar(300)
   order      Int     @default(0)
-  departureLng Decimal?
-  departureLat Decimal?
-  arrivalLng Decimal?
-  arrivalLat Decimal?
+  departureLng Float?
+  departureLat Float?
+  arrivalLng Float?
+  arrivalLat Float?
 }
 
 model DayPlan {
