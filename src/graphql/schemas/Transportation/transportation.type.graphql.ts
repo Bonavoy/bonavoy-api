@@ -15,7 +15,7 @@ export default gql`
   }
 
   type Subscription {
-    transportation(placeId: ID!): Transportation!
+    transportation(placeIds: [ID!]!): Transportation!
   }
 
   # inputs

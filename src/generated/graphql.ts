@@ -315,7 +315,7 @@ export type Subscription = {
 
 
 export type SubscriptionTransportationArgs = {
-  placeId: Scalars['ID'];
+  placeIds: Array<Scalars['ID']>;
 };
 
 export type Transportation = {
@@ -732,7 +732,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
-  transportation?: SubscriptionResolver<ResolversTypes['Transportation'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeId'>>;
+  transportation?: SubscriptionResolver<ResolversTypes['Transportation'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
 };
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {

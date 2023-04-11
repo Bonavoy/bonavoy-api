@@ -162,18 +162,18 @@ export const resolvers: Resolvers = {
   },
   Subscription: {
     transportation: {
-      subscribe: async (_, args) =>
-        (await transportationPubSub).asyncIterator<Transportation>([
-          'bonavoy_db_replication_stream_Transportation',
-        ]) as any, // typecast is hacky but oh well
+      subscribe: async (_, { placeIds }) => {
+        // TODO: access control
+        return (await transportationPubSub).asyncIterator<Transportation>([
+          'db.mxrzsgliftpsfsylratd.supabase.co.public.Transportation',
+        ]) as any
+      }, // typecast is hacky but oh well
       resolve: (payload: KafkaMessage) => {
         // transform the Kafka event to the expected subscription payload
-        console.log('oh boy')
         const payloadString = payload.value ? payload.value.toString() : ''
 
         const transportationMsg = JSON.parse(payloadString)
 
-        console.log(transportationMsg)
         let transportationType = TransportationType.Car
         switch (transportationMsg.type) {
           case TransportationType.Plane:
@@ -203,9 +203,9 @@ export const resolvers: Resolvers = {
         return {
           id: transportationMsg.id,
           departure_location: transportationMsg.departure_location,
-          departure_time: transportationMsg.departure_time,
+          departure_time: new Date(transportationMsg.departure_time),
           arrival_location: transportationMsg.arrival_location,
-          arrival_time: transportationMsg.arrival_time,
+          arrival_time: new Date(transportationMsg.arrival_time),
           details: transportationMsg.details,
           type: transportationType,
           order: transportationMsg.order,
