@@ -1,7 +1,6 @@
 // types
 import { Context } from '@bonavoy/types/auth'
 import { Resolvers, Transportation, TransportationType } from '@bonavoy/generated/graphql'
-import { GraphQLError } from 'graphql'
 import { transportationPubSub } from '@bonavoy/kafka'
 import { KafkaMessage } from 'kafkajs'
 
@@ -161,13 +160,18 @@ export const resolvers: Resolvers = {
     },
   },
   Subscription: {
+    // gotta typecast to any cuz these mfs didn't sync up the subscription library with apollo server
     transportation: {
       subscribe: async (_, { placeIds }) => {
-        // TODO: access control
+        // (payload: any, variables: any) => true,
+        if (false) {
+          // TODO: access control
+          return Promise.reject('you do not have permission to view this trip')
+        }
         return (await transportationPubSub).asyncIterator<Transportation>([
           'db.mxrzsgliftpsfsylratd.supabase.co.public.Transportation',
         ]) as any
-      }, // typecast is hacky but oh well
+      },
       resolve: (payload: KafkaMessage) => {
         // transform the Kafka event to the expected subscription payload
         const payloadString = payload.value ? payload.value.toString() : ''
