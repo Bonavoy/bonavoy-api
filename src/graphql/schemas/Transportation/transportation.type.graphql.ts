@@ -69,6 +69,7 @@ export default gql`
 
   type TransportationNotification {
     transportation: Transportation!
+    placeId: ID
     deleted: Boolean!
   }
 

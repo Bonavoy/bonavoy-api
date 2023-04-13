@@ -223,6 +223,7 @@ export const resolvers: Resolvers = {
 
         return {
           transportation,
+          placeId: transportationMsg.placeId,
           deleted: transportationMsg.__deleted === 'false' ? false : true, // idk why but we receive this as a string
         }
       },

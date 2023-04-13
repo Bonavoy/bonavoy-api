@@ -346,6 +346,7 @@ export type TransportationInput = {
 export type TransportationNotification = {
   __typename?: 'TransportationNotification';
   deleted: Scalars['Boolean'];
+  placeId: Scalars['ID'];
   transportation: Transportation;
 };
 
@@ -759,6 +760,7 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
 
 export type TransportationNotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransportationNotification'] = ResolversParentTypes['TransportationNotification']> = {
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  placeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   transportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
