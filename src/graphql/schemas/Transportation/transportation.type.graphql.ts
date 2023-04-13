@@ -15,7 +15,7 @@ export default gql`
   }
 
   type Subscription {
-    transportation(placeIds: [ID!]!): Transportation!
+    transportation(placeIds: [ID!]!): TransportationNotification!
   }
 
   # inputs
@@ -69,18 +69,12 @@ export default gql`
 
   type TransportationNotification {
     transportation: Transportation!
-    type: NotificationType!
+    deleted: Boolean!
   }
 
   enum TransportationType {
     CAR
     PLANE
     BUS
-  }
-
-  enum NotificationType {
-    CREATE
-    UPDATE
-    DELETE
   }
 `

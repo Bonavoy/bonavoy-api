@@ -208,7 +208,7 @@ export const resolvers: Resolvers = {
           }
         }
 
-        return {
+        const transportation: Transportation = {
           id: transportationMsg.id,
           departure_location: transportationMsg.departure_location,
           departure_time: new Date(transportationMsg.departure_time),
@@ -219,6 +219,11 @@ export const resolvers: Resolvers = {
           order: transportationMsg.order,
           departureCoords,
           arrivalCoords,
+        }
+
+        return {
+          transportation,
+          deleted: transportationMsg.__deleted === 'false' ? false : true, // idk why but we receive this as a string
         }
       },
     },

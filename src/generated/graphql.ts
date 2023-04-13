@@ -208,12 +208,6 @@ export type MutationUpdateTripArgs = {
   updateTripInput: UpdateTripInput;
 };
 
-export enum NotificationType {
-  Create = 'CREATE',
-  Delete = 'DELETE',
-  Update = 'UPDATE'
-}
-
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor: Scalars['ID'];
@@ -316,7 +310,7 @@ export type QueryTripsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
-  transportation: Transportation;
+  transportation: TransportationNotification;
 };
 
 
@@ -351,8 +345,8 @@ export type TransportationInput = {
 
 export type TransportationNotification = {
   __typename?: 'TransportationNotification';
+  deleted: Scalars['Boolean'];
   transportation: Transportation;
-  type: NotificationType;
 };
 
 export enum TransportationType {
@@ -552,7 +546,6 @@ export type ResolversTypes = {
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
-  NotificationType: NotificationType;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Place: ResolverTypeWrapper<Place>;
   PlaceDates: ResolverTypeWrapper<PlaceDates>;
@@ -747,7 +740,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
-  transportation?: SubscriptionResolver<ResolversTypes['Transportation'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
+  transportation?: SubscriptionResolver<ResolversTypes['TransportationNotification'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
 };
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {
@@ -765,8 +758,8 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
 };
 
 export type TransportationNotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransportationNotification'] = ResolversParentTypes['TransportationNotification']> = {
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   transportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['NotificationType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
