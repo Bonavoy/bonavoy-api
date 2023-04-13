@@ -158,6 +158,10 @@ export const resolvers: Resolvers = {
         arrivalCoords,
       }
     },
+    deleteTransportation: async (_parent, { id }, ctx: Context) => {
+      const deletedTransportation = await ctx.dataSources.transportation.delete(id)
+      return deletedTransportation.id
+    },
   },
   Subscription: {
     // gotta typecast to any cuz these mfs didn't sync up the subscription library with apollo server

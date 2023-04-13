@@ -11,7 +11,7 @@ export default gql`
   type Mutation {
     addTransportation(placeId: ID!, transportation: TransportationInput!): Transportation!
     updateTransportation(id: ID!, transportation: UpdateTransportationInput!): Transportation!
-    deleteTransportation(id: ID!): Transportation!
+    deleteTransportation(id: ID!): ID!
   }
 
   type Subscription {
@@ -67,9 +67,20 @@ export default gql`
     lng: Float!
   }
 
+  type TransportationNotification {
+    transportation: Transportation!
+    type: NotificationType!
+  }
+
   enum TransportationType {
     CAR
     PLANE
     BUS
+  }
+
+  enum NotificationType {
+    CREATE
+    UPDATE
+    DELETE
   }
 `

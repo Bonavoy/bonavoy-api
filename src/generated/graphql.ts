@@ -104,7 +104,7 @@ export type Mutation = {
   deleteActivity: Scalars['ID'];
   deleteDayPlan: Scalars['ID'];
   deletePlace: Scalars['ID'];
-  deleteTransportation: Transportation;
+  deleteTransportation: Scalars['ID'];
   deleteTrip: Scalars['Boolean'];
   token: Scalars['Boolean'];
   updateActivity: Activity;
@@ -207,6 +207,12 @@ export type MutationUpdateTransportationArgs = {
 export type MutationUpdateTripArgs = {
   updateTripInput: UpdateTripInput;
 };
+
+export enum NotificationType {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
 
 export type PageInfo = {
   __typename?: 'PageInfo';
@@ -341,6 +347,12 @@ export type TransportationInput = {
   departure_time?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
   type: TransportationType;
+};
+
+export type TransportationNotification = {
+  __typename?: 'TransportationNotification';
+  transportation: Transportation;
+  type: NotificationType;
 };
 
 export enum TransportationType {
@@ -540,6 +552,7 @@ export type ResolversTypes = {
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
+  NotificationType: NotificationType;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Place: ResolverTypeWrapper<Place>;
   PlaceDates: ResolverTypeWrapper<PlaceDates>;
@@ -549,6 +562,7 @@ export type ResolversTypes = {
   Subscription: ResolverTypeWrapper<{}>;
   Transportation: ResolverTypeWrapper<Transportation>;
   TransportationInput: TransportationInput;
+  TransportationNotification: ResolverTypeWrapper<TransportationNotification>;
   TransportationType: TransportationType;
   Trip: ResolverTypeWrapper<Trip>;
   TripConnection: ResolverTypeWrapper<TripConnection>;
@@ -592,6 +606,7 @@ export type ResolversParentTypes = {
   Subscription: {};
   Transportation: Transportation;
   TransportationInput: TransportationInput;
+  TransportationNotification: TransportationNotification;
   Trip: Trip;
   TripConnection: TripConnection;
   TripEdge: TripEdge;
@@ -679,7 +694,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteActivity?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deleteDayPlan?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteDayPlanArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
-  deleteTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
+  deleteTransportation?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
@@ -749,6 +764,12 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TransportationNotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransportationNotification'] = ResolversParentTypes['TransportationNotification']> = {
+  transportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['NotificationType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TripResolvers<ContextType = any, ParentType extends ResolversParentTypes['Trip'] = ResolversParentTypes['Trip']> = {
   authors?: Resolver<Array<ResolversTypes['AuthorsOnTrips']>, ParentType, ContextType>;
   banner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -802,6 +823,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Transportation?: TransportationResolvers<ContextType>;
+  TransportationNotification?: TransportationNotificationResolvers<ContextType>;
   Trip?: TripResolvers<ContextType>;
   TripConnection?: TripConnectionResolvers<ContextType>;
   TripEdge?: TripEdgeResolvers<ContextType>;

@@ -76,4 +76,14 @@ export default class TransportationAPI extends DataSource {
     this.transportationListLoader.clear(updatedTransportation.placeId)
     return updatedTransportation
   }
+
+  delete = async (id: string) => {
+    const deleteTransportation = await this.prisma.transportation.delete({
+      where: {
+        id,
+      },
+    })
+    this.transportationListLoader.clear(deleteTransportation.placeId)
+    return deleteTransportation
+  }
 }
