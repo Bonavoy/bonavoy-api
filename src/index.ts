@@ -1,10 +1,14 @@
 import 'dotenv/config'
 import express from 'express'
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled'
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import { json } from 'body-parser'
+import { WebSocketServer } from 'ws'
+import { useServer } from 'graphql-ws/lib/use/ws'
+import { createServer } from 'http'
 
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
@@ -33,11 +37,38 @@ const startServer = async () => {
   const isDevelopmentEnv = process.env.NODE_ENV === 'development'
 
   const schema = makeExecutableSchema(rawSchema)
+
+  // subscription and ws setup
+  const httpServer = createServer(app)
+
+  const wsServer = new WebSocketServer({
+    // This is the `httpServer` we created in a previous step.
+    server: httpServer,
+    // Pass a different path here if app.use
+    // serves expressMiddleware at a different path
+    path: '/graphql',
+  })
+  const serverCleanup = useServer({ schema }, wsServer)
+
+  const plugins = [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose()
+          },
+        }
+      },
+    },
+  ]
+  if (isDevelopmentEnv) plugins.push(ApolloServerPluginLandingPageDisabled())
+
   //apollo
   const apolloServer = new ApolloServer<Context>({
     schema: applyMiddleware(schema, permissions),
     csrfPrevention: true,
-    plugins: isDevelopmentEnv ? [] : [ApolloServerPluginLandingPageDisabled()],
+    plugins: plugins,
     cache: new KeyvAdapter(new Keyv(`redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URI}`)),
   })
 
@@ -79,7 +110,7 @@ const startServer = async () => {
     }),
   )
 
-  app.listen(process.env.PORT, () => {
+  httpServer.listen(process.env.PORT, () => {
     console.log(`Server listening at http://localhost:${process.env.PORT}/graphql`)
   })
 }

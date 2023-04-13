@@ -170,16 +170,16 @@ export const resolvers: Resolvers = {
         let departureCoords
         if (transportation.departureLat && transportation.departureLng) {
           departureCoords = {
-            lng: transportation.departureLng?.toNumber(),
-            lat: transportation.departureLat?.toNumber(),
+            lng: transportation.departureLng,
+            lat: transportation.departureLat,
           }
         }
 
         let arrivalCoords
         if (transportation.arrivalLat && transportation.arrivalLng) {
           arrivalCoords = {
-            lng: transportation.arrivalLng?.toNumber(),
-            lat: transportation.arrivalLat?.toNumber(),
+            lng: transportation.arrivalLng,
+            lat: transportation.arrivalLat,
           }
         }
         return {
