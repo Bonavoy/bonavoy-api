@@ -158,6 +158,10 @@ export const resolvers: Resolvers = {
         arrivalCoords,
       }
     },
+    deleteTransportation: async (_parent, { id }, ctx: Context) => {
+      const deletedTransportation = await ctx.dataSources.transportation.delete(id)
+      return deletedTransportation.id
+    },
   },
   Subscription: {
     // gotta typecast to any cuz these mfs didn't sync up the subscription library with apollo server
@@ -204,7 +208,7 @@ export const resolvers: Resolvers = {
           }
         }
 
-        return {
+        const transportation: Transportation = {
           id: transportationMsg.id,
           departure_location: transportationMsg.departure_location,
           departure_time: new Date(transportationMsg.departure_time),
@@ -215,6 +219,12 @@ export const resolvers: Resolvers = {
           order: transportationMsg.order,
           departureCoords,
           arrivalCoords,
+        }
+
+        return {
+          transportation,
+          placeId: transportationMsg.placeId,
+          deleted: transportationMsg.__deleted === 'false' ? false : true, // idk why but we receive this as a string
         }
       },
     },

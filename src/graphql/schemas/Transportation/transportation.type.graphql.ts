@@ -11,11 +11,11 @@ export default gql`
   type Mutation {
     addTransportation(placeId: ID!, transportation: TransportationInput!): Transportation!
     updateTransportation(id: ID!, transportation: UpdateTransportationInput!): Transportation!
-    deleteTransportation(id: ID!): Transportation!
+    deleteTransportation(id: ID!): ID!
   }
 
   type Subscription {
-    transportation(placeIds: [ID!]!): Transportation!
+    transportation(placeIds: [ID!]!): TransportationNotification!
   }
 
   # inputs
@@ -65,6 +65,12 @@ export default gql`
   type Coords {
     lat: Float!
     lng: Float!
+  }
+
+  type TransportationNotification {
+    transportation: Transportation!
+    placeId: ID
+    deleted: Boolean!
   }
 
   enum TransportationType {

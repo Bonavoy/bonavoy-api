@@ -104,7 +104,7 @@ export type Mutation = {
   deleteActivity: Scalars['ID'];
   deleteDayPlan: Scalars['ID'];
   deletePlace: Scalars['ID'];
-  deleteTransportation: Transportation;
+  deleteTransportation: Scalars['ID'];
   deleteTrip: Scalars['Boolean'];
   token: Scalars['Boolean'];
   updateActivity: Activity;
@@ -310,7 +310,7 @@ export type QueryTripsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
-  transportation: Transportation;
+  transportation: TransportationNotification;
 };
 
 
@@ -341,6 +341,13 @@ export type TransportationInput = {
   departure_time?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
   type: TransportationType;
+};
+
+export type TransportationNotification = {
+  __typename?: 'TransportationNotification';
+  deleted: Scalars['Boolean'];
+  placeId: Scalars['ID'];
+  transportation: Transportation;
 };
 
 export enum TransportationType {
@@ -549,6 +556,7 @@ export type ResolversTypes = {
   Subscription: ResolverTypeWrapper<{}>;
   Transportation: ResolverTypeWrapper<Transportation>;
   TransportationInput: TransportationInput;
+  TransportationNotification: ResolverTypeWrapper<TransportationNotification>;
   TransportationType: TransportationType;
   Trip: ResolverTypeWrapper<Trip>;
   TripConnection: ResolverTypeWrapper<TripConnection>;
@@ -592,6 +600,7 @@ export type ResolversParentTypes = {
   Subscription: {};
   Transportation: Transportation;
   TransportationInput: TransportationInput;
+  TransportationNotification: TransportationNotification;
   Trip: Trip;
   TripConnection: TripConnection;
   TripEdge: TripEdge;
@@ -679,7 +688,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteActivity?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deleteDayPlan?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteDayPlanArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
-  deleteTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
+  deleteTransportation?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
@@ -732,7 +741,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
-  transportation?: SubscriptionResolver<ResolversTypes['Transportation'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
+  transportation?: SubscriptionResolver<ResolversTypes['TransportationNotification'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
 };
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {
@@ -746,6 +755,13 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TransportationType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TransportationNotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransportationNotification'] = ResolversParentTypes['TransportationNotification']> = {
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  placeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  transportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -802,6 +818,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Transportation?: TransportationResolvers<ContextType>;
+  TransportationNotification?: TransportationNotificationResolvers<ContextType>;
   Trip?: TripResolvers<ContextType>;
   TripConnection?: TripConnectionResolvers<ContextType>;
   TripEdge?: TripEdgeResolvers<ContextType>;
