@@ -21,10 +21,10 @@ export default gql`
   # inputs
   input TransportationInput {
     type: TransportationType!
-    departure_location: String!
-    departure_time: DateTime
-    arrival_location: String!
-    arrival_time: DateTime
+    departureLocation: String!
+    departureTime: DateTime
+    arrivalLocation: String!
+    arrivalTime: DateTime
     details: String!
     arrivalCoords: InputCoords
     departureCoords: InputCoords
@@ -33,10 +33,10 @@ export default gql`
 
   input UpdateTransportationInput {
     type: TransportationType
-    departure_location: String
-    departure_time: DateTime
-    arrival_location: String
-    arrival_time: DateTime
+    departureLocation: String
+    departureTime: DateTime
+    arrivalLocation: String
+    arrivalTime: DateTime
     details: String
     arrivalCoords: InputCoords
     departureCoords: InputCoords
@@ -52,10 +52,10 @@ export default gql`
   type Transportation {
     id: ID!
     type: TransportationType!
-    departure_location: String!
-    departure_time: DateTime
-    arrival_location: String!
-    arrival_time: DateTime
+    departureLocation: String!
+    departureTime: DateTime
+    arrivalLocation: String!
+    arrivalTime: DateTime
     details: String!
     order: Int!
     arrivalCoords: Coords

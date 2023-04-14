@@ -47,10 +47,10 @@ export default class TransportationAPI extends DataSource {
       return await this.prisma.transportation.create({
         data: {
           id: transportation.id,
-          departure_location: transportation.departure_location,
-          departure_time: transportation.departure_time,
-          arrival_location: transportation.arrival_location,
-          arrival_time: transportation.arrival_time,
+          departureLocation: transportation.departureLocation,
+          departureTime: transportation.departureTime,
+          arrivalLocation: transportation.arrivalLocation,
+          arrivalTime: transportation.arrivalTime,
           details: transportation.details,
           type: transportation.type,
           placeId: placeId,

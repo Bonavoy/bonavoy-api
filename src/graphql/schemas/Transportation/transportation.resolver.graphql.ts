@@ -9,7 +9,6 @@ export const resolvers: Resolvers = {
   Query: {
     transportation: async (_parent, { placeId }, ctx: Context) => {
       const transportations = await ctx.dataSources.transportation.find(placeId)
-
       return transportations.map((transportation) => {
         let transportationType = TransportationType.Car
         switch (transportation.type) {
@@ -20,7 +19,6 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
-
         let departureCoords
         if (transportation.departureLat && transportation.departureLng) {
           departureCoords = {
@@ -28,7 +26,6 @@ export const resolvers: Resolvers = {
             lat: transportation.departureLat,
           }
         }
-
         let arrivalCoords
         if (transportation.arrivalLat && transportation.arrivalLng) {
           arrivalCoords = {
@@ -36,13 +33,12 @@ export const resolvers: Resolvers = {
             lat: transportation.arrivalLat,
           }
         }
-
         return {
           id: transportation.id,
-          departure_location: transportation.departure_location,
-          departure_time: transportation.departure_time,
-          arrival_location: transportation.arrival_location,
-          arrival_time: transportation.arrival_time,
+          departureLocation: transportation.departureLocation,
+          departureTime: transportation.departureTime,
+          arrivalLocation: transportation.arrivalLocation,
+          arrivalTime: transportation.arrivalTime,
           details: transportation.details,
           type: transportationType,
           order: transportation.order,
@@ -56,10 +52,10 @@ export const resolvers: Resolvers = {
     addTransportation: async (_parent, { placeId, transportation }, ctx: Context) => {
       const newTransportation = await ctx.dataSources.transportation.create(placeId, {
         type: transportation.type,
-        departure_location: transportation.departure_location,
-        departure_time: transportation.departure_time,
-        arrival_location: transportation.arrival_location,
-        arrival_time: transportation.arrival_time,
+        departureLocation: transportation.departureLocation,
+        departureTime: transportation.departureTime,
+        arrivalLocation: transportation.arrivalLocation,
+        arrivalTime: transportation.arrivalTime,
         details: transportation.details,
         departureLat: transportation.departureCoords?.lat,
         departureLng: transportation.departureCoords?.lng,
@@ -67,7 +63,6 @@ export const resolvers: Resolvers = {
         arrivalLng: transportation.arrivalCoords?.lng,
       })
       let transportationType = TransportationType.Car
-
       switch (newTransportation.type) {
         case TransportationType.Plane:
           transportationType = TransportationType.Plane
@@ -76,7 +71,6 @@ export const resolvers: Resolvers = {
           transportationType = TransportationType.Bus
           break
       }
-
       let departureCoords
       if (newTransportation.departureLat && newTransportation.departureLng) {
         departureCoords = {
@@ -84,7 +78,6 @@ export const resolvers: Resolvers = {
           lat: newTransportation.departureLat,
         }
       }
-
       let arrivalCoords
       if (newTransportation.arrivalLat && newTransportation.arrivalLng) {
         arrivalCoords = {
@@ -92,13 +85,12 @@ export const resolvers: Resolvers = {
           lat: newTransportation.arrivalLat,
         }
       }
-
       return {
         id: newTransportation.id,
-        departure_location: newTransportation.departure_location,
-        departure_time: newTransportation.departure_time,
-        arrival_location: newTransportation.arrival_location,
-        arrival_time: newTransportation.arrival_time,
+        departureLocation: newTransportation.departureLocation,
+        departureTime: newTransportation.departureTime,
+        arrivalLocation: newTransportation.arrivalLocation,
+        arrivalTime: newTransportation.arrivalTime,
         details: newTransportation.details,
         type: transportationType,
         order: newTransportation.order,
@@ -108,10 +100,10 @@ export const resolvers: Resolvers = {
     },
     updateTransportation: async (_parent, { id, transportation }, ctx: Context) => {
       const updatedTransportation = await ctx.dataSources.transportation.update(id, {
-        departure_location: transportation?.departure_location ?? undefined,
-        departure_time: transportation?.departure_time ?? undefined,
-        arrival_location: transportation?.arrival_location ?? undefined,
-        arrival_time: transportation?.arrival_time ?? undefined,
+        departureLocation: transportation?.departureLocation ?? undefined,
+        departureTime: transportation?.departureTime ?? undefined,
+        arrivalLocation: transportation?.arrivalLocation ?? undefined,
+        arrivalTime: transportation?.arrivalTime ?? undefined,
         details: transportation?.details ?? undefined,
         type: transportation?.type ?? undefined,
         arrivalLat: transportation.arrivalCoords?.lat,
@@ -128,7 +120,6 @@ export const resolvers: Resolvers = {
           transportationType = TransportationType.Bus
           break
       }
-
       let departureCoords
       if (updatedTransportation.departureLat && updatedTransportation.departureLng) {
         departureCoords = {
@@ -136,7 +127,6 @@ export const resolvers: Resolvers = {
           lat: updatedTransportation.departureLat,
         }
       }
-
       let arrivalCoords
       if (updatedTransportation.arrivalLat && updatedTransportation.arrivalLng) {
         arrivalCoords = {
@@ -144,13 +134,12 @@ export const resolvers: Resolvers = {
           lat: updatedTransportation.arrivalLat,
         }
       }
-
       return {
         id: updatedTransportation.id,
-        departure_location: updatedTransportation.departure_location,
-        departure_time: updatedTransportation.departure_time,
-        arrival_location: updatedTransportation.arrival_location,
-        arrival_time: updatedTransportation.arrival_time,
+        departureLocation: updatedTransportation.departureLocation,
+        departureTime: updatedTransportation.departureTime,
+        arrivalLocation: updatedTransportation.arrivalLocation,
+        arrivalTime: updatedTransportation.arrivalTime,
         details: updatedTransportation.details,
         type: transportationType,
         order: updatedTransportation.order,
@@ -179,9 +168,7 @@ export const resolvers: Resolvers = {
       resolve: (payload: KafkaMessage) => {
         // transform the Kafka event to the expected subscription payload
         const payloadString = payload.value ? payload.value.toString() : ''
-
         const transportationMsg = JSON.parse(payloadString)
-
         let transportationType = TransportationType.Car
         switch (transportationMsg.type) {
           case TransportationType.Plane:
@@ -191,7 +178,6 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
-
         let departureCoords
         if (transportationMsg.departureLat && transportationMsg.departureLng) {
           departureCoords = {
@@ -199,7 +185,6 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.departureLat,
           }
         }
-
         let arrivalCoords
         if (transportationMsg.arrivalLat && transportationMsg.arrivalLng) {
           arrivalCoords = {
@@ -207,20 +192,18 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.arrivalLat,
           }
         }
-
         const transportation: Transportation = {
           id: transportationMsg.id,
-          departure_location: transportationMsg.departure_location,
-          departure_time: transportationMsg.arrival_time ? new Date(transportationMsg.departure_time) : null,
-          arrival_location: transportationMsg.arrival_location,
-          arrival_time: transportationMsg.arrival_time ? new Date(transportationMsg.arrival_time) : null,
+          departureLocation: transportationMsg.departureLocation,
+          departureTime: transportationMsg.arrivalTime ? new Date(transportationMsg.departureTime) : null,
+          arrivalLocation: transportationMsg.arrivalLocation,
+          arrivalTime: transportationMsg.arrivalTime ? new Date(transportationMsg.arrivalTime) : null,
           details: transportationMsg.details,
           type: transportationType,
           order: transportationMsg.order,
           departureCoords,
           arrivalCoords,
         }
-
         return {
           transportation,
           placeId: transportationMsg.placeId,

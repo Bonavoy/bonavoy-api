@@ -1610,7 +1610,7 @@
             "deprecationReason": null
           },
           {
-            "name": "mapbox_id",
+            "name": "mapboxId",
             "description": null,
             "args": [],
             "type": {
@@ -1626,7 +1626,7 @@
             "deprecationReason": null
           },
           {
-            "name": "place_name",
+            "name": "placeName",
             "description": null,
             "args": [],
             "type": {
@@ -1817,7 +1817,7 @@
             "deprecationReason": null
           },
           {
-            "name": "mapbox_id",
+            "name": "mapboxId",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -1833,7 +1833,7 @@
             "deprecationReason": null
           },
           {
-            "name": "place_name",
+            "name": "placeName",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -2392,7 +2392,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_location",
+            "name": "arrivalLocation",
             "description": null,
             "args": [],
             "type": {
@@ -2408,7 +2408,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_time",
+            "name": "arrivalTime",
             "description": null,
             "args": [],
             "type": {
@@ -2432,7 +2432,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_location",
+            "name": "departureLocation",
             "description": null,
             "args": [],
             "type": {
@@ -2448,7 +2448,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_time",
+            "name": "departureTime",
             "description": null,
             "args": [],
             "type": {
@@ -2548,7 +2548,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_location",
+            "name": "arrivalLocation",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -2564,7 +2564,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_time",
+            "name": "arrivalTime",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -2588,7 +2588,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_location",
+            "name": "departureLocation",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -2604,7 +2604,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_time",
+            "name": "departureTime",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -2678,13 +2678,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "ID",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -3274,7 +3270,7 @@
             "deprecationReason": null
           },
           {
-            "name": "mapbox_id",
+            "name": "mapboxId",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3286,7 +3282,7 @@
             "deprecationReason": null
           },
           {
-            "name": "place_name",
+            "name": "placeName",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3345,7 +3341,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_location",
+            "name": "arrivalLocation",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3357,7 +3353,7 @@
             "deprecationReason": null
           },
           {
-            "name": "arrival_time",
+            "name": "arrivalTime",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3381,7 +3377,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_location",
+            "name": "departureLocation",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -3393,7 +3389,7 @@
             "deprecationReason": null
           },
           {
-            "name": "departure_time",
+            "name": "departureTime",
             "description": null,
             "type": {
               "kind": "SCALAR",
