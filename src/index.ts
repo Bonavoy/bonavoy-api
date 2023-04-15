@@ -110,7 +110,7 @@ const startServer = async () => {
     }),
   )
 
-  httpServer.listen(process.env.PORT, () => {
+  httpServer.listen(process.env.PORT || 8080, () => {
     console.log(`Server listening at http://localhost:${process.env.PORT}/graphql`)
   })
 }
