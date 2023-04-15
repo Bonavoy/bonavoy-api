@@ -80,7 +80,7 @@ const startServer = async () => {
     cors<cors.CorsRequest>({
       origin: isDevelopmentEnv
         ? ['http://localhost:4000', 'https://studio.apollographql.com', 'http://localhost:3000']
-        : ['https://planner.bonavoy.com'],
+        : ['https://planner.bonavoy.com', 'https://bonavoy-planner.vercel.app'],
       credentials: true,
     }),
     json(),
