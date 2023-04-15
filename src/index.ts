@@ -62,7 +62,7 @@ const startServer = async () => {
       },
     },
   ]
-  if (isDevelopmentEnv) plugins.push(ApolloServerPluginLandingPageDisabled())
+  if (!isDevelopmentEnv) plugins.push(ApolloServerPluginLandingPageDisabled())
 
   //apollo
   const apolloServer = new ApolloServer<Context>({
