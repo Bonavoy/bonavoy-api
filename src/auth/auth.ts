@@ -6,8 +6,8 @@ import 'dotenv/config'
 import { TokenPayload, TokenDecoded, RefreshDecoded } from '@bonavoy/types/auth'
 import { User } from '@prisma/client'
 
-const secret = fs.readFileSync('secret.key', 'utf-8')
-const refreshTokenSecret = fs.readFileSync('refreshTokenSecret.key', 'utf-8')
+const secret = process.env.ACCESS_TOKEN_SECRET!
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET!
 
 //what we want to store on access token from the user doc
 export const tokenPayloadBuilder = (user: User): TokenPayload => {
