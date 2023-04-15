@@ -222,8 +222,8 @@ export type Place = {
   dayPlans: Array<DayPlan>;
   endDate?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
-  mapbox_id: Scalars['String'];
-  place_name: Scalars['String'];
+  mapboxId: Scalars['String'];
+  placeName: Scalars['String'];
   startDate?: Maybe<Scalars['DateTime']>;
   text: Scalars['String'];
   transportation: Array<Transportation>;
@@ -240,8 +240,8 @@ export type PlaceInput = {
   colour: Scalars['String'];
   country: Scalars['String'];
   endDate?: InputMaybe<Scalars['DateTime']>;
-  mapbox_id: Scalars['String'];
-  place_name: Scalars['String'];
+  mapboxId: Scalars['String'];
+  placeName: Scalars['String'];
   startDate?: InputMaybe<Scalars['DateTime']>;
   text: Scalars['String'];
 };
@@ -321,11 +321,11 @@ export type SubscriptionTransportationArgs = {
 export type Transportation = {
   __typename?: 'Transportation';
   arrivalCoords?: Maybe<Coords>;
-  arrival_location: Scalars['String'];
-  arrival_time?: Maybe<Scalars['DateTime']>;
+  arrivalLocation: Scalars['String'];
+  arrivalTime?: Maybe<Scalars['DateTime']>;
   departureCoords?: Maybe<Coords>;
-  departure_location: Scalars['String'];
-  departure_time?: Maybe<Scalars['DateTime']>;
+  departureLocation: Scalars['String'];
+  departureTime?: Maybe<Scalars['DateTime']>;
   details: Scalars['String'];
   id: Scalars['ID'];
   order: Scalars['Int'];
@@ -334,11 +334,11 @@ export type Transportation = {
 
 export type TransportationInput = {
   arrivalCoords?: InputMaybe<InputCoords>;
-  arrival_location: Scalars['String'];
-  arrival_time?: InputMaybe<Scalars['DateTime']>;
+  arrivalLocation: Scalars['String'];
+  arrivalTime?: InputMaybe<Scalars['DateTime']>;
   departureCoords?: InputMaybe<InputCoords>;
-  departure_location: Scalars['String'];
-  departure_time?: InputMaybe<Scalars['DateTime']>;
+  departureLocation: Scalars['String'];
+  departureTime?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
   type: TransportationType;
 };
@@ -346,7 +346,7 @@ export type TransportationInput = {
 export type TransportationNotification = {
   __typename?: 'TransportationNotification';
   deleted: Scalars['Boolean'];
-  placeId: Scalars['ID'];
+  placeId?: Maybe<Scalars['ID']>;
   transportation: Transportation;
 };
 
@@ -411,19 +411,19 @@ export type UpdatePlaceInput = {
   colour?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   endDate?: InputMaybe<Scalars['DateTime']>;
-  mapbox_id?: InputMaybe<Scalars['String']>;
-  place_name?: InputMaybe<Scalars['String']>;
+  mapboxId?: InputMaybe<Scalars['String']>;
+  placeName?: InputMaybe<Scalars['String']>;
   startDate?: InputMaybe<Scalars['DateTime']>;
   text?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateTransportationInput = {
   arrivalCoords?: InputMaybe<InputCoords>;
-  arrival_location?: InputMaybe<Scalars['String']>;
-  arrival_time?: InputMaybe<Scalars['DateTime']>;
+  arrivalLocation?: InputMaybe<Scalars['String']>;
+  arrivalTime?: InputMaybe<Scalars['DateTime']>;
   departureCoords?: InputMaybe<InputCoords>;
-  departure_location?: InputMaybe<Scalars['String']>;
-  departure_time?: InputMaybe<Scalars['DateTime']>;
+  departureLocation?: InputMaybe<Scalars['String']>;
+  departureTime?: InputMaybe<Scalars['DateTime']>;
   details?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<TransportationType>;
 };
@@ -711,8 +711,8 @@ export type PlaceResolvers<ContextType = any, ParentType extends ResolversParent
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType>;
   endDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  mapbox_id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  place_name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mapboxId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  placeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType>;
@@ -746,11 +746,11 @@ export type SubscriptionResolvers<ContextType = any, ParentType extends Resolver
 
 export type TransportationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Transportation'] = ResolversParentTypes['Transportation']> = {
   arrivalCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
-  arrival_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  arrival_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  arrivalLocation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  arrivalTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   departureCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
-  departure_location?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  departure_time?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  departureLocation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  departureTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   details?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -760,7 +760,7 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
 
 export type TransportationNotificationResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransportationNotification'] = ResolversParentTypes['TransportationNotification']> = {
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  placeId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  placeId?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
   transportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

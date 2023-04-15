@@ -17,8 +17,8 @@ export default gql`
   #inputs
   input PlaceInput {
     text: String!
-    place_name: String!
-    mapbox_id: String!
+    placeName: String!
+    mapboxId: String!
     startDate: DateTime
     endDate: DateTime
     colour: String!
@@ -28,8 +28,8 @@ export default gql`
 
   input UpdatePlaceInput {
     text: String
-    place_name: String
-    mapbox_id: String
+    placeName: String
+    mapboxId: String
     startDate: DateTime
     endDate: DateTime
     colour: String
@@ -41,8 +41,8 @@ export default gql`
   type Place {
     id: ID!
     text: String!
-    place_name: String!
-    mapbox_id: String!
+    placeName: String!
+    mapboxId: String!
     startDate: DateTime
     endDate: DateTime
     colour: String!

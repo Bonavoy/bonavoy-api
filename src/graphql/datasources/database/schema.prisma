@@ -49,8 +49,8 @@ model Trip {
 model Place {
   id         String    @id @default(uuid())
   tripId     String
-  mapbox_id  String
-  place_name String
+  mapboxId  String
+  placeName String
   text       String
   startDate  DateTime?
   endDate    DateTime?
@@ -70,10 +70,10 @@ model Transportation {
   type TransportationType
   place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
   placeId String
-  departure_location String
-  departure_time DateTime?
-  arrival_location String
-  arrival_time DateTime?
+  departureLocation String
+  departureTime DateTime?
+  arrivalLocation String
+  arrivalTime DateTime?
   details String @db.VarChar(300)
   order      Int     @default(0)
   departureLng Float?

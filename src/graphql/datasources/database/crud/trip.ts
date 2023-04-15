@@ -41,8 +41,8 @@ export default class TripsAPI extends DataSource {
         },
         places: {
           create: trip.places.map((place) => ({
-            mapbox_id: place.mapbox_id,
-            place_name: place.place_name,
+            mapboxId: place.mapboxId,
+            placeName: place.placeName,
             text: place.text,
             startDate: place.startDate,
             endDate: place.endDate,

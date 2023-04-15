@@ -25,8 +25,8 @@ export interface DBTrip {
 export interface DBPlace {
   id?: string
   tripId?: string
-  mapbox_id: string
-  place_name: string
+  mapboxId: string
+  placeName: string
   text: string
   startDate: Date | null
   endDate: Date | null
@@ -58,10 +58,10 @@ export interface DBActivity {
 export interface DBTransportation {
   id?: string
   type: TransportationType
-  departure_location: string
-  departure_time: Date | null
-  arrival_location: string
-  arrival_time: Date | null
+  departureLocation: string
+  departureTime: Date | null
+  arrivalLocation: string
+  arrivalTime: Date | null
   details: string
   createdAt?: Date
   updatedAt?: Date

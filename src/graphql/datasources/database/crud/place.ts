@@ -121,8 +121,8 @@ export default class PlaceAPI extends DataSource {
       return await this.prisma.place.create({
         data: {
           tripId,
-          mapbox_id: place.mapbox_id,
-          place_name: place.place_name,
+          mapboxId: place.mapboxId,
+          placeName: place.placeName,
           text: place.text,
           startDate: place.startDate,
           endDate: place.endDate,
@@ -141,8 +141,8 @@ export default class PlaceAPI extends DataSource {
         id,
       },
       data: {
-        place_name: place.place_name,
-        mapbox_id: place.mapbox_id,
+        placeName: place.placeName,
+        mapboxId: place.mapboxId,
         text: place.text,
         startDate: place.startDate,
         endDate: place.endDate,

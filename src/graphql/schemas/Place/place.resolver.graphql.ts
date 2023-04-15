@@ -11,8 +11,8 @@ export const resolvers: Resolvers = {
       const placesList = places.map((place) => {
         return {
           id: place.id,
-          mapbox_id: place.mapbox_id,
-          place_name: place.place_name,
+          mapboxId: place.mapboxId,
+          placeName: place.placeName,
           center: place.center,
           colour: place.colour,
           country: place.country,
@@ -25,20 +25,17 @@ export const resolvers: Resolvers = {
         }
       })
       placesList.sort((a, b) => a.order - b.order)
-
       return placesList
     },
     place: async (_parent, { id }, ctx: Context) => {
       const place = await ctx.dataSources.places.findPlace(id)
-
       if (!place) {
         throw new GraphQLError(`Could not find place with id ${id}`)
       }
-
       return {
         id: place.id,
-        mapbox_id: place.mapbox_id,
-        place_name: place.place_name,
+        mapboxId: place.mapboxId,
+        placeName: place.placeName,
         center: place.center,
         colour: place.colour,
         country: place.country,
@@ -56,23 +53,19 @@ export const resolvers: Resolvers = {
       if (place.center?.length != 2) {
         throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
       }
-
-      if (place.place_name && (place.place_name?.length < 3 || 30 < place.place_name?.length)) {
+      if (place.placeName && (place.placeName?.length < 3 || 30 < place.placeName?.length)) {
         throw new GraphQLError('Length of place name needs to be between 3 and 30')
       }
-
       if (place.country && (place.country?.length < 3 || 30 < place.country?.length)) {
         throw new GraphQLError('Length of country needs to be between 3 and 30')
       }
-
       if (place.text && 512 < place.text?.length) {
         throw new GraphQLError('Length of text cannot be longer than 512 characters')
       }
-
       const dbPlace = await ctx.dataSources.places.createPlace(tripId, {
         tripId: tripId,
-        mapbox_id: place.mapbox_id,
-        place_name: place.place_name,
+        mapboxId: place.mapboxId,
+        placeName: place.placeName,
         text: place.text,
         startDate: place.startDate,
         endDate: place.endDate,
@@ -89,8 +82,8 @@ export const resolvers: Resolvers = {
         startDate: dbPlace.startDate,
         endDate: dbPlace.endDate,
         text: dbPlace.text,
-        mapbox_id: dbPlace.mapbox_id,
-        place_name: dbPlace.place_name,
+        mapboxId: dbPlace.mapboxId,
+        placeName: dbPlace.placeName,
         dayPlans: [],
         transportation: [],
       }
@@ -104,22 +97,18 @@ export const resolvers: Resolvers = {
       if (place.center?.length != 2) {
         throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
       }
-
-      if (place.place_name && (place.place_name?.length < 3 || 30 < place.place_name?.length)) {
+      if (place.placeName && (place.placeName?.length < 3 || 30 < place.placeName?.length)) {
         throw new GraphQLError('Length of place name needs to be between 3 and 30')
       }
-
       if (place.country && (place.country?.length < 3 || 30 < place.country?.length)) {
         throw new GraphQLError('Length of country needs to be between 3 and 30')
       }
-
       if (place.text && 512 < place.text?.length) {
         throw new GraphQLError('Length of text cannot be longer than 512 characters')
       }
-
       const updatedPlace = await ctx.dataSources.places.updatePlace(id, {
-        place_name: place.place_name || undefined,
-        mapbox_id: place.mapbox_id || undefined,
+        placeName: place.placeName || undefined,
+        mapboxId: place.mapboxId || undefined,
         text: place.text || undefined,
         startDate: place.startDate,
         endDate: place.endDate,
@@ -129,8 +118,8 @@ export const resolvers: Resolvers = {
       })
       return {
         id: updatedPlace.id,
-        place_name: updatedPlace.place_name,
-        mapbox_id: updatedPlace.mapbox_id,
+        placeName: updatedPlace.placeName,
+        mapboxId: updatedPlace.mapboxId,
         text: updatedPlace.text,
         startDate: updatedPlace.startDate,
         endDate: updatedPlace.endDate,
@@ -145,7 +134,6 @@ export const resolvers: Resolvers = {
   Place: {
     dayPlans: async (parent, _args, ctx: Context) => {
       const dayPlans = await ctx.dataSources.dayPlans.findDayPlans(parent.id)
-
       return dayPlans.map((dayPlan) => ({
         id: dayPlan.id,
         date: dayPlan.date,
@@ -155,7 +143,6 @@ export const resolvers: Resolvers = {
     },
     transportation: async (parent, _args, ctx: Context) => {
       const transportations = await ctx.dataSources.transportation.find(parent.id)
-
       const transportationList = await transportations.map((transportation) => {
         let transportationType = TransportationType.Car
         switch (transportation.type) {
@@ -166,7 +153,6 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
-
         let departureCoords
         if (transportation.departureLat && transportation.departureLng) {
           departureCoords = {
@@ -174,7 +160,6 @@ export const resolvers: Resolvers = {
             lat: transportation.departureLat,
           }
         }
-
         let arrivalCoords
         if (transportation.arrivalLat && transportation.arrivalLng) {
           arrivalCoords = {
@@ -184,10 +169,10 @@ export const resolvers: Resolvers = {
         }
         return {
           id: transportation.id,
-          departure_location: transportation.departure_location,
-          departure_time: transportation.departure_time,
-          arrival_location: transportation.arrival_location,
-          arrival_time: transportation.arrival_time,
+          departureLocation: transportation.departureLocation,
+          departureTime: transportation.departureTime,
+          arrivalLocation: transportation.arrivalLocation,
+          arrivalTime: transportation.arrivalTime,
           details: transportation.details,
           type: transportationType,
           order: transportation.order,
@@ -196,7 +181,6 @@ export const resolvers: Resolvers = {
         }
       })
       transportationList.sort((a, b) => a.order - b.order)
-
       return transportationList
     },
   },

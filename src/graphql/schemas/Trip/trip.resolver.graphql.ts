@@ -26,7 +26,6 @@ const resolvers: Resolvers = {
     trips: async (_parent, { after, limit }, ctx: Context) => {
       const trips = await ctx.dataSources.trips.findTrips(ctx.auth.sub!, limit, after)
       const tripCount = await ctx.dataSources.trips.countUserTrips(ctx.auth.sub!)
-
       const tripEdges = trips.map((trip) => {
         return {
           node: {
@@ -41,7 +40,6 @@ const resolvers: Resolvers = {
           },
         }
       })
-
       return {
         edges: tripEdges,
         totalCount: tripCount,
@@ -63,8 +61,8 @@ const resolvers: Resolvers = {
         isPublic: trip.isPublic,
         places: trip.places.map((place) => {
           return {
-            mapbox_id: place.mapbox_id,
-            place_name: place.place_name,
+            mapboxId: place.mapboxId,
+            placeName: place.placeName,
             text: place.text,
             startDate: place.startDate,
             endDate: place.endDate,
@@ -100,7 +98,6 @@ const resolvers: Resolvers = {
       const authorsOnTrips = await ctx.dataSources.authors.findAuthors(parent.id)
       return authorsOnTrips?.map((authorOnTrip) => {
         let tripRole = TripRole.Viewer
-
         switch (authorOnTrip.role) {
           case TripRole.Author:
             tripRole = TripRole.Author
@@ -111,7 +108,6 @@ const resolvers: Resolvers = {
           default:
             tripRole = TripRole.Viewer
         }
-
         return {
           id: authorOnTrip.id,
           user: {} as any,
@@ -123,12 +119,11 @@ const resolvers: Resolvers = {
     },
     places: async (parent, _args, ctx: Context) => {
       const places = await ctx.dataSources.places.findPlaces(parent.id)
-
       return places?.map((place) => {
         return {
           id: place.id,
-          mapbox_id: place.mapbox_id,
-          place_name: place.place_name,
+          mapboxId: place.mapboxId,
+          placeName: place.placeName,
           center: place.center,
           colour: place.colour,
           country: place.country,
