@@ -91,50 +91,47 @@ const resolvers: Resolvers = {
     ): Promise<boolean> => {
       //get user from db
       const dbUser: DBUser | null = await ctx.dataSources.users.findUser({ username })
+
       //if no user, throw error
-      if (!dbUser) throw new GraphQLError('Invalid credentials')
+      if (!dbUser) throw new GraphQLError("Username doesn't exist")
 
-      //promise due to needing to wait for async cb by compare function
-      return await new Promise((resolve) => {
-        bcrypt.compare(password, dbUser.password, async (err, result) => {
-          if (err) resolve(false)
-          if (result) {
-            //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
-            //then save to db
-            const newRefresh = signRefreshToken(dbUser.id)
+      const isMatch = await bcrypt.compare(password, dbUser.password)
 
-            //create session document with expiry
-            await ctx.dataSources.users.createUserSession({
-              user: dbUser,
-              session: newRefresh,
-              ttl: Number(process.env.REFRESH_TOKEN_LIFETIME),
-            })
+      if (!isMatch) throw new GraphQLError('Incorrect password')
 
-            //send refresh as httponly cookie
-            ctx.res.cookie(process.env.REFRESH_TOKEN_NAME as string, newRefresh, {
-              httpOnly: true,
-              secure: true,
-              maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
-              sameSite: 'none',
-              path: '/',
-              signed: true,
-            })
+      //since we login, we make new refresh token while there are still refresh tokens that are valid hence array
+      //then save to db
+      const newRefresh = signRefreshToken(dbUser.id)
 
-            //send token as httponly cookie
-            //place more sensitive in this cookie
-            ctx.res.cookie(process.env.ACCESS_TOKEN_NAME as string, signAccessToken(tokenPayloadBuilder(dbUser)), {
-              httpOnly: true,
-              secure: true,
-              maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
-              sameSite: 'none',
-              path: '/',
-              signed: true,
-            })
-
-            resolve(true)
-          } else throw new GraphQLError('Invalid credentials')
-        })
+      //create session document with expiry
+      await ctx.dataSources.users.createUserSession({
+        user: dbUser,
+        session: newRefresh,
+        ttl: Number(process.env.REFRESH_TOKEN_LIFETIME),
       })
+
+      //send refresh as httponly cookie
+      ctx.res.cookie(process.env.REFRESH_TOKEN_NAME as string, newRefresh, {
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME),
+        sameSite: 'none',
+        path: '/',
+        signed: true,
+      })
+
+      //send token as httponly cookie
+      //place more sensitive in this cookie
+      ctx.res.cookie(process.env.ACCESS_TOKEN_NAME as string, signAccessToken(tokenPayloadBuilder(dbUser)), {
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(process.env.ACCESS_TOKEN_LIFETIME),
+        sameSite: 'none',
+        path: '/',
+        signed: true,
+      })
+
+      return isMatch
     },
     token: async (_parent: any, _args: any, ctx: Context): Promise<boolean> => {
       //using id and refreshtoken, we see if the session is valid on redis
