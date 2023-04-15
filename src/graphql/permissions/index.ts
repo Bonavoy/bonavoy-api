@@ -8,6 +8,8 @@ export default shield(
     Query: {
       user: isAuthenticated,
       trips: isAuthenticated,
+      transportation: isAuthenticated,
+      places: isAuthenticated,
     },
     Mutation: {
       token: isSession,
