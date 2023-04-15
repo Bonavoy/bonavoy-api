@@ -211,9 +211,9 @@ export const resolvers: Resolvers = {
         const transportation: Transportation = {
           id: transportationMsg.id,
           departure_location: transportationMsg.departure_location,
-          departure_time: new Date(transportationMsg.departure_time),
+          departure_time: transportationMsg.arrival_time ? new Date(transportationMsg.departure_time) : null,
           arrival_location: transportationMsg.arrival_location,
-          arrival_time: new Date(transportationMsg.arrival_time),
+          arrival_time: transportationMsg.arrival_time ? new Date(transportationMsg.arrival_time) : null,
           details: transportationMsg.details,
           type: transportationType,
           order: transportationMsg.order,
