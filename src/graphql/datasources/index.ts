@@ -13,12 +13,14 @@ import PlaceAPI from './database/crud/place'
 import ActivityAPI from './database/crud/activity'
 import AuthorAPI from './database/crud/author'
 import TransportationAPI from './database/crud/transportation'
+import AuthorsOnTripsAPI from './database/crud/authorsOnTrips'
 
 const prisma = new PrismaClient()
 
 export interface BonavoyDataSources {
   users: UserAPI
   authors: AuthorAPI
+  authorsOnTrips: AuthorsOnTripsAPI
   trips: TripsAPI
   dayPlans: DayPlanAPI
   places: PlaceAPI
@@ -37,6 +39,7 @@ export default {
   activity: new ActivityAPI({ prisma }),
   authors: new AuthorAPI({ prisma }),
   transportation: new TransportationAPI({ prisma }),
+  authorsOnTrips: new AuthorsOnTripsAPI({ prisma }),
 
   //external
   unsplashAPI: new UnsplashAPI(),
