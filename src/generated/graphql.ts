@@ -249,6 +249,7 @@ export type PlaceInput = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
+  authorsOnTrips: Array<AuthorsOnTrips>;
   dayPlan: DayPlan;
   dayPlans: Array<DayPlan>;
   getLocationSuggestions: Array<LocationSuggestion>;
@@ -259,6 +260,11 @@ export type Query = {
   trip: Trip;
   trips: TripConnection;
   user: User;
+};
+
+
+export type QueryAuthorsOnTripsArgs = {
+  tripId: Scalars['ID'];
 };
 
 
@@ -727,6 +733,7 @@ export type PlaceDatesResolvers<ContextType = any, ParentType extends ResolversP
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  authorsOnTrips?: Resolver<Array<ResolversTypes['AuthorsOnTrips']>, ParentType, ContextType, RequireFields<QueryAuthorsOnTripsArgs, 'tripId'>>;
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;

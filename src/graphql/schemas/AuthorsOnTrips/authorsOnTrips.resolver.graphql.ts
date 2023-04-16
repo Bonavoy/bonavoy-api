@@ -1,11 +1,37 @@
 import { GraphQLError } from 'graphql'
-import { Resolvers, Trip } from '@bonavoy/generated/graphql'
+import { Resolvers, Trip, TripRole } from '@bonavoy/generated/graphql'
 import { Context } from '@bonavoy/types/auth'
 
 const authorsOnTripsResolver: Resolvers = {
+  Query: {
+    authorsOnTrips: async (_parent, { tripId }, ctx: Context) => {
+      const authorsOnTrips = await ctx.dataSources.authorsOnTrips.find(tripId)
+      return authorsOnTrips.map((authorOnTrip) => {
+        let role = TripRole.Author
+        switch (authorOnTrip.role) {
+          case TripRole.Editor:
+            role = TripRole.Editor
+          case TripRole.Viewer:
+            role = TripRole.Viewer
+        }
+
+        return {
+          id: authorOnTrip.id,
+          role,
+          // args for resolved fields
+          tripId: authorOnTrip.tripId,
+          userId: authorOnTrip.userId,
+          // resolved fields
+          user: {} as any,
+          trip: {} as any,
+        }
+      })
+    },
+  },
   AuthorsOnTrips: {
     trip: async (parent: any, _args, ctx: Context): Promise<Trip> => {
       const trip = await ctx.dataSources.trips.findTrip(parent.tripId)
+
       if (!trip) {
         throw new GraphQLError(`could not find trip with id ${parent.tripId}`)
       }
