@@ -26,6 +26,7 @@ import permissions from './graphql/permissions'
 import type { AuthContext, Context } from './types/auth'
 import { verifyAccessToken, verifyRefreshToken } from './auth/auth'
 import datasources from './graphql/datasources'
+import { getContext } from './apollo/context'
 
 const startServer = async () => {
   //express app start
@@ -48,7 +49,47 @@ const startServer = async () => {
     // serves expressMiddleware at a different path
     path: '/graphql',
   })
-  const serverCleanup = useServer({ schema }, wsServer)
+
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: async (ctx, _msg, _args) => {
+        const cookieString = ctx.extra.request['headers'].cookie?.replace(' ', '')
+        if (!cookieString) return null
+
+        const cookieArr = cookieString.split(';')
+        const signedCookies: any = {}
+        cookieArr.forEach((cookie) => {
+          const [key, val] = cookie.split('=')
+          if (!key || !val) return
+          signedCookies[key] = cookieParser.signedCookie(decodeURIComponent(val), process.env.COOKIE_SECRET!)
+        })
+
+        let auth: AuthContext = {
+          sub: null,
+          username: null,
+          iat: null,
+          exp: null,
+          refresh: {
+            sub: null,
+            iat: null,
+            exp: null,
+          },
+        }
+
+        if (signedCookies?.[process.env.REFRESH_TOKEN_NAME as string]) {
+          //access token
+          const { token } = verifyAccessToken(signedCookies?.[process.env.ACCESS_TOKEN_NAME as string])
+          //refresh token
+          const { refresh } = verifyRefreshToken(signedCookies?.[process.env.REFRESH_TOKEN_NAME as string])
+          auth = { ...token, refresh: { ...refresh } }
+        }
+
+        return { auth, dataSources: datasources }
+      },
+    },
+    wsServer,
+  )
 
   const plugins = [
     ApolloServerPluginDrainHttpServer({ httpServer }),
@@ -85,28 +126,7 @@ const startServer = async () => {
     }),
     json(),
     expressMiddleware(apolloServer, {
-      context: async ({ req, res }) => {
-        let auth: AuthContext = {
-          sub: null,
-          username: null,
-          iat: null,
-          exp: null,
-          refresh: {
-            sub: null,
-            iat: null,
-            exp: null,
-          },
-        }
-
-        if (req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string]) {
-          //access token
-          const { token } = verifyAccessToken(req.signedCookies?.[process.env.ACCESS_TOKEN_NAME as string])
-          //refresh token
-          const { refresh } = verifyRefreshToken(req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string])
-          auth = { ...token, refresh: { ...refresh } }
-        }
-        return { auth, req, res, dataSources: datasources }
-      },
+      context: getContext,
     }),
   )
 

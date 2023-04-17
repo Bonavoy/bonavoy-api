@@ -1,7 +1,7 @@
 // types
 import { Context } from '@bonavoy/types/auth'
 import { Resolvers, Transportation, TransportationType } from '@bonavoy/generated/graphql'
-import { transportationPubSub } from '@bonavoy/kafka'
+import { transportationPubSub } from '@bonavoy/pubsub/kafka'
 import { KafkaMessage } from 'kafkajs'
 
 // TODO: WRITE TYPES

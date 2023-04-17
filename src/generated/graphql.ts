@@ -32,6 +32,17 @@ export type ActivityInput = {
   start?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type AuthorPresent = {
+  __typename?: 'AuthorPresent';
+  avatar: Scalars['String'];
+  connected: Scalars['Boolean'];
+  email: Scalars['String'];
+  firstname: Scalars['String'];
+  id: Scalars['ID'];
+  lastname: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export type AuthorsOnTrips = {
   __typename?: 'AuthorsOnTrips';
   id: Scalars['ID'];
@@ -250,6 +261,7 @@ export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
   authorsOnTrips: Array<AuthorsOnTrips>;
+  authorsPresent: Array<AuthorPresent>;
   dayPlan: DayPlan;
   dayPlans: Array<DayPlan>;
   getLocationSuggestions: Array<LocationSuggestion>;
@@ -264,6 +276,11 @@ export type Query = {
 
 
 export type QueryAuthorsOnTripsArgs = {
+  tripId: Scalars['ID'];
+};
+
+
+export type QueryAuthorsPresentArgs = {
   tripId: Scalars['ID'];
 };
 
@@ -316,7 +333,13 @@ export type QueryTripsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
+  listenAuthorPresent: AuthorPresent;
   transportation: TransportationNotification;
+};
+
+
+export type SubscriptionListenAuthorPresentArgs = {
+  tripId: Scalars['ID'];
 };
 
 
@@ -538,6 +561,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Activity: ResolverTypeWrapper<Activity>;
   ActivityInput: ActivityInput;
+  AuthorPresent: ResolverTypeWrapper<AuthorPresent>;
   AuthorsOnTrips: ResolverTypeWrapper<AuthorsOnTrips>;
   AuthorsOnTripsConnection: ResolverTypeWrapper<AuthorsOnTripsConnection>;
   AuthorsOnTripsEdge: ResolverTypeWrapper<AuthorsOnTripsEdge>;
@@ -582,6 +606,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Activity: Activity;
   ActivityInput: ActivityInput;
+  AuthorPresent: AuthorPresent;
   AuthorsOnTrips: AuthorsOnTrips;
   AuthorsOnTripsConnection: AuthorsOnTripsConnection;
   AuthorsOnTripsEdge: AuthorsOnTripsEdge;
@@ -626,6 +651,17 @@ export type ActivityResolvers<ContextType = any, ParentType extends ResolversPar
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   start?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AuthorPresentResolvers<ContextType = any, ParentType extends ResolversParentTypes['AuthorPresent'] = ResolversParentTypes['AuthorPresent']> = {
+  avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  connected?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  lastname?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -734,6 +770,7 @@ export type PlaceDatesResolvers<ContextType = any, ParentType extends ResolversP
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   authorsOnTrips?: Resolver<Array<ResolversTypes['AuthorsOnTrips']>, ParentType, ContextType, RequireFields<QueryAuthorsOnTripsArgs, 'tripId'>>;
+  authorsPresent?: Resolver<Array<ResolversTypes['AuthorPresent']>, ParentType, ContextType, RequireFields<QueryAuthorsPresentArgs, 'tripId'>>;
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
@@ -748,6 +785,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
+  listenAuthorPresent?: SubscriptionResolver<ResolversTypes['AuthorPresent'], "listenAuthorPresent", ParentType, ContextType, RequireFields<SubscriptionListenAuthorPresentArgs, 'tripId'>>;
   transportation?: SubscriptionResolver<ResolversTypes['TransportationNotification'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
 };
 
@@ -810,6 +848,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   Activity?: ActivityResolvers<ContextType>;
+  AuthorPresent?: AuthorPresentResolvers<ContextType>;
   AuthorsOnTrips?: AuthorsOnTripsResolvers<ContextType>;
   AuthorsOnTripsConnection?: AuthorsOnTripsConnectionResolvers<ContextType>;
   AuthorsOnTripsEdge?: AuthorsOnTripsEdgeResolvers<ContextType>;
