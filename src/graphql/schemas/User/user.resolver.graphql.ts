@@ -70,7 +70,7 @@ const resolvers: Resolvers = {
         lastname,
         username,
         password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
-        avatar: null,
+        avatar: `https://api.dicebear.com/6.x/initials/svg?seed=${firstname} ${lastname}&backgroundColor=5D3FD3`,
         verified: false,
       })
 

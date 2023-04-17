@@ -3,7 +3,6 @@ import { Context } from '@bonavoy/types/auth'
 import { Resolvers, TransportationType } from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
 
-// TODO: WRITE TYPES
 export const resolvers: Resolvers = {
   Query: {
     places: async (_parent, { tripId }, ctx: Context) => {
