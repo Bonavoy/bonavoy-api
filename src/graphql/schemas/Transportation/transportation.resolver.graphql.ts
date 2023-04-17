@@ -162,7 +162,7 @@ export const resolvers: Resolvers = {
           return Promise.reject('you do not have permission to view this trip')
         }
         return (await transportationPubSub).asyncIterator<Transportation>([
-          'db.mxrzsgliftpsfsylratd.supabase.co.public.Transportation',
+          process.env.KAFKA_TRANSPORTATION_STREAM_TOPIC!,
         ]) as any
       },
       resolve: (payload: KafkaMessage) => {
