@@ -16,6 +16,7 @@ import AuthorAPI from './database/crud/author'
 import TransportationAPI from './database/crud/transportation'
 import AuthorsOnTripsAPI from './database/crud/authorsOnTrips'
 import Planner from './database/crud/planner'
+import Invite from './database/crud/invite'
 
 const prisma = new PrismaClient()
 const redis = new Redis({
@@ -40,6 +41,7 @@ export interface BonavoyDataSources {
   transportation: TransportationAPI
   mapboxAPI: MapboxAPI
   planner: Planner
+  invite: Invite
 }
 
 export default {
@@ -53,6 +55,7 @@ export default {
   transportation: new TransportationAPI({ prisma }),
   authorsOnTrips: new AuthorsOnTripsAPI({ prisma }),
   planner: new Planner(redis),
+  invite: new Invite(prisma),
 
   //external
   unsplashAPI: new UnsplashAPI(),

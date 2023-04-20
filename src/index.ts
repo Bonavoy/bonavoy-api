@@ -28,6 +28,9 @@ import { verifyAccessToken, verifyRefreshToken } from './auth/auth'
 import datasources from './graphql/datasources'
 import { getContext } from './apollo/context'
 
+// REST API routes
+import inviteRoutes from '@bonavoy/routes/invite'
+
 const startServer = async () => {
   //express app start
   const app = express()
@@ -129,6 +132,9 @@ const startServer = async () => {
       context: getContext,
     }),
   )
+
+  // REST API routes
+  app.use('/api/invites', inviteRoutes)
 
   httpServer.listen(process.env.PORT || 8080, () => {
     console.log(`Server listening at http://localhost:${process.env.PORT}/graphql`)

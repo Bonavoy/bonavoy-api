@@ -87,6 +87,17 @@ export type InputCoords = {
   lng: Scalars['Float'];
 };
 
+export type Invite = {
+  __typename?: 'Invite';
+  email: Scalars['String'];
+  role: TripRole;
+};
+
+export type InviteInput = {
+  email: Scalars['String'];
+  role: TripRole;
+};
+
 export type LocationContext = {
   __typename?: 'LocationContext';
   id: Scalars['String'];
@@ -117,6 +128,7 @@ export type Mutation = {
   deletePlace: Scalars['ID'];
   deleteTransportation: Scalars['ID'];
   deleteTrip: Scalars['Boolean'];
+  sendInvite: Scalars['Boolean'];
   token: Scalars['Boolean'];
   updateActivity: Activity;
   updateDayPlan: DayPlan;
@@ -188,6 +200,12 @@ export type MutationDeleteTransportationArgs = {
 
 export type MutationDeleteTripArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationSendInviteArgs = {
+  invitee: InviteInput;
+  tripId: Scalars['ID'];
 };
 
 
@@ -265,6 +283,7 @@ export type Query = {
   dayPlan: DayPlan;
   dayPlans: Array<DayPlan>;
   getLocationSuggestions: Array<LocationSuggestion>;
+  invites: Array<Invite>;
   place: Place;
   places: Array<Place>;
   routeSegments: Array<Array<Array<Scalars['Float']>>>;
@@ -297,6 +316,11 @@ export type QueryDayPlansArgs = {
 
 export type QueryGetLocationSuggestionsArgs = {
   query: Scalars['String'];
+};
+
+
+export type QueryInvitesArgs = {
+  tripId: Scalars['ID'];
 };
 
 
@@ -574,6 +598,8 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   InputCoords: InputCoords;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Invite: ResolverTypeWrapper<Invite>;
+  InviteInput: InviteInput;
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -619,6 +645,8 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   InputCoords: InputCoords;
   Int: Scalars['Int'];
+  Invite: Invite;
+  InviteInput: InviteInput;
   LocationContext: LocationContext;
   LocationSuggestion: LocationSuggestion;
   Mutation: {};
@@ -703,6 +731,12 @@ export type DayPlanResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type InviteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Invite'] = ResolversParentTypes['Invite']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type LocationContextResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationContext'] = ResolversParentTypes['LocationContext']> = {
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   short_code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -732,6 +766,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
   deleteTransportation?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
+  sendInvite?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSendInviteArgs, 'invitee' | 'tripId'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
@@ -774,6 +809,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
+  invites?: Resolver<Array<ResolversTypes['Invite']>, ParentType, ContextType, RequireFields<QueryInvitesArgs, 'tripId'>>;
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;
@@ -855,6 +891,7 @@ export type Resolvers<ContextType = any> = {
   Coords?: CoordsResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayPlan?: DayPlanResolvers<ContextType>;
+  Invite?: InviteResolvers<ContextType>;
   LocationContext?: LocationContextResolvers<ContextType>;
   LocationSuggestion?: LocationSuggestionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;

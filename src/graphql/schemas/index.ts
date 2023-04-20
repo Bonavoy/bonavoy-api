@@ -11,6 +11,7 @@ import DateTime from './scalars/DateTime'
 import Transportation from './Transportation'
 import Route from './Route'
 import Planner from './Planner'
+import Invite from './Invite'
 
 export default mergeRawSchemas(
   User,
@@ -25,4 +26,5 @@ export default mergeRawSchemas(
   Location,
   Route,
   Planner,
+  Invite,
 )
