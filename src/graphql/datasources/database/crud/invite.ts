@@ -25,9 +25,15 @@ export default class InviteAPI extends DataSource {
     this.context = config.context
   }
 
-  findMany = (tripId: string) => {}
+  findMany = async (tripId: string) => {
+    return this.prisma.invite.findMany({
+      where: {
+        tripId,
+      },
+    })
+  }
 
-  create = (invite: DBInvite) => {
+  create = async (invite: DBInvite) => {
     return this.prisma.invite.create({
       data: {
         ...invite,

@@ -11,8 +11,10 @@ const authorsOnTripsResolver: Resolvers = {
         switch (authorOnTrip.role) {
           case TripRole.Editor:
             role = TripRole.Editor
+            break
           case TripRole.Viewer:
             role = TripRole.Viewer
+            break
         }
 
         return {

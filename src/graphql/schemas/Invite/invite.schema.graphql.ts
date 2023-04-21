@@ -6,7 +6,7 @@ export default gql`
   }
 
   type Mutation {
-    sendInvite(tripId: ID!, invitee: InviteInput!): Boolean!
+    sendInvite(tripId: ID!, invitee: InviteInput!): Invite!
   }
 
   # types
