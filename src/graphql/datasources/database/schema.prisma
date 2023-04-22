@@ -31,6 +31,7 @@ model AuthorsOnTrips {
   role   TripRole
   tripId String
   trip   Trip     @relation(fields: [tripId], references: [id])
+  @@unique([userId, tripId], name: "authorOnTripIdentifier")
 }
 
 model Trip {
@@ -41,56 +42,57 @@ model Trip {
   endDate   DateTime
   authors   AuthorsOnTrips[]
   places    Place[]
+  invites   Invite[]
   isPublic  Boolean          @default(false)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 }
 
 model Place {
-  id         String    @id @default(uuid())
-  tripId     String
-  mapboxId  String
-  placeName String
-  text       String
-  startDate  DateTime?
-  endDate    DateTime?
-  colour     String
-  center     Float[]
-  country    String
-  trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  id             String           @id @default(uuid())
+  tripId         String
+  mapboxId       String
+  placeName      String
+  text           String
+  startDate      DateTime?
+  endDate        DateTime?
+  colour         String
+  center         Float[]
+  country        String
+  trip           Trip             @relation(fields: [tripId], references: [id], onDelete: Cascade)
   transportation Transportation[]
-  dayPlans   DayPlan[]
-  order Int @default(0)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  dayPlans       DayPlan[]
+  order          Int              @default(0)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model Transportation {
-  id String @id @default(uuid())
-  type TransportationType
-  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
-  placeId String
+  id                String             @id @default(uuid())
+  type              TransportationType
+  place             Place              @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  placeId           String
   departureLocation String
-  departureTime DateTime?
-  arrivalLocation String
-  arrivalTime DateTime?
-  details String @db.VarChar(300)
-  order      Int     @default(0)
-  departureLng Float?
-  departureLat Float?
-  arrivalLng Float?
-  arrivalLat Float?
+  departureTime     DateTime?
+  arrivalLocation   String
+  arrivalTime       DateTime?
+  details           String             @db.VarChar(300)
+  order             Int                @default(0)
+  departureLng      Float?
+  departureLat      Float?
+  arrivalLng        Float?
+  arrivalLat        Float?
 }
 
 model DayPlan {
-  id        String   @id @default(uuid())
-  date      DateTime
-  order     Int
-  placeId   String
-  place     Place    @relation(fields: [placeId], references: [id], onDelete: Cascade)
-  activities     Activity[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String     @id @default(uuid())
+  date       DateTime
+  order      Int
+  placeId    String
+  place      Place      @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  activities Activity[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Activity {
@@ -115,4 +117,14 @@ enum TransportationType {
   CAR
   PLANE
   BUS
+}
+
+model Invite {
+  id     String   @id @default(uuid())
+  email  String
+  tripId String
+  trip   Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  role   TripRole
+  code   String
+  @@unique([email, tripId], name: "inviteIdentifier")
 }

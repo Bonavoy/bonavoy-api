@@ -1,8 +1,9 @@
-import { AuthorsOnTrips, PrismaClient } from '@prisma/client'
+import { AuthorsOnTrips, PrismaClient, TripRole } from '@prisma/client'
 import { DataSource } from 'apollo-datasource'
 import DataLoader from 'dataloader'
 
 import { Context } from '@bonavoy/types/auth'
+import { DBAuthorsOnTrips } from '../../types'
 
 export default class AuthorsOnTripsAPI extends DataSource {
   prisma: PrismaClient
@@ -18,6 +19,22 @@ export default class AuthorsOnTripsAPI extends DataSource {
       where: {
         tripId,
       },
+    })
+  }
+
+  create = async (userId: string, tripId: string, role: TripRole) => {
+    return await this.prisma.authorsOnTrips.create({
+      data: {
+        userId,
+        tripId,
+        role,
+      },
+    })
+  }
+
+  createMany = async (authorOnTrips: DBAuthorsOnTrips[]) => {
+    return await this.prisma.authorsOnTrips.createMany({
+      data: authorOnTrips,
     })
   }
 }

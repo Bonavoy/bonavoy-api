@@ -1,4 +1,6 @@
 // following are types that crud functions accept and return
+// since the types the Prisma generates usually require fields like
+// id, which we don't need when creating some object
 
 export interface DBUser {
   email: string
@@ -10,7 +12,12 @@ export interface DBUser {
   verified: boolean
 }
 
-export interface DBAuthorsOnTrips {}
+export interface DBAuthorsOnTrips {
+  id?: string
+  userId: string
+  role: TripRole
+  tripId: string
+}
 
 export interface DBTrip {
   id?: string
@@ -70,6 +77,15 @@ export interface DBTransportation {
   departureLat?: number
   departureLng?: number
 }
+
+export interface DBInvite {
+  email: string
+  tripId: string
+  role: TripRole
+  code: string
+}
+
+type TripRole = 'AUTHOR' | 'EDITOR' | 'VIEWER'
 
 export enum TransportationType {
   Bus = 'BUS',

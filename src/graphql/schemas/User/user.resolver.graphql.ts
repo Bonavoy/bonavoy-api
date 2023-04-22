@@ -74,6 +74,17 @@ const resolvers: Resolvers = {
         verified: false,
       })
 
+      // accept all invitations by adding user to trips they've been invited to
+      const invites = await ctx.dataSources.invite.findManyByEmail(email)
+      await ctx.dataSources.invite.deleteMany(email)
+      await ctx.dataSources.authorsOnTrips.createMany(
+        invites.map((invite) => ({
+          userId: newUser.id,
+          role: invite.role,
+          tripId: invite.tripId,
+        })),
+      )
+
       return {
         id: newUser.id,
         email: newUser.email,
