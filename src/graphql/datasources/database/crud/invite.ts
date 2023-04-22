@@ -25,9 +25,26 @@ export default class InviteAPI extends DataSource {
     this.context = config.context
   }
 
-  findMany = async (tripId: string) => {
-    return this.prisma.invite.findMany({
+  findManyByTripId = async (tripId: string) => {
+    return await this.prisma.invite.findMany({
       where: {
+        tripId,
+      },
+    })
+  }
+
+  findManyByEmail = async (email: string) => {
+    return await this.prisma.invite.findMany({
+      where: {
+        email,
+      },
+    })
+  }
+
+  findInvite = async (email: string, tripId: string) => {
+    return await this.prisma.invite.findFirst({
+      where: {
+        email,
         tripId,
       },
     })
@@ -37,6 +54,14 @@ export default class InviteAPI extends DataSource {
     return this.prisma.invite.create({
       data: {
         ...invite,
+      },
+    })
+  }
+
+  deleteMany = async (email: string) => {
+    return await this.prisma.invite.deleteMany({
+      where: {
+        email,
       },
     })
   }

@@ -2,7 +2,7 @@ import { gql } from 'graphql-tag'
 
 export default gql`
   type Query {
-    invites(tripId: ID!): [Invite!]!
+    invites(tripId: ID!): [PendingInvite!]!
   }
 
   type Mutation {
@@ -10,10 +10,12 @@ export default gql`
   }
 
   # types
-  type Invite {
+  type PendingInvite {
     email: String!
     role: TripRole!
   }
+
+  union Invite = AuthorsOnTrips | PendingInvite
 
   # inputs
   input InviteInput {

@@ -12,7 +12,12 @@ export interface DBUser {
   verified: boolean
 }
 
-export interface DBAuthorsOnTrips {}
+export interface DBAuthorsOnTrips {
+  id?: string
+  userId: string
+  role: TripRole
+  tripId: string
+}
 
 export interface DBTrip {
   id?: string

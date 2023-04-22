@@ -87,11 +87,7 @@ export type InputCoords = {
   lng: Scalars['Float'];
 };
 
-export type Invite = {
-  __typename?: 'Invite';
-  email: Scalars['String'];
-  role: TripRole;
-};
+export type Invite = AuthorsOnTrips | PendingInvite;
 
 export type InviteInput = {
   email: Scalars['String'];
@@ -243,6 +239,12 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean'];
 };
 
+export type PendingInvite = {
+  __typename?: 'PendingInvite';
+  email: Scalars['String'];
+  role: TripRole;
+};
+
 export type Place = {
   __typename?: 'Place';
   center: Array<Scalars['Float']>;
@@ -283,7 +285,7 @@ export type Query = {
   dayPlan: DayPlan;
   dayPlans: Array<DayPlan>;
   getLocationSuggestions: Array<LocationSuggestion>;
-  invites: Array<Invite>;
+  invites: Array<PendingInvite>;
   place: Place;
   places: Array<Place>;
   routeSegments: Array<Array<Array<Scalars['Float']>>>;
@@ -598,12 +600,13 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']>;
   InputCoords: InputCoords;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  Invite: ResolverTypeWrapper<Invite>;
+  Invite: ResolversTypes['AuthorsOnTrips'] | ResolversTypes['PendingInvite'];
   InviteInput: InviteInput;
   LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
+  PendingInvite: ResolverTypeWrapper<PendingInvite>;
   Place: ResolverTypeWrapper<Place>;
   PlaceDates: ResolverTypeWrapper<PlaceDates>;
   PlaceInput: PlaceInput;
@@ -645,12 +648,13 @@ export type ResolversParentTypes = {
   ID: Scalars['ID'];
   InputCoords: InputCoords;
   Int: Scalars['Int'];
-  Invite: Invite;
+  Invite: ResolversParentTypes['AuthorsOnTrips'] | ResolversParentTypes['PendingInvite'];
   InviteInput: InviteInput;
   LocationContext: LocationContext;
   LocationSuggestion: LocationSuggestion;
   Mutation: {};
   PageInfo: PageInfo;
+  PendingInvite: PendingInvite;
   Place: Place;
   PlaceDates: PlaceDates;
   PlaceInput: PlaceInput;
@@ -732,9 +736,7 @@ export type DayPlanResolvers<ContextType = any, ParentType extends ResolversPare
 };
 
 export type InviteResolvers<ContextType = any, ParentType extends ResolversParentTypes['Invite'] = ResolversParentTypes['Invite']> = {
-  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AuthorsOnTrips' | 'PendingInvite', ParentType, ContextType>;
 };
 
 export type LocationContextResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationContext'] = ResolversParentTypes['LocationContext']> = {
@@ -781,6 +783,12 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PendingInviteResolvers<ContextType = any, ParentType extends ResolversParentTypes['PendingInvite'] = ResolversParentTypes['PendingInvite']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PlaceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Place'] = ResolversParentTypes['Place']> = {
   center?: Resolver<Array<ResolversTypes['Float']>, ParentType, ContextType>;
   colour?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -809,7 +817,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
-  invites?: Resolver<Array<ResolversTypes['Invite']>, ParentType, ContextType, RequireFields<QueryInvitesArgs, 'tripId'>>;
+  invites?: Resolver<Array<ResolversTypes['PendingInvite']>, ParentType, ContextType, RequireFields<QueryInvitesArgs, 'tripId'>>;
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;
@@ -896,6 +904,7 @@ export type Resolvers<ContextType = any> = {
   LocationSuggestion?: LocationSuggestionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  PendingInvite?: PendingInviteResolvers<ContextType>;
   Place?: PlaceResolvers<ContextType>;
   PlaceDates?: PlaceDatesResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

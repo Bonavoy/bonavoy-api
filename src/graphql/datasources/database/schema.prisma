@@ -31,6 +31,7 @@ model AuthorsOnTrips {
   role   TripRole
   tripId String
   trip   Trip     @relation(fields: [tripId], references: [id])
+  @@unique([userId, tripId], name: "authorOnTripIdentifier")
 }
 
 model Trip {
@@ -125,4 +126,5 @@ model Invite {
   trip   Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
   role   TripRole
   code   String
+  @@unique([email, tripId], name: "inviteIdentifier")
 }

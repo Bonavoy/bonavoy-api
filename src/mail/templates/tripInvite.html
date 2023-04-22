@@ -4,11 +4,20 @@
     <title>Bonavoy Invite</title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <style>
+      .joinButton {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background-color: #5d3fd3;
+        color: white;
+        text-decoration: none;
+      }
+    </style>
   </head>
   <body>
     <main>
       <h1>You've been invited to come along on <span>{{tripName}}</span></h1>
-      <a href="#">Join the adventure</a>
+      <a class="joinButton" href="{{tripURL}}">Join the adventure</a>
     </main>
   </body>
 </html>
