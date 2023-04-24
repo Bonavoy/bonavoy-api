@@ -52,6 +52,7 @@ export const resolvers: Resolvers = {
     addTransportation: async (_parent, { placeId, transportation }, ctx: Context) => {
       const newTransportation = await ctx.dataSources.transportation.create(placeId, {
         type: transportation.type,
+        id: transportation.id, // allow client to generate id due to race condition with subscription
         departureLocation: transportation.departureLocation,
         departureTime: transportation.departureTime,
         arrivalLocation: transportation.arrivalLocation,
