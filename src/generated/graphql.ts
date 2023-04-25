@@ -395,6 +395,7 @@ export type TransportationInput = {
   departureLocation: Scalars['String'];
   departureTime?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
+  id: Scalars['ID'];
   type: TransportationType;
 };
 

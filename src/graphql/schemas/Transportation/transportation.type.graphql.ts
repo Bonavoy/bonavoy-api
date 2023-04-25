@@ -20,6 +20,7 @@ export default gql`
 
   # inputs
   input TransportationInput {
+    id: ID!
     type: TransportationType!
     departureLocation: String!
     departureTime: DateTime
