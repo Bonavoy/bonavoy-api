@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
 export interface AccessController {
-  canAccessUser: (userId: string, userIdToAccess: string) => Promise<boolean>
   canAccessTrips: (userId: string, tripIds: string[]) => Promise<boolean>
   canAccessPlaces: (userId: string, placeIds: string[]) => Promise<boolean>
   canAccessTransportation: (userId: string, transportationIds: string[]) => Promise<boolean>
@@ -15,9 +14,6 @@ export class AccessControl implements AccessController {
 
   constructor(prisma: PrismaClient) {
     this.prisma = prisma
-  }
-  canAccessUser = async (userId: string, userIdToAccess: string) => {
-    return true
   }
 
   canAccessTrips = async (userId: string, tripIds: string[]) => {
