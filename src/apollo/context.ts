@@ -1,6 +1,7 @@
-import { ExpressMiddlewareOptions } from '@apollo/server/dist/esm/express4'
+import { AccessControl } from '@bonavoy/accesscontroller'
 import { verifyAccessToken, verifyRefreshToken } from '@bonavoy/auth/auth'
 import datasources from '@bonavoy/graphql/datasources'
+import { prisma } from '@bonavoy/graphql/datasources/database'
 import { AuthContext } from '@bonavoy/types/auth'
 import { Request, Response } from 'express'
 
@@ -24,5 +25,8 @@ export const getContext = async ({ req, res }: { req: Request; res: Response }) 
     const { refresh } = verifyRefreshToken(req.signedCookies?.[process.env.REFRESH_TOKEN_NAME as string])
     auth = { ...token, refresh: { ...refresh } }
   }
-  return { auth, req, res, dataSources: datasources }
+
+  const accessControl = new AccessControl(prisma)
+
+  return { auth, req, res, dataSources: datasources, accessControl }
 }
