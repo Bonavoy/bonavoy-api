@@ -1,11 +1,13 @@
 import { Request, Response } from 'express'
 import { BonavoyDataSources } from '@bonavoy/graphql/datasources'
+import { AccessController } from '@bonavoy/accesscontroller'
 
 export interface Context {
   auth: AuthContext
   req: Request
   res: Response
   dataSources: BonavoyDataSources
+  accessControl: AccessController
 }
 
 export interface TokenPayload {

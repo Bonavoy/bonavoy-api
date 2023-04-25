@@ -17,8 +17,8 @@ import TransportationAPI from './database/crud/transportation'
 import AuthorsOnTripsAPI from './database/crud/authorsOnTrips'
 import Planner from './database/crud/planner'
 import Invite from './database/crud/invite'
+import { prisma } from './database'
 
-const prisma = new PrismaClient()
 const redis = new Redis({
   host: process.env.REDIS_PLANNER_PRESENCE_URI!,
   port: Number(process.env.REDIS_PLANNER_PRESENCE_PORT!),

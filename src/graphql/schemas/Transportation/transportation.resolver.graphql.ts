@@ -3,11 +3,18 @@ import { Context } from '@bonavoy/types/auth'
 import { Resolvers, Transportation, TransportationType } from '@bonavoy/generated/graphql'
 import { transportationPubSub } from '@bonavoy/pubsub/kafka'
 import { KafkaMessage } from 'kafkajs'
+import { UNAUTHORIZED } from '@bonavoy/apollo/errors/codes'
+import { GraphQLError } from 'graphql'
 
 // TODO: WRITE TYPES
 export const resolvers: Resolvers = {
   Query: {
     transportation: async (_parent, { placeId }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [placeId])
+      if (!canAccessPlace) {
+        throw new GraphQLError('Not allowed to view this transportation', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const transportations = await ctx.dataSources.transportation.find(placeId)
       return transportations.map((transportation) => {
         let transportationType = TransportationType.Car
@@ -50,6 +57,10 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     addTransportation: async (_parent, { placeId, transportation }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [placeId])
+      if (!canAccessPlace) {
+        throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
+      }
       const newTransportation = await ctx.dataSources.transportation.create(placeId, {
         type: transportation.type,
         id: transportation.id, // allow client to generate id due to race condition with subscription
@@ -100,6 +111,11 @@ export const resolvers: Resolvers = {
       }
     },
     updateTransportation: async (_parent, { id, transportation }, ctx: Context) => {
+      const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
+      if (!canAccessTransportation) {
+        throw new GraphQLError('Not allowed to update this transportation', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const updatedTransportation = await ctx.dataSources.transportation.update(id, {
         departureLocation: transportation?.departureLocation ?? undefined,
         departureTime: transportation?.departureTime ?? undefined,
@@ -149,6 +165,11 @@ export const resolvers: Resolvers = {
       }
     },
     deleteTransportation: async (_parent, { id }, ctx: Context) => {
+      const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
+      if (!canAccessTransportation) {
+        throw new GraphQLError('Not allowed to delete this transportation', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const deletedTransportation = await ctx.dataSources.transportation.delete(id)
       return deletedTransportation.id
     },

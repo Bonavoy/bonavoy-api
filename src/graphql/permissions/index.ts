@@ -8,6 +8,7 @@ export default shield(
     Query: {
       user: isAuthenticated,
       trips: isAuthenticated,
+      trip: isAuthenticated,
       transportation: isAuthenticated,
       places: isAuthenticated,
     },
