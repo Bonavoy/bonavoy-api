@@ -2,10 +2,16 @@
 import { Context } from '@bonavoy/types/auth'
 import { Resolvers, TransportationType } from '@bonavoy/generated/graphql'
 import { GraphQLError } from 'graphql'
+import { UNAUTHORIZED } from '@bonavoy/apollo/errors/codes'
 
 export const resolvers: Resolvers = {
   Query: {
     places: async (_parent, { tripId }, ctx: Context) => {
+      const canAccessTrip = await ctx.accessControl.canAccessTrips(ctx.auth.sub!, [tripId])
+      if (!canAccessTrip) {
+        throw new GraphQLError('Not allowed to view this trip', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const places = await ctx.dataSources.places.findPlaces(tripId)
       const placesList = places.map((place) => {
         return {
@@ -27,6 +33,11 @@ export const resolvers: Resolvers = {
       return placesList
     },
     place: async (_parent, { id }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [id])
+      if (!canAccessPlace) {
+        throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const place = await ctx.dataSources.places.findPlace(id)
       if (!place) {
         throw new GraphQLError(`Could not find place with id ${id}`)
@@ -48,6 +59,11 @@ export const resolvers: Resolvers = {
   },
   Mutation: {
     createPlace: async (_parent, { tripId, place }, ctx: Context) => {
+      const canAccessTrip = await ctx.accessControl.canAccessTrips(ctx.auth.sub!, [tripId])
+      if (!canAccessTrip) {
+        throw new GraphQLError('Not allowed to view this trip', { extensions: { code: UNAUTHORIZED } })
+      }
+
       // TODO: validate color
       if (place.center?.length != 2) {
         throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')
@@ -88,10 +104,20 @@ export const resolvers: Resolvers = {
       }
     },
     deletePlace: async (_parent, { placeId }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [placeId])
+      if (!canAccessPlace) {
+        throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
+      }
+
       const dbPlace = await ctx.dataSources.places.deletePlace(placeId)
       return dbPlace.id
     },
     updatePlace: async (_parent, { id, place }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [id])
+      if (!canAccessPlace) {
+        throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
+      }
+
       // TODO: validate color
       if (place.center?.length != 2) {
         throw new GraphQLError('Center needs to a be a coordinate pair [lat, lng]')

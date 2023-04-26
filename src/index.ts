@@ -27,6 +27,8 @@ import type { AuthContext, Context } from './types/auth'
 import { verifyAccessToken, verifyRefreshToken } from './auth/auth'
 import datasources from './graphql/datasources'
 import { getContext } from './apollo/context'
+import { AccessControl } from './accesscontroller'
+import { prisma } from './graphql/datasources/database'
 
 const startServer = async () => {
   //express app start
@@ -84,8 +86,9 @@ const startServer = async () => {
           const { refresh } = verifyRefreshToken(signedCookies?.[process.env.REFRESH_TOKEN_NAME as string])
           auth = { ...token, refresh: { ...refresh } }
         }
+        const accessControl = new AccessControl(prisma)
 
-        return { auth, dataSources: datasources }
+        return { auth, dataSources: datasources, accessControl }
       },
     },
     wsServer,

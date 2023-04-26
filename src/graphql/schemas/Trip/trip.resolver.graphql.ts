@@ -4,10 +4,16 @@ import { MutationCreateTripArgs, QueryTripArgs, Resolvers, Trip, TripRole } from
 //types
 import { Context } from '@bonavoy/types/auth'
 import { DBTrip } from '@bonavoy/graphql/datasources/types'
+import { UNAUTHENTICATED, UNAUTHORIZED } from '@bonavoy/apollo/errors/codes'
 
 const resolvers: Resolvers = {
   Query: {
     trip: async (_parent, { tripId }: QueryTripArgs, ctx: Context) => {
+      const canAccessTrip = await ctx.accessControl.canAccessTrips(ctx.auth.sub!, [tripId])
+      if (!canAccessTrip) {
+        throw new GraphQLError("You don't have permission to view this trip", { extensions: { code: UNAUTHORIZED } })
+      }
+
       const trip = await ctx.dataSources.trips.findTrip(tripId)
       if (!trip) {
         throw new GraphQLError(`could not find trip with id ${tripId}`)

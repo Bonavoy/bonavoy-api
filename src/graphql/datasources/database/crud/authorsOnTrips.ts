@@ -1,6 +1,5 @@
 import { AuthorsOnTrips, PrismaClient, TripRole } from '@prisma/client'
 import { DataSource } from 'apollo-datasource'
-import DataLoader from 'dataloader'
 
 import { Context } from '@bonavoy/types/auth'
 import { DBAuthorsOnTrips } from '../../types'
