@@ -21,6 +21,7 @@ export type ActiveElement = {
   active: Scalars['Boolean'];
   author: AuthorPresent;
   elementId: Scalars['ID'];
+  tripId: Scalars['ID'];
 };
 
 export type Activity = {
@@ -718,6 +719,7 @@ export type ActiveElementResolvers<ContextType = any, ParentType extends Resolve
   active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   author?: Resolver<ResolversTypes['AuthorPresent'], ParentType, ContextType>;
   elementId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  tripId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

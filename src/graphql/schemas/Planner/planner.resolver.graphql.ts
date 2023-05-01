@@ -1,6 +1,6 @@
 import { Resolvers } from '@bonavoy/generated/graphql'
 import { withCancel } from '@bonavoy/graphql/withCancel'
-import { plannerPresencePubSub } from '@bonavoy/pubsub/redis'
+import { plannerPubSub } from '@bonavoy/pubsub/redis'
 import { Context } from '@bonavoy/types/auth'
 import { GraphQLError } from 'graphql'
 import { withFilter } from 'graphql-subscriptions'
@@ -23,6 +23,7 @@ export interface ActiveElement {
   active: boolean
   elementId: string
   userId: string
+  tripId: string
 }
 
 export const resolvers: Resolvers = {
@@ -42,6 +43,7 @@ export const resolvers: Resolvers = {
     activeElements: async (_parent, { tripId }, ctx: Context) => {
       const canAccessTrip = await ctx.accessControl.canAccessTrips(ctx.auth.sub!, [tripId])
       if (!canAccessTrip) throw new GraphQLError('Not allowed to access this trip')
+
       const activeElements = await ctx.dataSources.planner.findManyActiveElements(tripId)
       return Promise.all(
         activeElements.map(async (item) => {
@@ -50,24 +52,14 @@ export const resolvers: Resolvers = {
           }
           const activeElement = item as ActiveElement
 
-          // TODO: should move to its own resolver
-          const author = await ctx.dataSources.planner.findPresentAuthor(tripId, activeElement.userId)
-          if (!author) throw new GraphQLError('could not find author')
-
           return {
             elementId: activeElement.elementId,
             active: activeElement.active,
             // args for type resolver
             tripId: tripId,
             author: {
-              id: author.authorPresent.id,
-              username: author.authorPresent.username,
-              email: author.authorPresent.email,
-              firstname: author.authorPresent.firstname,
-              lastname: author.authorPresent.lastname,
-              avatar: author.authorPresent.avatar,
-              connected: author.authorPresent.connected,
-            },
+              id: item.userId,
+            } as any,
           }
         }),
       )
@@ -78,14 +70,24 @@ export const resolvers: Resolvers = {
       const canAccessTrip = await ctx.accessControl.canAccessTrips(ctx.auth.sub!, [tripId])
       if (!canAccessTrip) throw new GraphQLError('Not allowed to access this trip')
 
+      const updatedActiveElement: ActiveElement = {
+        active: activeElement.active,
+        elementId: activeElement.elementId,
+        userId: activeElement.userId,
+        tripId: tripId,
+      }
+
       if (activeElement.active) {
         // upsert
-        const ok = await ctx.dataSources.planner.updateActiveElements(tripId, activeElement)
+        const ok = await ctx.dataSources.planner.updateActiveElements(tripId, updatedActiveElement)
         if (!ok) throw new GraphQLError('Could not update active element')
       } else {
         // delete
-        await ctx.dataSources.planner.deleteActiveElement(tripId, activeElement)
+        await ctx.dataSources.planner.deleteActiveElement(tripId, updatedActiveElement)
       }
+
+      plannerPubSub.publish(`ACTIVE_ELEMENT_${tripId}`, updatedActiveElement)
+
       return true
     },
   },
@@ -114,15 +116,15 @@ export const resolvers: Resolvers = {
 
         if (!ok) throw new GraphQLError('error writing to redis')
 
-        plannerPresencePubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
+        plannerPubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
 
         return withFilter(
           (_parent, { tripId }) => {
-            return withCancel(plannerPresencePubSub.asyncIterator(`PLANNER_PRESENCE_${tripId}`), async () => {
+            return withCancel(plannerPubSub.asyncIterator(`PLANNER_PRESENCE_${tripId}`), async () => {
               // user disconnected from planning room, also fire and forget, not allowed to await here :(
               await ctx.dataSources.planner.deleteAuthorPresent(`${tripId}:${user.id}`)
               authorPresentMessage.authorPresent.connected = false
-              plannerPresencePubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
+              plannerPubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
             })
           },
           (payload: AuthorPresentMessage, { tripId }, ctx: Context) => {
@@ -135,22 +137,40 @@ export const resolvers: Resolvers = {
         return payload.authorPresent
       },
     },
+    listenActiveElement: {
+      subscribe: async (_parent, { tripId }, _ctx) => {
+        return plannerPubSub.asyncIterator(`ACTIVE_ELEMENT_${tripId}`) as any
+      },
+      resolve: async (activeElement: ActiveElement, _args: any, ctx: Context) => {
+        // const author = await ctx.dataSources.planner.findPresentAuthor(activeElement.tripId, activeElement.userId)
+        return {
+          elementId: activeElement.elementId,
+          active: activeElement.active,
+          // args for type resolver
+          tripId: activeElement.tripId,
+          author: {
+            id: activeElement.userId,
+          } as any,
+        }
+      },
+    },
   },
-  // ActiveElement: {
-  //   author: async (parent, _args, ctx: Context) => {
-  //     const author = await ctx.dataSources.planner.findPresentAuthor(parent.author.id, '')
-  //     if (!author) throw new GraphQLError('could not find author')
-  //     return {
-  //       id: author.authorPresent.id,
-  //       username: author.authorPresent.username,
-  //       email: author.authorPresent.email,
-  //       firstname: author.authorPresent.firstname,
-  //       lastname: author.authorPresent.lastname,
-  //       avatar: author.authorPresent.avatar,
-  //       connected: author.authorPresent.connected,
-  //     }
-  //   },
-  // },
+  ActiveElement: {
+    author: async (parent, _args, ctx: Context) => {
+      const author = await ctx.dataSources.planner.findPresentAuthor(parent.tripId, parent.author.id)
+      if (!author) throw new GraphQLError('could not find author present')
+
+      return {
+        id: author.authorPresent.id,
+        username: author.authorPresent.username,
+        email: author.authorPresent.email,
+        firstname: author.authorPresent.firstname,
+        lastname: author.authorPresent.lastname,
+        avatar: author.authorPresent.avatar,
+        connected: author.authorPresent.connected,
+      }
+    },
+  },
 }
 
 export default resolvers

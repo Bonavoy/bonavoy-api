@@ -34,6 +34,7 @@ export default gql`
 
   type ActiveElement {
     author: AuthorPresent!
+    tripId: ID!
     elementId: ID!
     active: Boolean!
   }
