@@ -11,7 +11,7 @@ const redisOptions = {
   },
 }
 
-export const plannerPresencePubSub = new RedisPubSub({
+export const plannerPubSub = new RedisPubSub({
   publisher: new Redis(redisOptions),
   subscriber: new Redis(redisOptions),
 })

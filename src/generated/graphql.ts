@@ -16,6 +16,14 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type ActiveElement = {
+  __typename?: 'ActiveElement';
+  active: Scalars['Boolean'];
+  author: AuthorPresent;
+  elementId: Scalars['ID'];
+  tripId: Scalars['ID'];
+};
+
 export type Activity = {
   __typename?: 'Activity';
   end?: Maybe<Scalars['DateTime']>;
@@ -126,6 +134,7 @@ export type Mutation = {
   deleteTrip: Scalars['Boolean'];
   sendInvite: Invite;
   token: Scalars['Boolean'];
+  updateActiveElement: Scalars['Boolean'];
   updateActivity: Activity;
   updateDayPlan: DayPlan;
   updatePlace: Place;
@@ -205,6 +214,12 @@ export type MutationSendInviteArgs = {
 };
 
 
+export type MutationUpdateActiveElementArgs = {
+  activeElement: UpdateActiveElement;
+  tripId: Scalars['ID'];
+};
+
+
 export type MutationUpdateActivityArgs = {
   id: Scalars['ID'];
   updateActivityInput: UpdateActivityInput;
@@ -280,6 +295,7 @@ export type PlaceInput = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
+  activeElements: Array<ActiveElement>;
   authorsOnTrips: Array<AuthorsOnTrips>;
   authorsPresent: Array<AuthorPresent>;
   dayPlan: DayPlan;
@@ -293,6 +309,11 @@ export type Query = {
   trip: Trip;
   trips: TripConnection;
   user: User;
+};
+
+
+export type QueryActiveElementsArgs = {
+  tripId: Scalars['ID'];
 };
 
 
@@ -359,8 +380,14 @@ export type QueryTripsArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   _empty?: Maybe<Scalars['String']>;
+  listenActiveElement: ActiveElement;
   listenAuthorPresent: AuthorPresent;
   transportation: TransportationNotification;
+};
+
+
+export type SubscriptionListenActiveElementArgs = {
+  tripId: Scalars['ID'];
 };
 
 
@@ -449,6 +476,12 @@ export enum TripRole {
   Editor = 'EDITOR',
   Viewer = 'VIEWER'
 }
+
+export type UpdateActiveElement = {
+  active: Scalars['Boolean'];
+  elementId: Scalars['ID'];
+  userId: Scalars['ID'];
+};
 
 export type UpdateActivityInput = {
   end?: InputMaybe<Scalars['DateTime']>;
@@ -586,6 +619,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  ActiveElement: ResolverTypeWrapper<ActiveElement>;
   Activity: ResolverTypeWrapper<Activity>;
   ActivityInput: ActivityInput;
   AuthorPresent: ResolverTypeWrapper<AuthorPresent>;
@@ -623,6 +657,7 @@ export type ResolversTypes = {
   TripEdge: ResolverTypeWrapper<TripEdge>;
   TripInput: TripInput;
   TripRole: TripRole;
+  UpdateActiveElement: UpdateActiveElement;
   UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
@@ -634,6 +669,7 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  ActiveElement: ActiveElement;
   Activity: Activity;
   ActivityInput: ActivityInput;
   AuthorPresent: AuthorPresent;
@@ -669,6 +705,7 @@ export type ResolversParentTypes = {
   TripConnection: TripConnection;
   TripEdge: TripEdge;
   TripInput: TripInput;
+  UpdateActiveElement: UpdateActiveElement;
   UpdateActivityInput: UpdateActivityInput;
   UpdateDayPlanInput: UpdateDayPlanInput;
   UpdatePlaceInput: UpdatePlaceInput;
@@ -676,6 +713,14 @@ export type ResolversParentTypes = {
   UpdateTripInput: UpdateTripInput;
   User: User;
   UserInput: UserInput;
+};
+
+export type ActiveElementResolvers<ContextType = any, ParentType extends ResolversParentTypes['ActiveElement'] = ResolversParentTypes['ActiveElement']> = {
+  active?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['AuthorPresent'], ParentType, ContextType>;
+  elementId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  tripId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ActivityResolvers<ContextType = any, ParentType extends ResolversParentTypes['Activity'] = ResolversParentTypes['Activity']> = {
@@ -771,6 +816,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   sendInvite?: Resolver<ResolversTypes['Invite'], ParentType, ContextType, RequireFields<MutationSendInviteArgs, 'invitee' | 'tripId'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updateActiveElement?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateActiveElementArgs, 'activeElement' | 'tripId'>>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
   updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'id' | 'place'>>;
@@ -813,6 +859,7 @@ export type PlaceDatesResolvers<ContextType = any, ParentType extends ResolversP
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   _empty?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  activeElements?: Resolver<Array<ResolversTypes['ActiveElement']>, ParentType, ContextType, RequireFields<QueryActiveElementsArgs, 'tripId'>>;
   authorsOnTrips?: Resolver<Array<ResolversTypes['AuthorsOnTrips']>, ParentType, ContextType, RequireFields<QueryAuthorsOnTripsArgs, 'tripId'>>;
   authorsPresent?: Resolver<Array<ResolversTypes['AuthorPresent']>, ParentType, ContextType, RequireFields<QueryAuthorsPresentArgs, 'tripId'>>;
   dayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<QueryDayPlanArgs, 'id'>>;
@@ -830,6 +877,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   _empty?: SubscriptionResolver<Maybe<ResolversTypes['String']>, "_empty", ParentType, ContextType>;
+  listenActiveElement?: SubscriptionResolver<ResolversTypes['ActiveElement'], "listenActiveElement", ParentType, ContextType, RequireFields<SubscriptionListenActiveElementArgs, 'tripId'>>;
   listenAuthorPresent?: SubscriptionResolver<ResolversTypes['AuthorPresent'], "listenAuthorPresent", ParentType, ContextType, RequireFields<SubscriptionListenAuthorPresentArgs, 'tripId'>>;
   transportation?: SubscriptionResolver<ResolversTypes['TransportationNotification'], "transportation", ParentType, ContextType, RequireFields<SubscriptionTransportationArgs, 'placeIds'>>;
 };
@@ -892,6 +940,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  ActiveElement?: ActiveElementResolvers<ContextType>;
   Activity?: ActivityResolvers<ContextType>;
   AuthorPresent?: AuthorPresentResolvers<ContextType>;
   AuthorsOnTrips?: AuthorsOnTripsResolvers<ContextType>;

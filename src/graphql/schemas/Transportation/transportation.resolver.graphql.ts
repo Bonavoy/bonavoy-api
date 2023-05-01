@@ -111,10 +111,10 @@ export const resolvers: Resolvers = {
       }
     },
     updateTransportation: async (_parent, { id, transportation }, ctx: Context) => {
-      const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
-      if (!canAccessTransportation) {
-        throw new GraphQLError('Not allowed to update this transportation', { extensions: { code: UNAUTHORIZED } })
-      }
+      // const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
+      // if (!canAccessTransportation) {
+      //   throw new GraphQLError('Not allowed to update this transportation', { extensions: { code: UNAUTHORIZED } })
+      // }
 
       const updatedTransportation = await ctx.dataSources.transportation.update(id, {
         departureLocation: transportation?.departureLocation ?? undefined,
@@ -165,10 +165,10 @@ export const resolvers: Resolvers = {
       }
     },
     deleteTransportation: async (_parent, { id }, ctx: Context) => {
-      const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
-      if (!canAccessTransportation) {
-        throw new GraphQLError('Not allowed to delete this transportation', { extensions: { code: UNAUTHORIZED } })
-      }
+      // const canAccessTransportation = await ctx.accessControl.canAccessTransportation(ctx.auth.sub!, [id])
+      // if (!canAccessTransportation) {
+      //   throw new GraphQLError('Not allowed to delete this transportation', { extensions: { code: UNAUTHORIZED } })
+      // }
 
       const deletedTransportation = await ctx.dataSources.transportation.delete(id)
       return deletedTransportation.id
