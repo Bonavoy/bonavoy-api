@@ -87,7 +87,15 @@ export const resolvers: Resolvers = {
 
       plannerPubSub.publish(`ACTIVE_ELEMENT_${tripId}`, updatedActiveElement)
 
-      return true
+      return {
+        elementId: activeElement.elementId,
+        active: activeElement.active,
+        // args for type resolver
+        tripId: tripId,
+        author: {
+          id: activeElement.userId,
+        } as any,
+      }
     },
   },
   Subscription: {
