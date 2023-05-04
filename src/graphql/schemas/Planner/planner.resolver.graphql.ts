@@ -4,7 +4,6 @@ import { plannerPubSub } from '@bonavoy/pubsub/redis'
 import { Context } from '@bonavoy/types/auth'
 import { GraphQLError } from 'graphql'
 import { withFilter } from 'graphql-subscriptions'
-import { Redis } from 'ioredis'
 
 export interface AuthorPresentMessage {
   tripId: string
@@ -28,6 +27,32 @@ export interface ActiveElement {
 
 export const resolvers: Resolvers = {
   Query: {
+    plannerDetails: async (_parent, { tripId }, ctx: Context) => {
+      const trip = await ctx.dataSources.trips.findTrip(tripId)
+      const places = await ctx.dataSources.places.findPlacesByTrip(tripId)
+      const placesList = places.map((place) => {
+        return {
+          id: place.id,
+          mapboxId: place.mapboxId,
+          placeName: place.placeName,
+          center: place.center,
+          colour: place.colour,
+          country: place.country,
+          startDate: place.startDate,
+          endDate: place.endDate,
+          text: place.text,
+          dayPlans: {} as any, // let this be resolved
+          transportation: [],
+        }
+      })
+      return {
+        banner: trip?.banner!,
+        name: trip?.name!,
+        startDate: trip?.startDate!,
+        endDate: trip?.endDate!,
+        places: placesList,
+      }
+    },
     authorsPresent: async (_parent, { tripId }, ctx: Context) => {
       const authorsPresent = await ctx.dataSources.planner.findManyAuthorsPresent(tripId)
       return authorsPresent.map((authorsPresentMessage) => ({

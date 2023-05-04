@@ -2,6 +2,7 @@ import { gql } from 'graphql-tag'
 
 export default gql`
   type Query {
+    plannerDetails(tripId: ID!): PlannerDetails!
     authorsPresent(tripId: ID!): [AuthorPresent!]!
     activeElements(tripId: ID!): [ActiveElement!]!
   }
@@ -20,6 +21,14 @@ export default gql`
     userId: ID!
     elementId: ID!
     active: Boolean!
+  }
+
+  type PlannerDetails {
+    name: String!
+    startDate: DateTime!
+    endDate: DateTime!
+    banner: String!
+    places: [Place!]!
   }
 
   type AuthorPresent {

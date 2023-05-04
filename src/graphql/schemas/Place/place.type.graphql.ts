@@ -51,9 +51,4 @@ export default gql`
     dayPlans: [DayPlan!]!
     transportation: [Transportation!]!
   }
-
-  type PlaceDates {
-    startDate: DateTime!
-    endDate: DateTime!
-  }
 `
