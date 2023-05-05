@@ -8,8 +8,7 @@ export default gql`
   }
 
   type Mutation {
-    # no need to return any data for update, user shouldn't see their own active element on the UI
-    updateActiveElement(tripId: ID!, activeElement: UpdateActiveElement!): Boolean!
+    updateActiveElement(tripId: ID!, activeElement: UpdateActiveElement!): ActiveElement!
   }
 
   type Subscription {

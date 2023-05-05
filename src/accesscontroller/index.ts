@@ -22,7 +22,21 @@ export class AccessControl implements AccessController {
   }
 
   canAccessPlaces = async (userId: string, placeIds: string[]) => {
-    const places = await this.prisma.authorsOnTrips.findMany({ where: { tripId: { in: placeIds }, userId } })
+    // TODO: big yikes, maybe move to transaction
+    const places = await this.prisma.authorsOnTrips.findMany({
+      where: {
+        trip: {
+          places: {
+            some: {
+              id: {
+                in: placeIds,
+              },
+            },
+          },
+        },
+        userId,
+      },
+    })
     return placeIds.length === places.length
   }
 

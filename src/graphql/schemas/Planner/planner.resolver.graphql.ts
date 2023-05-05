@@ -113,7 +113,15 @@ export const resolvers: Resolvers = {
 
       plannerPubSub.publish(`ACTIVE_ELEMENT_${tripId}`, updatedActiveElement)
 
-      return true
+      return {
+        elementId: activeElement.elementId,
+        active: activeElement.active,
+        // args for type resolver
+        tripId: tripId,
+        author: {
+          id: activeElement.userId,
+        } as any,
+      }
     },
   },
   Subscription: {
@@ -141,15 +149,30 @@ export const resolvers: Resolvers = {
 
         if (!ok) throw new GraphQLError('error writing to redis')
 
-        plannerPubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
+        plannerPubSub.publish('PLANNER_PRESENCE', authorPresentMessage)
 
         return withFilter(
           (_parent, { tripId }) => {
-            return withCancel(plannerPubSub.asyncIterator(`PLANNER_PRESENCE_${tripId}`), async () => {
-              // user disconnected from planning room, also fire and forget, not allowed to await here :(
-              await ctx.dataSources.planner.deleteAuthorPresent(`${tripId}:${user.id}`)
+            return withCancel(plannerPubSub.asyncIterator('PLANNER_PRESENCE'), async () => {
+              // clean up any trace of this author being here (presence, any active elements, etc...)
+
+              const deletedActiveElements = await ctx.dataSources.planner.findUsersActiveElement(tripId, user.id)
+
+              await ctx.dataSources.planner.deleteUsersActiveElement(tripId, user.id)
+
               authorPresentMessage.authorPresent.connected = false
-              plannerPubSub.publish(`PLANNER_PRESENCE_${tripId}`, authorPresentMessage)
+              await plannerPubSub.publish('PLANNER_PRESENCE', authorPresentMessage)
+
+              const deletedActiveElementPromises = deletedActiveElements.map((activeElement) => {
+                if (!activeElement) return
+                activeElement.active = false
+                return plannerPubSub.publish(`ACTIVE_ELEMENT_${tripId}`, activeElement) // NEED TO PUBLISH A NEW DELETE ACTIVE ELEMENT EVENT
+              })
+
+              await Promise.all(deletedActiveElementPromises)
+
+              // clean up authors last so deleted elements can still find it for resolving
+              await ctx.dataSources.planner.deleteAuthorPresent(`${tripId}:${user.id}`)
             })
           },
           (payload: AuthorPresentMessage, { tripId }, ctx: Context) => {

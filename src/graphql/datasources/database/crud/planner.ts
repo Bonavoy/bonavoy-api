@@ -15,11 +15,17 @@ export default class Planner extends DataSource {
     super()
     this.redis = redis
   }
-
+  /**
+   * keys should be in the form: PRESENCE_KEY:TRIP_ID:USER_ID
+   */
   static PresenceKey = (tripId: string) => {
     return `${Planner.PRESENCE_KEY}:${tripId}`
   }
-
+  /**
+   * keys should be in the form: PRESENCE_KEY:TRIP_ID:USER_ID:<PATH>:HTML_ELEMENT_TAG
+   * PATH should be a path from the root of the `trip` graphql model structure to
+   * the field of the node at the end of this path
+   */
   static ActiveElementKey = (tripId: string) => {
     return `${Planner.ACTIVE_ELEMENT_KEY}:${tripId}`
   }
@@ -103,12 +109,75 @@ export default class Planner extends DataSource {
     return activeElements
   }
 
+  findUsersActiveElement = async (key: string, userId: string) => {
+    const activeElementPromises: Promise<ActiveElement>[] = []
+    const scanActiveElements = new Promise((res, rej) => {
+      const stream = this.redis.scanStream({
+        match: `${Planner.ActiveElementKey(key)}:${userId}:*`,
+      })
+
+      stream.on('data', (keys) => {
+        for (const key of keys) {
+          activeElementPromises.push(
+            this.redis.get(key).then((data) => {
+              if (!data) rej('got null value for active element')
+              const activeElement = JSON.parse(data!) as ActiveElement
+
+              return activeElement
+            }),
+          )
+        }
+      })
+
+      stream.on('end', () => {
+        return res(activeElementPromises)
+      })
+    })
+
+    await scanActiveElements
+
+    const activeElements = await Promise.all(activeElementPromises)
+
+    return activeElements
+  }
+
   updateActiveElements = async (key: string, activeElement: ActiveElement) => {
     const serialized = JSON.stringify(activeElement)
-    return 'OK' === (await this.redis.set(`${Planner.ActiveElementKey(key)}:${activeElement.elementId}`, serialized))
+    return (
+      'OK' ===
+      (await this.redis.set(
+        `${Planner.ActiveElementKey(key)}:${activeElement.userId}:${activeElement.elementId}`,
+        serialized,
+      ))
+    )
   }
 
   deleteActiveElement = async (key: string, activeElement: ActiveElement) => {
-    return 1 <= (await this.redis.del(`${Planner.ActiveElementKey(key)}:${activeElement.elementId}`))
+    return (
+      1 <= (await this.redis.del(`${Planner.ActiveElementKey(key)}:${activeElement.userId}:${activeElement.elementId}`))
+    )
+  }
+
+  deleteUsersActiveElement = async (key: string, userId: string) => {
+    const activeElementPromises: Promise<number>[] = []
+    const deleteActiveElements = new Promise((res, rej) => {
+      const stream = this.redis.scanStream({
+        match: `${Planner.ActiveElementKey(key)}:${userId}:*`,
+      })
+
+      stream.on('data', (keys) => {
+        for (const key of keys) {
+          activeElementPromises.push(this.redis.del(key))
+        }
+      })
+
+      stream.on('end', () => {
+        return res(true)
+      })
+    })
+
+    await deleteActiveElements
+
+    await Promise.all(activeElementPromises)
   }
 }

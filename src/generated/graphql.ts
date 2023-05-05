@@ -134,7 +134,7 @@ export type Mutation = {
   deleteTrip: Scalars['Boolean'];
   sendInvite: Invite;
   token: Scalars['Boolean'];
-  updateActiveElement: Scalars['Boolean'];
+  updateActiveElement: ActiveElement;
   updateActivity: Activity;
   updateDayPlan: DayPlan;
   updatePlace: Place;
@@ -825,7 +825,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
   sendInvite?: Resolver<ResolversTypes['Invite'], ParentType, ContextType, RequireFields<MutationSendInviteArgs, 'invitee' | 'tripId'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  updateActiveElement?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationUpdateActiveElementArgs, 'activeElement' | 'tripId'>>;
+  updateActiveElement?: Resolver<ResolversTypes['ActiveElement'], ParentType, ContextType, RequireFields<MutationUpdateActiveElementArgs, 'activeElement' | 'tripId'>>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
   updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'id' | 'place'>>;
