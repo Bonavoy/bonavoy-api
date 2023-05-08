@@ -31,6 +31,7 @@ model AuthorsOnTrips {
   role   TripRole
   tripId String
   trip   Trip     @relation(fields: [tripId], references: [id])
+
   @@unique([userId, tripId], name: "authorOnTripIdentifier")
 }
 
@@ -70,6 +71,8 @@ model Place {
 model Transportation {
   id                String             @id @default(uuid())
   type              TransportationType
+  connectingOrder   Int                @default(0)
+  connectingId      String             @default(uuid())
   place             Place              @relation(fields: [placeId], references: [id], onDelete: Cascade)
   placeId           String
   departureLocation String
@@ -126,5 +129,6 @@ model Invite {
   trip   Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
   role   TripRole
   code   String
+
   @@unique([email, tripId], name: "inviteIdentifier")
 }
