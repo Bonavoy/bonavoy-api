@@ -210,6 +210,7 @@ export const resolvers: Resolvers = {
         // transform the Kafka event to the expected subscription payload
         const payloadString = payload.value ? payload.value.toString() : ''
         const transportationMsg = JSON.parse(payloadString)
+
         let transportationType = TransportationType.Car
         switch (transportationMsg.type) {
           case TransportationType.Plane:
@@ -219,6 +220,7 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
+
         let departureCoords
         if (transportationMsg.departureLat && transportationMsg.departureLng) {
           departureCoords = {
@@ -226,6 +228,7 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.departureLat,
           }
         }
+
         let arrivalCoords
         if (transportationMsg.arrivalLat && transportationMsg.arrivalLng) {
           arrivalCoords = {
@@ -233,10 +236,11 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.arrivalLat,
           }
         }
+
         const transportation: Transportation = {
           id: transportationMsg.id,
           departureLocation: transportationMsg.departureLocation,
-          departureTime: transportationMsg.arrivalTime ? new Date(transportationMsg.departureTime) : null,
+          departureTime: transportationMsg.departureTime ? new Date(transportationMsg.departureTime) : null,
           arrivalLocation: transportationMsg.arrivalLocation,
           arrivalTime: transportationMsg.arrivalTime ? new Date(transportationMsg.arrivalTime) : null,
           details: transportationMsg.details,

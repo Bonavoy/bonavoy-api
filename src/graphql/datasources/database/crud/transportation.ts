@@ -1,5 +1,5 @@
 import { DataSource, DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient, Transportation, Prisma } from '@prisma/client'
+import type { PrismaClient, Transportation, Prisma, TransportationType } from '@prisma/client'
 import { Context } from '@bonavoy/types/auth'
 import DataLoader from 'dataloader'
 import { DBTransportation } from '@bonavoy/graphql/datasources/types'
@@ -60,21 +60,26 @@ export default class TransportationAPI extends DataSource {
         },
       })
 
-      if (transportationArr.length && transportationArr[transportationArr.length - 1].type !== transportation.type) {
-        throw new Error('Connecting transportation must be of the same type')
-      }
+      let connectingTransportation = new Map<
+        string,
+        { type: TransportationType; connectingId: string; placeId: string }[]
+      >()
 
-      let connectingTransportationCounts = new Map<string, number>()
       transportationArr.forEach((dbTransportation) => {
-        if (connectingTransportationCounts.has(dbTransportation.connectingId)) {
-          connectingTransportationCounts.set(
-            dbTransportation.connectingId,
-            connectingTransportationCounts.get(dbTransportation.connectingId)! + 1,
-          )
+        if (connectingTransportation.has(dbTransportation.connectingId)) {
+          connectingTransportation.get(dbTransportation.connectingId)!.push(dbTransportation)
         } else {
-          connectingTransportationCounts.set(dbTransportation.connectingId, 1)
+          connectingTransportation.set(dbTransportation.connectingId, [dbTransportation])
         }
       })
+
+      const connectingTransportationList = connectingTransportation.get(transportation.connectingId)
+      if (
+        connectingTransportationList &&
+        connectingTransportationList[connectingTransportationList.length - 1].type !== transportation.type
+      ) {
+        throw new Error('Connecting transportation must be of the same type')
+      }
 
       return await this.prisma.transportation.create({
         data: {
@@ -88,7 +93,7 @@ export default class TransportationAPI extends DataSource {
           placeId: placeId,
           order: transportation.order,
           connectingId: transportation.connectingId,
-          connectingOrder: connectingTransportationCounts.get(transportation.connectingId),
+          connectingOrder: connectingTransportation.get(transportation.connectingId)?.length ?? 0,
         },
       })
     })
