@@ -272,7 +272,7 @@ export type Place = {
   placeName: Scalars['String'];
   startDate?: Maybe<Scalars['DateTime']>;
   text: Scalars['String'];
-  transportation: Array<Transportation>;
+  transportation: Array<Array<Transportation>>;
 };
 
 export type PlaceDates = {
@@ -305,7 +305,7 @@ export type Query = {
   place: Place;
   places: Array<Place>;
   routeSegments: Array<Array<Array<Scalars['Float']>>>;
-  transportation: Array<Transportation>;
+  transportation: Array<Array<Transportation>>;
   trip: Trip;
   trips: TripConnection;
   user: User;
@@ -405,6 +405,8 @@ export type Transportation = {
   arrivalCoords?: Maybe<Coords>;
   arrivalLocation: Scalars['String'];
   arrivalTime?: Maybe<Scalars['DateTime']>;
+  connectingId: Scalars['ID'];
+  connectingOrder: Scalars['Int'];
   departureCoords?: Maybe<Coords>;
   departureLocation: Scalars['String'];
   departureTime?: Maybe<Scalars['DateTime']>;
@@ -418,11 +420,13 @@ export type TransportationInput = {
   arrivalCoords?: InputMaybe<InputCoords>;
   arrivalLocation: Scalars['String'];
   arrivalTime?: InputMaybe<Scalars['DateTime']>;
+  connectingId: Scalars['String'];
   departureCoords?: InputMaybe<InputCoords>;
   departureLocation: Scalars['String'];
   departureTime?: InputMaybe<Scalars['DateTime']>;
   details: Scalars['String'];
   id: Scalars['ID'];
+  order: Scalars['Int'];
   type: TransportationType;
 };
 
@@ -847,7 +851,7 @@ export type PlaceResolvers<ContextType = any, ParentType extends ResolversParent
   placeName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   startDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType>;
+  transportation?: Resolver<Array<Array<ResolversTypes['Transportation']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -869,7 +873,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;
-  transportation?: Resolver<Array<ResolversTypes['Transportation']>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
+  transportation?: Resolver<Array<Array<ResolversTypes['Transportation']>>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<QueryTripArgs, 'tripId'>>;
   trips?: Resolver<ResolversTypes['TripConnection'], ParentType, ContextType, RequireFields<QueryTripsArgs, 'limit'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -886,6 +890,8 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
   arrivalCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
   arrivalLocation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   arrivalTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  connectingId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  connectingOrder?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   departureCoords?: Resolver<Maybe<ResolversTypes['Coords']>, ParentType, ContextType>;
   departureLocation?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   departureTime?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;

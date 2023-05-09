@@ -3,7 +3,7 @@ import { gql } from 'graphql-tag'
 export default gql`
   # queries
   type Query {
-    transportation(placeId: ID!): [Transportation!]!
+    transportation(placeId: ID!): [[Transportation!]!]!
     # reorder
   }
 
@@ -29,6 +29,8 @@ export default gql`
     details: String!
     arrivalCoords: InputCoords
     departureCoords: InputCoords
+    connectingId: String!
+    order: Int!
     # order TODO
   }
 
@@ -61,6 +63,8 @@ export default gql`
     order: Int!
     arrivalCoords: Coords
     departureCoords: Coords
+    connectingId: ID!
+    connectingOrder: Int!
   }
 
   type Coords {

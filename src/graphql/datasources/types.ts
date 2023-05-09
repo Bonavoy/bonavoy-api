@@ -76,6 +76,8 @@ export interface DBTransportation {
   arrivalLng?: number
   departureLat?: number
   departureLng?: number
+  order: number
+  connectingId: string
 }
 
 export interface DBInvite {
