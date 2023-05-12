@@ -167,46 +167,56 @@ export const resolvers: Resolvers = {
       }))
     },
     transportation: async (parent, _args, ctx: Context) => {
-      const transportations = await ctx.dataSources.transportation.find(parent.id)
-      const transportationList = await transportations.map((transportation) => {
-        let transportationType = TransportationType.Car
-        switch (transportation.type) {
-          case TransportationType.Plane:
-            transportationType = TransportationType.Plane
-            break
-          case TransportationType.Bus:
-            transportationType = TransportationType.Bus
-            break
-        }
-        let departureCoords
-        if (transportation.departureLat && transportation.departureLng) {
-          departureCoords = {
-            lng: transportation.departureLng,
-            lat: transportation.departureLat,
+      const dbTransportation = await ctx.dataSources.transportation.find(parent.id)
+      const transportationArr = dbTransportation.map((connectedTransportation) => {
+        const connectingTransportationList = connectedTransportation.map((transportation) => {
+          let transportationType = TransportationType.Car
+          switch (transportation.type) {
+            case TransportationType.Plane:
+              transportationType = TransportationType.Plane
+              break
+            case TransportationType.Bus:
+              transportationType = TransportationType.Bus
+              break
           }
-        }
-        let arrivalCoords
-        if (transportation.arrivalLat && transportation.arrivalLng) {
-          arrivalCoords = {
-            lng: transportation.arrivalLng,
-            lat: transportation.arrivalLat,
+          let departureCoords
+          if (transportation.departureLat && transportation.departureLng) {
+            departureCoords = {
+              lng: transportation.departureLng,
+              lat: transportation.departureLat,
+            }
           }
-        }
-        return {
-          id: transportation.id,
-          departureLocation: transportation.departureLocation,
-          departureTime: transportation.departureTime,
-          arrivalLocation: transportation.arrivalLocation,
-          arrivalTime: transportation.arrivalTime,
-          details: transportation.details,
-          type: transportationType,
-          order: transportation.order,
-          departureCoords,
-          arrivalCoords,
-        }
+          let arrivalCoords
+          if (transportation.arrivalLat && transportation.arrivalLng) {
+            arrivalCoords = {
+              lng: transportation.arrivalLng,
+              lat: transportation.arrivalLat,
+            }
+          }
+          return {
+            id: transportation.id,
+            departureLocation: transportation.departureLocation,
+            departureTime: transportation.departureTime,
+            arrivalLocation: transportation.arrivalLocation,
+            arrivalTime: transportation.arrivalTime,
+            details: transportation.details,
+            type: transportationType,
+            order: transportation.order,
+            departureCoords,
+            arrivalCoords,
+            connectingId: transportation.connectingId,
+            connectingOrder: transportation.connectingOrder,
+          }
+        })
+
+        connectingTransportationList.sort((a, b) => a.connectingOrder - b.connectingOrder)
+
+        return connectingTransportationList
       })
-      transportationList.sort((a, b) => a.order - b.order)
-      return transportationList
+
+      transportationArr.sort((a, b) => a[0].order - b[0].order)
+
+      return transportationArr
     },
   },
 }

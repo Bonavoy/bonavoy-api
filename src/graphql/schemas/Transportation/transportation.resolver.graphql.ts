@@ -15,44 +15,56 @@ export const resolvers: Resolvers = {
         throw new GraphQLError('Not allowed to view this transportation', { extensions: { code: UNAUTHORIZED } })
       }
 
-      const transportations = await ctx.dataSources.transportation.find(placeId)
-      return transportations.map((transportation) => {
-        let transportationType = TransportationType.Car
-        switch (transportation.type) {
-          case TransportationType.Plane:
-            transportationType = TransportationType.Plane
-            break
-          case TransportationType.Bus:
-            transportationType = TransportationType.Bus
-            break
-        }
-        let departureCoords
-        if (transportation.departureLat && transportation.departureLng) {
-          departureCoords = {
-            lng: transportation.departureLng,
-            lat: transportation.departureLat,
+      const dbTransportation = await ctx.dataSources.transportation.find(placeId)
+      const transportationArr = dbTransportation.map((connectedTransportation) => {
+        const connectingTransportationList = connectedTransportation.map((transportation) => {
+          let transportationType = TransportationType.Car
+          switch (transportation.type) {
+            case TransportationType.Plane:
+              transportationType = TransportationType.Plane
+              break
+            case TransportationType.Bus:
+              transportationType = TransportationType.Bus
+              break
           }
-        }
-        let arrivalCoords
-        if (transportation.arrivalLat && transportation.arrivalLng) {
-          arrivalCoords = {
-            lng: transportation.arrivalLng,
-            lat: transportation.arrivalLat,
+          let departureCoords
+          if (transportation.departureLat && transportation.departureLng) {
+            departureCoords = {
+              lng: transportation.departureLng,
+              lat: transportation.departureLat,
+            }
           }
-        }
-        return {
-          id: transportation.id,
-          departureLocation: transportation.departureLocation,
-          departureTime: transportation.departureTime,
-          arrivalLocation: transportation.arrivalLocation,
-          arrivalTime: transportation.arrivalTime,
-          details: transportation.details,
-          type: transportationType,
-          order: transportation.order,
-          departureCoords,
-          arrivalCoords,
-        }
+          let arrivalCoords
+          if (transportation.arrivalLat && transportation.arrivalLng) {
+            arrivalCoords = {
+              lng: transportation.arrivalLng,
+              lat: transportation.arrivalLat,
+            }
+          }
+          return {
+            id: transportation.id,
+            departureLocation: transportation.departureLocation,
+            departureTime: transportation.departureTime,
+            arrivalLocation: transportation.arrivalLocation,
+            arrivalTime: transportation.arrivalTime,
+            details: transportation.details,
+            type: transportationType,
+            order: transportation.order,
+            departureCoords,
+            arrivalCoords,
+            connectingId: transportation.connectingId,
+            connectingOrder: transportation.connectingOrder,
+          }
+        })
+
+        connectingTransportationList.sort((a, b) => a.connectingOrder - b.connectingOrder)
+
+        return connectingTransportationList
       })
+
+      transportationArr.sort((a, b) => a[0].order - b[0].order)
+
+      return transportationArr
     },
   },
   Mutation: {
@@ -61,6 +73,7 @@ export const resolvers: Resolvers = {
       if (!canAccessPlace) {
         throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
       }
+
       const newTransportation = await ctx.dataSources.transportation.create(placeId, {
         type: transportation.type,
         id: transportation.id, // allow client to generate id due to race condition with subscription
@@ -73,6 +86,8 @@ export const resolvers: Resolvers = {
         departureLng: transportation.departureCoords?.lng,
         arrivalLat: transportation.arrivalCoords?.lat,
         arrivalLng: transportation.arrivalCoords?.lng,
+        connectingId: transportation.connectingId,
+        order: transportation.order,
       })
       let transportationType = TransportationType.Car
       switch (newTransportation.type) {
@@ -108,6 +123,8 @@ export const resolvers: Resolvers = {
         order: newTransportation.order,
         departureCoords,
         arrivalCoords,
+        connectingId: newTransportation.connectingId,
+        connectingOrder: newTransportation.connectingOrder,
       }
     },
     updateTransportation: async (_parent, { id, transportation }, ctx: Context) => {
@@ -162,6 +179,8 @@ export const resolvers: Resolvers = {
         order: updatedTransportation.order,
         departureCoords,
         arrivalCoords,
+        connectingId: updatedTransportation.connectingId,
+        connectingOrder: updatedTransportation.connectingOrder,
       }
     },
     deleteTransportation: async (_parent, { id }, ctx: Context) => {
@@ -191,6 +210,7 @@ export const resolvers: Resolvers = {
         // transform the Kafka event to the expected subscription payload
         const payloadString = payload.value ? payload.value.toString() : ''
         const transportationMsg = JSON.parse(payloadString)
+
         let transportationType = TransportationType.Car
         switch (transportationMsg.type) {
           case TransportationType.Plane:
@@ -200,6 +220,7 @@ export const resolvers: Resolvers = {
             transportationType = TransportationType.Bus
             break
         }
+
         let departureCoords
         if (transportationMsg.departureLat && transportationMsg.departureLng) {
           departureCoords = {
@@ -207,6 +228,7 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.departureLat,
           }
         }
+
         let arrivalCoords
         if (transportationMsg.arrivalLat && transportationMsg.arrivalLng) {
           arrivalCoords = {
@@ -214,10 +236,11 @@ export const resolvers: Resolvers = {
             lat: transportationMsg.arrivalLat,
           }
         }
+
         const transportation: Transportation = {
           id: transportationMsg.id,
           departureLocation: transportationMsg.departureLocation,
-          departureTime: transportationMsg.arrivalTime ? new Date(transportationMsg.departureTime) : null,
+          departureTime: transportationMsg.departureTime ? new Date(transportationMsg.departureTime) : null,
           arrivalLocation: transportationMsg.arrivalLocation,
           arrivalTime: transportationMsg.arrivalTime ? new Date(transportationMsg.arrivalTime) : null,
           details: transportationMsg.details,
@@ -225,6 +248,8 @@ export const resolvers: Resolvers = {
           order: transportationMsg.order,
           departureCoords,
           arrivalCoords,
+          connectingId: transportationMsg.connectingId,
+          connectingOrder: transportationMsg.connectingOrder,
         }
         return {
           transportation,

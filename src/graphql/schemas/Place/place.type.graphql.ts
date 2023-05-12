@@ -49,6 +49,6 @@ export default gql`
     country: String!
     center: [Float!]!
     dayPlans: [DayPlan!]!
-    transportation: [Transportation!]!
+    transportation: [[Transportation!]!]!
   }
 `
