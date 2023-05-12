@@ -7,14 +7,18 @@ export default gql`
 
   type Mutation {
     sendInvite(tripId: ID!, invitee: InviteInput!): Invite!
+    deleteInvite(id: ID!): PendingInvite!
+    updateInviteRole(id: ID!, role: TripRole!): PendingInvite!
   }
 
   # types
   type PendingInvite {
+    id: ID!
     email: String!
     role: TripRole!
   }
 
+  # invite is pending if user not exists yet
   union Invite = AuthorsOnTrips | PendingInvite
 
   # inputs

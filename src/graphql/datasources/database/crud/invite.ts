@@ -2,7 +2,7 @@ import { DataSource } from 'apollo-datasource'
 
 //types
 import type { DataSourceConfig } from 'apollo-datasource'
-import type { PrismaClient } from '@prisma/client'
+import type { PrismaClient, TripRole } from '@prisma/client'
 import { Context } from '@bonavoy/types/auth'
 import { DBInvite } from '../../types'
 
@@ -58,10 +58,29 @@ export default class InviteAPI extends DataSource {
     })
   }
 
+  updateRole = async (id: string, role: TripRole) => {
+    return await this.prisma.invite.update({
+      where: {
+        id,
+      },
+      data: {
+        role,
+      },
+    })
+  }
+
   deleteMany = async (email: string) => {
     return await this.prisma.invite.deleteMany({
       where: {
         email,
+      },
+    })
+  }
+
+  delete = async (id: string) => {
+    return await this.prisma.invite.delete({
+      where: {
+        id,
       },
     })
   }

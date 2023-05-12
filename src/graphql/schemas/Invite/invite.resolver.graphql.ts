@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 
-import { AuthorsOnTrips, PendingInvite, Resolvers, TripRole } from '@bonavoy/generated/graphql'
+import { AuthorsOnTrips, Invite, PendingInvite, Resolvers, TripRole } from '@bonavoy/generated/graphql'
 import { Context } from '@bonavoy/types/auth'
 import { isValidEmail } from '@bonavoy/utils/validators'
 import { GraphQLError } from 'graphql'
@@ -29,6 +29,7 @@ const inviteResolver: Resolvers = {
         }
 
         return {
+          id: invite.id,
           email: invite.email,
           role: role,
         }
@@ -43,6 +44,13 @@ const inviteResolver: Resolvers = {
 
       const trip = await ctx.dataSources.trips.findTrip(tripId)
       if (!trip) throw new GraphQLError("trip doesn't exist")
+
+      const authorsOnTrip = await ctx.dataSources.authorsOnTrips.find(tripId)
+      const invites = await ctx.dataSources.invite.findManyByTripId(tripId)
+
+      if (authorsOnTrip.length + invites.length > 8) {
+        throw new GraphQLError('You can only have 8 people invited to a trip')
+      }
 
       await sendInvite(invitee.email, trip)
 
@@ -75,24 +83,69 @@ const inviteResolver: Resolvers = {
           user: {} as any,
           trip: {} as any,
         }
-      } else {
-        var code = crypto.randomBytes(64).toString('hex') // TODO: don't think we need to generate code
+      }
 
-        const existingInvite = await ctx.dataSources.invite.findInvite(invitee.email, tripId)
-        if (existingInvite) throw new GraphQLError('Invite already exists')
+      var code = crypto.randomBytes(64).toString('hex') // TODO: don't think we need to generate code
 
-        await ctx.dataSources.invite.create({
-          tripId,
-          email: invitee.email,
-          role: invitee.role,
-          code,
-        })
+      const existingInvite = await ctx.dataSources.invite.findInvite(invitee.email, tripId)
+      if (existingInvite) throw new GraphQLError('Invite already exists')
+
+      const invite = await ctx.dataSources.invite.create({
+        tripId,
+        email: invitee.email,
+        role: invitee.role,
+        code,
+      })
+
+      return {
+        __typename: 'PendingInvite',
+        id: invite.id,
+        email: invite.email,
+        role: invite.role,
+      } as Invite
+    },
+    updateInviteRole: async (_parent, { id, role }, ctx: Context) => {
+      const updatedRole = await ctx.dataSources.invite.updateRole(id, role)
+
+      let tripRole = updatedRole.role as TripRole
+      switch (updatedRole.role) {
+        case TripRole.Author:
+          role = TripRole.Author
+          break
+        case TripRole.Editor:
+          role = TripRole.Editor
+          break
+        default:
+          role = TripRole.Viewer
       }
 
       return {
         __typename: 'PendingInvite',
-        email: invitee.email,
-        role: invitee.role,
+        id: updatedRole.id,
+        email: updatedRole.email,
+        role: tripRole,
+      }
+    },
+    deleteInvite: async (_parent, { id }, ctx: Context) => {
+      const deletedInvite = await ctx.dataSources.invite.delete(id)
+
+      let role = deletedInvite.role as TripRole
+      switch (deletedInvite.role) {
+        case TripRole.Author:
+          role = TripRole.Author
+          break
+        case TripRole.Editor:
+          role = TripRole.Editor
+          break
+        default:
+          role = TripRole.Viewer
+      }
+
+      return {
+        __typename: 'PendingInvite',
+        id: deletedInvite.id,
+        email: deletedInvite.email,
+        role: role,
       }
     },
   },

@@ -129,14 +129,18 @@ export type Mutation = {
   createUser: User;
   deleteActivity: Scalars['ID'];
   deleteDayPlan: Scalars['ID'];
+  deleteInvite: PendingInvite;
   deletePlace: Scalars['ID'];
   deleteTransportation: Scalars['ID'];
   deleteTrip: Scalars['Boolean'];
+  removeAuthorOnTrip: Scalars['ID'];
   sendInvite: Invite;
   token: Scalars['Boolean'];
   updateActiveElement: ActiveElement;
   updateActivity: Activity;
+  updateAuthorOnTripRole: AuthorsOnTrips;
   updateDayPlan: DayPlan;
+  updateInviteRole: PendingInvite;
   updatePlace: Place;
   updateTransportation: Transportation;
   updateTrip: Trip;
@@ -193,6 +197,11 @@ export type MutationDeleteDayPlanArgs = {
 };
 
 
+export type MutationDeleteInviteArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationDeletePlaceArgs = {
   placeId: Scalars['ID'];
 };
@@ -205,6 +214,12 @@ export type MutationDeleteTransportationArgs = {
 
 export type MutationDeleteTripArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationRemoveAuthorOnTripArgs = {
+  authorId: Scalars['String'];
+  tripId: Scalars['ID'];
 };
 
 
@@ -226,9 +241,22 @@ export type MutationUpdateActivityArgs = {
 };
 
 
+export type MutationUpdateAuthorOnTripRoleArgs = {
+  authorId: Scalars['String'];
+  role: TripRole;
+  tripId: Scalars['ID'];
+};
+
+
 export type MutationUpdateDayPlanArgs = {
   id: Scalars['ID'];
   updateDayPlan: UpdateDayPlanInput;
+};
+
+
+export type MutationUpdateInviteRoleArgs = {
+  id: Scalars['ID'];
+  role: TripRole;
 };
 
 
@@ -257,6 +285,7 @@ export type PageInfo = {
 export type PendingInvite = {
   __typename?: 'PendingInvite';
   email: Scalars['String'];
+  id: Scalars['ID'];
   role: TripRole;
 };
 
@@ -815,14 +844,18 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
   deleteActivity?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteActivityArgs, 'id'>>;
   deleteDayPlan?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteDayPlanArgs, 'id'>>;
+  deleteInvite?: Resolver<ResolversTypes['PendingInvite'], ParentType, ContextType, RequireFields<MutationDeleteInviteArgs, 'id'>>;
   deletePlace?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeletePlaceArgs, 'placeId'>>;
   deleteTransportation?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationDeleteTransportationArgs, 'id'>>;
   deleteTrip?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteTripArgs, 'id'>>;
+  removeAuthorOnTrip?: Resolver<ResolversTypes['ID'], ParentType, ContextType, RequireFields<MutationRemoveAuthorOnTripArgs, 'authorId' | 'tripId'>>;
   sendInvite?: Resolver<ResolversTypes['Invite'], ParentType, ContextType, RequireFields<MutationSendInviteArgs, 'invitee' | 'tripId'>>;
   token?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   updateActiveElement?: Resolver<ResolversTypes['ActiveElement'], ParentType, ContextType, RequireFields<MutationUpdateActiveElementArgs, 'activeElement' | 'tripId'>>;
   updateActivity?: Resolver<ResolversTypes['Activity'], ParentType, ContextType, RequireFields<MutationUpdateActivityArgs, 'id' | 'updateActivityInput'>>;
+  updateAuthorOnTripRole?: Resolver<ResolversTypes['AuthorsOnTrips'], ParentType, ContextType, RequireFields<MutationUpdateAuthorOnTripRoleArgs, 'authorId' | 'role' | 'tripId'>>;
   updateDayPlan?: Resolver<ResolversTypes['DayPlan'], ParentType, ContextType, RequireFields<MutationUpdateDayPlanArgs, 'id' | 'updateDayPlan'>>;
+  updateInviteRole?: Resolver<ResolversTypes['PendingInvite'], ParentType, ContextType, RequireFields<MutationUpdateInviteRoleArgs, 'id' | 'role'>>;
   updatePlace?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<MutationUpdatePlaceArgs, 'id' | 'place'>>;
   updateTransportation?: Resolver<ResolversTypes['Transportation'], ParentType, ContextType, RequireFields<MutationUpdateTransportationArgs, 'id' | 'transportation'>>;
   updateTrip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<MutationUpdateTripArgs, 'updateTripInput'>>;
@@ -836,6 +869,7 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type PendingInviteResolvers<ContextType = any, ParentType extends ResolversParentTypes['PendingInvite'] = ResolversParentTypes['PendingInvite']> = {
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['TripRole'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
