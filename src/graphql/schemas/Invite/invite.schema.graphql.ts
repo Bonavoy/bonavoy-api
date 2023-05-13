@@ -7,8 +7,8 @@ export default gql`
 
   type Mutation {
     sendInvite(tripId: ID!, invitee: InviteInput!): Invite!
-    deleteInvite(id: ID!): PendingInvite!
     updateInviteRole(id: ID!, role: TripRole!): PendingInvite!
+    deleteInvite(id: ID!): ID!
   }
 
   # types

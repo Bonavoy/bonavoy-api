@@ -31,12 +31,8 @@ const authorsOnTripsResolver: Resolvers = {
     },
   },
   Mutation: {
-    updateAuthorOnTripRole: async (_parent, { tripId, authorId, role }, ctx: Context) => {
-      const authorOnTrip = await ctx.dataSources.authorsOnTrips.updateRole(tripId, authorId, role)
-
-      if (!authorOnTrip) {
-        throw new GraphQLError('Something went wrong updating role')
-      }
+    updateAuthorOnTripRole: async (_parent, { id, role }, ctx: Context) => {
+      const authorOnTrip = await ctx.dataSources.authorsOnTrips.updateRole(id, role)
 
       return {
         id: authorOnTrip.id,
@@ -49,12 +45,8 @@ const authorsOnTripsResolver: Resolvers = {
         trip: {} as any,
       } as any
     },
-    removeAuthorOnTrip: async (_parent, { tripId, authorId }, ctx: Context) => {
-      const deletedAuthorOnTripId = await ctx.dataSources.authorsOnTrips.delete(tripId, authorId)
-
-      if (!deletedAuthorOnTripId) {
-        throw new GraphQLError('Something went wrong updating role')
-      }
+    removeAuthorOnTrip: async (_parent, { id }, ctx: Context) => {
+      const deletedAuthorOnTripId = await ctx.dataSources.authorsOnTrips.delete(id)
 
       return deletedAuthorOnTripId
     },

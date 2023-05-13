@@ -140,13 +140,7 @@ const inviteResolver: Resolvers = {
         default:
           role = TripRole.Viewer
       }
-
-      return {
-        __typename: 'PendingInvite',
-        id: deletedInvite.id,
-        email: deletedInvite.email,
-        role: role,
-      }
+      return deletedInvite.id
     },
   },
 }

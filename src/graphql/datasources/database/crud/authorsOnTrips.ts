@@ -1,4 +1,4 @@
-import { AuthorsOnTrips, PrismaClient, TripRole } from '@prisma/client'
+import { PrismaClient, TripRole } from '@prisma/client'
 import { DataSource } from 'apollo-datasource'
 
 import { Context } from '@bonavoy/types/auth'
@@ -31,29 +31,15 @@ export default class AuthorsOnTripsAPI extends DataSource {
     })
   }
 
-  updateRole = async (tripId: string, userId: string, role: TripRole) => {
-    const authorOnTrip = await this.prisma.authorsOnTrips.findFirst({
+  updateRole = async (id: string, role: TripRole) => {
+    return await this.prisma.authorsOnTrips.update({
       where: {
-        tripId,
-        userId,
-      },
-    })
-
-    if (!authorOnTrip) return null
-
-    await this.prisma.authorsOnTrips.update({
-      where: {
-        id: authorOnTrip.id,
+        id,
       },
       data: {
         role,
       },
     })
-
-    return {
-      ...authorOnTrip,
-      role,
-    }
   }
 
   createMany = async (authorOnTrips: DBAuthorsOnTrips[]) => {
@@ -62,22 +48,13 @@ export default class AuthorsOnTripsAPI extends DataSource {
     })
   }
 
-  delete = async (tripId: string, userId: string) => {
-    const authorOnTrip = await this.prisma.authorsOnTrips.findFirst({
+  delete = async (id: string) => {
+    const deletedAuthorOnTrip = await this.prisma.authorsOnTrips.delete({
       where: {
-        tripId,
-        userId,
+        id,
       },
     })
 
-    if (!authorOnTrip) return null
-
-    await this.prisma.authorsOnTrips.delete({
-      where: {
-        id: authorOnTrip.id,
-      },
-    })
-
-    return authorOnTrip.id
+    return deletedAuthorOnTrip.id
   }
 }
