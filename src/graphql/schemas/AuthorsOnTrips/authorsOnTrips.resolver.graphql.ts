@@ -30,6 +30,27 @@ const authorsOnTripsResolver: Resolvers = {
       })
     },
   },
+  Mutation: {
+    updateAuthorOnTripRole: async (_parent, { id, role }, ctx: Context) => {
+      const authorOnTrip = await ctx.dataSources.authorsOnTrips.updateRole(id, role)
+
+      return {
+        id: authorOnTrip.id,
+        role,
+        // args for resolved fields
+        tripId: authorOnTrip.tripId,
+        userId: authorOnTrip.userId,
+        // resolved fields
+        user: {} as any,
+        trip: {} as any,
+      } as any
+    },
+    removeAuthorOnTrip: async (_parent, { id }, ctx: Context) => {
+      const deletedAuthorOnTripId = await ctx.dataSources.authorsOnTrips.delete(id)
+
+      return deletedAuthorOnTripId
+    },
+  },
   AuthorsOnTrips: {
     trip: async (parent: any, _args, ctx: Context): Promise<Trip> => {
       const trip = await ctx.dataSources.trips.findTrip(parent.tripId)
