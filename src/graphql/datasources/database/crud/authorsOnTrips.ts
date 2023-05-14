@@ -1,4 +1,4 @@
-import { AuthorsOnTrips, PrismaClient, TripRole } from '@prisma/client'
+import { PrismaClient, TripRole } from '@prisma/client'
 import { DataSource } from 'apollo-datasource'
 
 import { Context } from '@bonavoy/types/auth'
@@ -31,9 +31,30 @@ export default class AuthorsOnTripsAPI extends DataSource {
     })
   }
 
+  updateRole = async (id: string, role: TripRole) => {
+    return await this.prisma.authorsOnTrips.update({
+      where: {
+        id,
+      },
+      data: {
+        role,
+      },
+    })
+  }
+
   createMany = async (authorOnTrips: DBAuthorsOnTrips[]) => {
     return await this.prisma.authorsOnTrips.createMany({
       data: authorOnTrips,
     })
+  }
+
+  delete = async (id: string) => {
+    const deletedAuthorOnTrip = await this.prisma.authorsOnTrips.delete({
+      where: {
+        id,
+      },
+    })
+
+    return deletedAuthorOnTrip.id
   }
 }

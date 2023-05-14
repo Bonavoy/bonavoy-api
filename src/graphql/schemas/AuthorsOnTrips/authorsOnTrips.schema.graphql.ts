@@ -5,6 +5,11 @@ export default gql`
     authorsOnTrips(tripId: ID!): [AuthorsOnTrips!]!
   }
 
+  type Mutation {
+    updateAuthorOnTripRole(id: ID!, role: TripRole!): AuthorsOnTrips!
+    removeAuthorOnTrip(id: ID!): ID!
+  }
+
   type AuthorsOnTrips {
     id: ID!
     user: User!
