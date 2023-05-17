@@ -2829,7 +2829,7 @@
             "description": null,
             "args": [
               {
-                "name": "id",
+                "name": "placeId",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

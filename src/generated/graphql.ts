@@ -379,7 +379,7 @@ export type QueryInvitesArgs = {
 
 
 export type QueryPlaceArgs = {
-  id: Scalars['ID'];
+  placeId: Scalars['ID'];
 };
 
 
@@ -914,7 +914,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   dayPlans?: Resolver<Array<ResolversTypes['DayPlan']>, ParentType, ContextType, RequireFields<QueryDayPlansArgs, 'placeId'>>;
   getLocationSuggestions?: Resolver<Array<ResolversTypes['LocationSuggestion']>, ParentType, ContextType, RequireFields<QueryGetLocationSuggestionsArgs, 'query'>>;
   invites?: Resolver<Array<ResolversTypes['PendingInvite']>, ParentType, ContextType, RequireFields<QueryInvitesArgs, 'tripId'>>;
-  place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'id'>>;
+  place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'placeId'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   plannerDetails?: Resolver<ResolversTypes['PlannerDetails'], ParentType, ContextType, RequireFields<QueryPlannerDetailsArgs, 'tripId'>>;
   routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;

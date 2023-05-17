@@ -4,7 +4,7 @@ export default gql`
   # queries
   type Query {
     places(tripId: ID!): [Place!]!
-    place(id: ID!): Place!
+    place(placeId: ID!): Place!
   }
 
   # mutations
