@@ -4,7 +4,7 @@ export default gql`
   # queries
   type Query {
     places(tripId: ID!): [Place!]!
-    place(id: ID!): Place!
+    place(placeId: ID!): Place!
   }
 
   # mutations
@@ -50,10 +50,5 @@ export default gql`
     center: [Float!]!
     dayPlans: [DayPlan!]!
     transportation: [[Transportation!]!]!
-  }
-
-  type PlaceDates {
-    startDate: DateTime!
-    endDate: DateTime!
   }
 `

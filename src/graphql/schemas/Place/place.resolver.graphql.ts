@@ -32,15 +32,15 @@ export const resolvers: Resolvers = {
       placesList.sort((a, b) => a.order - b.order)
       return placesList
     },
-    place: async (_parent, { id }, ctx: Context) => {
-      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [id])
+    place: async (_parent, { placeId }, ctx: Context) => {
+      const canAccessPlace = await ctx.accessControl.canAccessPlaces(ctx.auth.sub!, [placeId])
       if (!canAccessPlace) {
         throw new GraphQLError('Not allowed to view this place', { extensions: { code: UNAUTHORIZED } })
       }
 
-      const place = await ctx.dataSources.places.findPlace(id)
+      const place = await ctx.dataSources.places.findPlace(placeId)
       if (!place) {
-        throw new GraphQLError(`Could not find place with id ${id}`)
+        throw new GraphQLError(`Could not find place with id ${placeId}`)
       }
       return {
         id: place.id,
