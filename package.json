@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/datasource-rest": "^5.0.2",
     "@apollo/server": "^4.3.2",
+    "@google-cloud/storage": "^6.10.1",
     "@graphql-tools/schema": "^9.0.17",
     "@keyv/redis": "^2.5.4",
     "@prisma/client": "^4.9.0",

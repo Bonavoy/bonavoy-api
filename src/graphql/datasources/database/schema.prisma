@@ -85,6 +85,7 @@ model Transportation {
   departureLat      Float?
   arrivalLng        Float?
   arrivalLat        Float?
+  fileAttachments   FileAttachment[]
 }
 
 model DayPlan {
@@ -108,6 +109,13 @@ model Activity {
   dayPlan   DayPlan   @relation(fields: [dayPlanId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model FileAttachment {
+  id               String         @id @default(uuid())
+  path             String
+  transportation   Transportation @relation(fields: [transportationId], references: [id], onDelete: Cascade)
+  transportationId String
 }
 
 enum TripRole {
