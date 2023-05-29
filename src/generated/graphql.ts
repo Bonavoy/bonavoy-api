@@ -455,6 +455,7 @@ export type Transportation = {
   details: Scalars['String'];
   id: Scalars['ID'];
   order: Scalars['Int'];
+  route?: Maybe<RouteLeg>;
   type: TransportationType;
 };
 
@@ -957,6 +958,7 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
   details?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  route?: Resolver<Maybe<ResolversTypes['RouteLeg']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TransportationType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

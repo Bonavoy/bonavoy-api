@@ -206,6 +206,7 @@ export const resolvers: Resolvers = {
             arrivalCoords,
             connectingId: transportation.connectingId,
             connectingOrder: transportation.connectingOrder,
+            route: {} as any,
           }
         })
 

@@ -65,6 +65,7 @@ export default gql`
     departureCoords: Coords
     connectingId: ID!
     connectingOrder: Int!
+    route: RouteLeg
   }
 
   type Coords {
