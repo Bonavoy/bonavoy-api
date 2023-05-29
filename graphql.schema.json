@@ -2932,11 +2932,11 @@
             "deprecationReason": null
           },
           {
-            "name": "routeSegments",
+            "name": "routeLegs",
             "description": null,
             "args": [
               {
-                "name": "segmentWaypoints",
+                "name": "routeWaypoints",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -2978,24 +2978,9 @@
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "LIST",
-                        "name": null,
-                        "ofType": {
-                          "kind": "NON_NULL",
-                          "name": null,
-                          "ofType": {
-                            "kind": "SCALAR",
-                            "name": "Float"
-                          }
-                        }
-                      }
-                    }
+                    "kind": "OBJECT",
+                    "name": "RouteLeg",
+                    "ofType": null
                   }
                 }
               }
@@ -3141,6 +3126,65 @@
                 "kind": "OBJECT",
                 "name": "User",
                 "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "RouteLeg",
+        "description": null,
+        "fields": [
+          {
+            "name": "duration",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "segments",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "Float",
+                        "ofType": null
+                      }
+                    }
+                  }
+                }
               }
             },
             "isDeprecated": false,
@@ -3453,6 +3497,18 @@
                 "name": "Int",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "route",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "RouteLeg",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

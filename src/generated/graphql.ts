@@ -335,7 +335,7 @@ export type Query = {
   place: Place;
   places: Array<Place>;
   plannerDetails: PlannerDetails;
-  routeSegments: Array<Array<Array<Scalars['Float']>>>;
+  routeLegs: Array<RouteLeg>;
   transportation: Array<Array<Transportation>>;
   trip: Trip;
   trips: TripConnection;
@@ -393,8 +393,8 @@ export type QueryPlannerDetailsArgs = {
 };
 
 
-export type QueryRouteSegmentsArgs = {
-  segmentWaypoints: Array<Array<InputCoords>>;
+export type QueryRouteLegsArgs = {
+  routeWaypoints: Array<Array<InputCoords>>;
 };
 
 
@@ -411,6 +411,12 @@ export type QueryTripArgs = {
 export type QueryTripsArgs = {
   after?: InputMaybe<Scalars['ID']>;
   limit: Scalars['Int'];
+};
+
+export type RouteLeg = {
+  __typename?: 'RouteLeg';
+  duration: Scalars['Float'];
+  segments: Array<Array<Scalars['Float']>>;
 };
 
 export type Subscription = {
@@ -449,6 +455,7 @@ export type Transportation = {
   details: Scalars['String'];
   id: Scalars['ID'];
   order: Scalars['Int'];
+  route?: Maybe<RouteLeg>;
   type: TransportationType;
 };
 
@@ -686,6 +693,7 @@ export type ResolversTypes = {
   PlaceInput: PlaceInput;
   PlannerDetails: ResolverTypeWrapper<PlannerDetails>;
   Query: ResolverTypeWrapper<{}>;
+  RouteLeg: ResolverTypeWrapper<RouteLeg>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   Transportation: ResolverTypeWrapper<Transportation>;
@@ -736,6 +744,7 @@ export type ResolversParentTypes = {
   PlaceInput: PlaceInput;
   PlannerDetails: PlannerDetails;
   Query: {};
+  RouteLeg: RouteLeg;
   String: Scalars['String'];
   Subscription: {};
   Transportation: Transportation;
@@ -917,11 +926,17 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   place?: Resolver<ResolversTypes['Place'], ParentType, ContextType, RequireFields<QueryPlaceArgs, 'placeId'>>;
   places?: Resolver<Array<ResolversTypes['Place']>, ParentType, ContextType, RequireFields<QueryPlacesArgs, 'tripId'>>;
   plannerDetails?: Resolver<ResolversTypes['PlannerDetails'], ParentType, ContextType, RequireFields<QueryPlannerDetailsArgs, 'tripId'>>;
-  routeSegments?: Resolver<Array<Array<Array<ResolversTypes['Float']>>>, ParentType, ContextType, RequireFields<QueryRouteSegmentsArgs, 'segmentWaypoints'>>;
+  routeLegs?: Resolver<Array<ResolversTypes['RouteLeg']>, ParentType, ContextType, RequireFields<QueryRouteLegsArgs, 'routeWaypoints'>>;
   transportation?: Resolver<Array<Array<ResolversTypes['Transportation']>>, ParentType, ContextType, RequireFields<QueryTransportationArgs, 'placeId'>>;
   trip?: Resolver<ResolversTypes['Trip'], ParentType, ContextType, RequireFields<QueryTripArgs, 'tripId'>>;
   trips?: Resolver<ResolversTypes['TripConnection'], ParentType, ContextType, RequireFields<QueryTripsArgs, 'limit'>>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+};
+
+export type RouteLegResolvers<ContextType = any, ParentType extends ResolversParentTypes['RouteLeg'] = ResolversParentTypes['RouteLeg']> = {
+  duration?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  segments?: Resolver<Array<Array<ResolversTypes['Float']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
@@ -943,6 +958,7 @@ export type TransportationResolvers<ContextType = any, ParentType extends Resolv
   details?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  route?: Resolver<Maybe<ResolversTypes['RouteLeg']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['TransportationType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1009,6 +1025,7 @@ export type Resolvers<ContextType = any> = {
   Place?: PlaceResolvers<ContextType>;
   PlannerDetails?: PlannerDetailsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  RouteLeg?: RouteLegResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Transportation?: TransportationResolvers<ContextType>;
   TransportationNotification?: TransportationNotificationResolvers<ContextType>;

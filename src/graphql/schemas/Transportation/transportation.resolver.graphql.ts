@@ -259,6 +259,42 @@ export const resolvers: Resolvers = {
       },
     },
   },
+  Transportation: {
+    route: async (parent, _args, ctx: Context) => {
+      if (
+        parent.type !== TransportationType.Car ||
+        !parent.arrivalCoords?.lat ||
+        !parent.arrivalCoords?.lng ||
+        !parent.departureCoords?.lat ||
+        !parent.departureCoords?.lng
+      ) {
+        return null
+      }
+
+      const routeResponse = await ctx.dataSources.mapboxAPI.getRoute([
+        {
+          lat: parent.departureCoords.lat,
+          lng: parent.departureCoords.lng,
+        },
+        {
+          lat: parent.arrivalCoords.lat,
+          lng: parent.arrivalCoords.lng,
+        },
+      ])
+
+      if (routeResponse.code === 'NoRoute' || routeResponse.code === 'NoSegment' || routeResponse.routes.length === 0) {
+        return {
+          segments: [],
+          duration: 0,
+        }
+      }
+
+      return {
+        segments: routeResponse.routes[0].geometry.coordinates,
+        duration: routeResponse.routes[0].duration,
+      }
+    },
+  },
 }
 
 export default resolvers

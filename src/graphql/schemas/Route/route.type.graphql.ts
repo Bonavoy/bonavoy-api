@@ -20,6 +20,11 @@ export default gql`
     #     [11.1, 12.1],
     #   ],
     # ]
-    routeSegments(segmentWaypoints: [[InputCoords!]!]!): [[[Float!]!]!]! # bruh
+    routeLegs(routeWaypoints: [[InputCoords!]!]!): [RouteLeg!]!
+  }
+
+  type RouteLeg {
+    segments: [[Float!]!]!
+    duration: Float!
   }
 `
