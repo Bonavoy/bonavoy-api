@@ -263,10 +263,12 @@ export const resolvers: Resolvers = {
     route: async (parent, _args, ctx: Context) => {
       if (
         parent.type !== TransportationType.Car ||
-        !parent.arrivalCoords?.lat ||
-        !parent.arrivalCoords?.lng ||
-        !parent.departureCoords?.lat ||
-        !parent.departureCoords?.lng
+        !parent.arrivalCoords ||
+        !parent.departureCoords ||
+        !parent.arrivalCoords.lat ||
+        !parent.arrivalCoords.lng ||
+        !parent.departureCoords.lat ||
+        !parent.departureCoords.lng
       ) {
         return null
       }
