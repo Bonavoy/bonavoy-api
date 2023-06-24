@@ -77,6 +77,12 @@ export type Coords = {
   lng: Scalars['Float'];
 };
 
+export type Country = {
+  __typename?: 'Country';
+  shortCode: Scalars['String'];
+  text: Scalars['String'];
+};
+
 export type CreateDayPlanInput = {
   date?: InputMaybe<Scalars['DateTime']>;
   order: Scalars['Int'];
@@ -102,17 +108,10 @@ export type InviteInput = {
   role: TripRole;
 };
 
-export type LocationContext = {
-  __typename?: 'LocationContext';
-  id: Scalars['String'];
-  short_code?: Maybe<Scalars['String']>;
-  text: Scalars['String'];
-  wikidata?: Maybe<Scalars['String']>;
-};
-
 export type LocationSuggestion = {
   __typename?: 'LocationSuggestion';
   center: Coords;
+  country: Country;
   name: Scalars['String'];
   text: Scalars['String'];
 };
@@ -675,6 +674,7 @@ export type ResolversTypes = {
   AuthorsOnTripsEdge: ResolverTypeWrapper<AuthorsOnTripsEdge>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Coords: ResolverTypeWrapper<Coords>;
+  Country: ResolverTypeWrapper<Country>;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   DayPlan: ResolverTypeWrapper<DayPlan>;
@@ -684,7 +684,6 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Invite: ResolversTypes['AuthorsOnTrips'] | ResolversTypes['PendingInvite'];
   InviteInput: InviteInput;
-  LocationContext: ResolverTypeWrapper<LocationContext>;
   LocationSuggestion: ResolverTypeWrapper<LocationSuggestion>;
   Mutation: ResolverTypeWrapper<{}>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
@@ -726,6 +725,7 @@ export type ResolversParentTypes = {
   AuthorsOnTripsEdge: AuthorsOnTripsEdge;
   Boolean: Scalars['Boolean'];
   Coords: Coords;
+  Country: Country;
   CreateDayPlanInput: CreateDayPlanInput;
   DateTime: Scalars['DateTime'];
   DayPlan: DayPlan;
@@ -735,7 +735,6 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   Invite: ResolversParentTypes['AuthorsOnTrips'] | ResolversParentTypes['PendingInvite'];
   InviteInput: InviteInput;
-  LocationContext: LocationContext;
   LocationSuggestion: LocationSuggestion;
   Mutation: {};
   PageInfo: PageInfo;
@@ -818,6 +817,12 @@ export type CoordsResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CountryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Country'] = ResolversParentTypes['Country']> = {
+  shortCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
@@ -834,16 +839,9 @@ export type InviteResolvers<ContextType = any, ParentType extends ResolversParen
   __resolveType: TypeResolveFn<'AuthorsOnTrips' | 'PendingInvite', ParentType, ContextType>;
 };
 
-export type LocationContextResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationContext'] = ResolversParentTypes['LocationContext']> = {
-  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  short_code?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  wikidata?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type LocationSuggestionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LocationSuggestion'] = ResolversParentTypes['LocationSuggestion']> = {
   center?: Resolver<ResolversTypes['Coords'], ParentType, ContextType>;
+  country?: Resolver<ResolversTypes['Country'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   text?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1014,10 +1012,10 @@ export type Resolvers<ContextType = any> = {
   AuthorsOnTripsConnection?: AuthorsOnTripsConnectionResolvers<ContextType>;
   AuthorsOnTripsEdge?: AuthorsOnTripsEdgeResolvers<ContextType>;
   Coords?: CoordsResolvers<ContextType>;
+  Country?: CountryResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   DayPlan?: DayPlanResolvers<ContextType>;
   Invite?: InviteResolvers<ContextType>;
-  LocationContext?: LocationContextResolvers<ContextType>;
   LocationSuggestion?: LocationSuggestionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;

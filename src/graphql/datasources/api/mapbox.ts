@@ -15,7 +15,7 @@ export default class MapboxAPI extends RESTDataSource {
       `/geocoding/v5/mapbox.places/${query}.json?access_token=${this.accessToken}&limit=5`,
     )
 
-    return JSON.parse(locationSuggestions).features // WHY IS THIS A STRING
+    return JSON.parse(locationSuggestions).features // WHY IS THIS A STRING MAPBOX
   }
 
   getRoute = async (coords: InputCoords[]) => {
